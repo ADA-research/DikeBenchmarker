@@ -1,12 +1,21 @@
 from enum import Enum
 from datetime import datetime, timezone
 
+
 class JobState(Enum):
-    CREATED = 1; SUBMITTED = 2; RUNNING = 3; FINISHED = 4; FAILED = 5; CANCELLED = 6
+    CREATED = 1
+    SUBMITTED = 2
+    RUNNING = 3
+    FINISHED = 4
+    FAILED = 5
+    CANCELLED = 6
+
 
 class JobStateError(Exception):
     """Raised when an invalid state transition is attempted on a Job."""
+
     pass
+
 
 class Job:
     """
@@ -14,17 +23,18 @@ class Job:
 
     Identity: benchmark_id, solver_id, created_at (ctor time).
     Lifecycle:
-      CREATED (initial) 
-        --[put into JobLog]--> SUBMITTED 
-        --[start working on]--> RUNNING 
+      CREATED (initial)
+        --[put into JobLog]--> SUBMITTED
+        --[start working on]--> RUNNING
         --[finish working on]--> FINISHED | FAILED
       CREATED/SUBMITTED -> CANCELLED
     """
+
     def __init__(self, benchmark_id: str, solver_id: str, tlimit: int = 5000, mlimit: int = 30) -> None:
         self.benchmark_id: str = benchmark_id
         self.solver_id: str = solver_id
-        self.timelimit: int = tlimit # seconds
-        self.memlimit: int = mlimit # gigabytes
+        self.timelimit: int = tlimit  # seconds
+        self.memlimit: int = mlimit  # gigabytes
 
         # timestamps
         self.created_at: datetime = datetime.now(timezone.utc)
@@ -84,10 +94,11 @@ class Result:
     Represents the result of a benchmark job.
     Contains a reference to the job and its resource usage.
     """
+
     def __init__(self, job: Job, runtime=None, memory=None):
         self.job = job
         self.runtime = runtime
         self.memory = memory
 
     def __repr__(self):
-        return (f"BenchmarkResult(cputime={self.runtime}, memory={self.memory})")
+        return f"BenchmarkResult(cputime={self.runtime}, memory={self.memory})"
