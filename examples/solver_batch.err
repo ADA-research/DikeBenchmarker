@@ -1,0 +1,548 @@
++ '[' -z '' ']'
++ case "$-" in
++ __lmod_vx=x
++ '[' -n x ']'
++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for this output (/opt/ohpc/admin/lmod/lmod/init/bash)
+Shell debugging restarted
++ unset __lmod_vx
++ cores_array=(4 8 16 32)
++ mem_array=(32 64 128 256)
+++ lscpu
+++ grep 'Socket(s)'
+++ awk '{print $2}'
++ num_sockets=2
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
++ echo 'Current cores: 4, Current mem: 32'
+++ bash ./save_environment.sh 4 32
++ env_hash=2d59c3ee16114e7d9e83ba9b50346cae
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 2d59c3ee16114e7d9e83ba9b50346cae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 4, Current mem: 64'
+++ bash ./save_environment.sh 4 64
++ env_hash=6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 6ebcfc6bf8b37ea2b27b3ae0c0ea9a6d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 4, Current mem: 128'
+++ bash ./save_environment.sh 4 128
++ env_hash=17389565963cb266777a2c54671f712f
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 17389565963cb266777a2c54671f712f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 4, Current mem: 256'
+++ bash ./save_environment.sh 4 256
++ env_hash=fab0ddfea16a3f2dc9fc1ec55b84af9a
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_cores in "${cores_array[@]}"
++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh fab0ddfea16a3f2dc9fc1ec55b84af9a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ echo 'Current cores: 8, Current mem: 32'
+++ bash ./save_environment.sh 8 32
++ env_hash=69fb05cf78e338f2fbfbe837351792b1
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 69fb05cf78e338f2fbfbe837351792b1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 8, Current mem: 64'
+++ bash ./save_environment.sh 8 64
++ env_hash=2f6f08f7a41e9fb8af2f24814219596b
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ echo 'Current cores: 8, Current mem: 128'
++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2f6f08f7a41e9fb8af2f24814219596b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ bash ./save_environment.sh 8 128
++ env_hash=7f3aae9fa82f488f83b5a2fb8e2b0f7f
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 7f3aae9fa82f488f83b5a2fb8e2b0f7f /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 8, Current mem: 256'
+++ bash ./save_environment.sh 8 256
++ env_hash=c436a41ae00dd321059b8cb619c97fd8
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh c436a41ae00dd321059b8cb619c97fd8 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 16, Current mem: 32'
+++ bash ./save_environment.sh 16 32
++ env_hash=d641df2ebec0723bbb921bd14eb9a3fe
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh d641df2ebec0723bbb921bd14eb9a3fe /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 16, Current mem: 64'
+++ bash ./save_environment.sh 16 64
++ env_hash=2369b3038ed4647ea8c129c2169411d1
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2369b3038ed4647ea8c129c2169411d1 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 16, Current mem: 128'
+++ bash ./save_environment.sh 16 128
++ env_hash=003701928031744d7344d6e08fea4dae
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 003701928031744d7344d6e08fea4dae /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 16, Current mem: 256'
+++ bash ./save_environment.sh 16 256
++ env_hash=adf46d3233b347048bfea8780435b19c
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_cores in "${cores_array[@]}"
++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh adf46d3233b347048bfea8780435b19c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ echo 'Current cores: 32, Current mem: 32'
+++ bash ./save_environment.sh 32 32
++ env_hash=18409db63842090f81d8226189986c31
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 18409db63842090f81d8226189986c31 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 32, Current mem: 64'
+++ bash ./save_environment.sh 32 64
++ env_hash=f013930e6037111a000a95a89ba917aa
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f013930e6037111a000a95a89ba917aa /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 32, Current mem: 128'
+++ bash ./save_environment.sh 32 128
++ env_hash=4f2a446876b428c7d576b2e60427ad0e
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for current_mem in "${mem_array[@]}"
++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 4f2a446876b428c7d576b2e60427ad0e /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ echo 'Current cores: 32, Current mem: 256'
+++ bash ./save_environment.sh 32 256
++ env_hash=06ab1dc7e9ef004489a478a2e68a52bd
+++ seq 0 1
++ for socket in $(seq 0 1)
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for socket in $(seq 0 1)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+++ seq 0 5
++ for run in $(seq 0 5)
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ for run in $(seq 0 5)
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
++ wait
++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 06ab1dc7e9ef004489a478a2e68a52bd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf
+slurmstepd-kathleenlogin02: error: *** JOB 7272988 ON kathleenlogin02 CANCELLED AT 2025-09-02T15:54:51 DUE TO TIME LIMIT ***

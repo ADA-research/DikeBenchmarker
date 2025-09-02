@@ -28,7 +28,7 @@ for current_cores in "${cores_array[@]}"; do
                 srun --cpus-per-task=$current_cores \
                     --mem=$current_mem \
                     --cpu-bind=sockets \
-                    bash ./run_solver.sh > "output_${env_hash}_${socket}_${run}.log" 2>&1 &
+                    bash ./run_solver.sh $env_hash $1 ./00d1fe07ab948b348bb3fb423b1ef40d-lec_mult_KvW_12x11.sanitized.cnf> "output_${env_hash}_${socket}_${run}.log" 2>&1 &
             done
         done
     done
