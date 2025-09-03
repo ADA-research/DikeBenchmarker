@@ -2,7 +2,7 @@
 Virtual Runner Adapter
 """
 
-import pandas as pd
+import polars as pl
 
 from sustainablecompetition.infrastructureadapters.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
@@ -13,7 +13,7 @@ class VirtualRunner(AbstractRunner):
     Simulate a runner using given runtimes dataset.
     """
 
-    def __init__(self, runtimes: pd.DataFrame):
+    def __init__(self, runtimes: pl.DataFrame):
         super().__init__()
         self.runtimes = runtimes
 
@@ -34,7 +34,7 @@ class VirtualRunner(AbstractRunner):
         instance = job.benchmark_id
         solver = job.solver_id
         runtime = self.runtimes.loc[instance, solver]
-        if pd.notnull(runtime):
+        if runtime is not None:
             return Result(job, runtime, 0)
         return None
 
