@@ -1,7 +1,11 @@
 """Basic benchmarking job and result representation"""
 
+import logging
 from enum import Enum
 from datetime import datetime, timezone
+
+
+logger = logging.getLogger(__name__)
 
 
 class JobState(Enum):
@@ -58,7 +62,7 @@ class Job:
         Called by the infrastructure adapter upon receiving the job.
         """
         if self.state == JobState.SUBMITTED:
-            # TODO maybe add a warning message to indicate that job was already submitted
+            logger.warning(f"job {self} wants to be marked as {self.state.name} but it already is {self.state.name}")
             if self.submitted_at is None:
                 self.submitted_at = datetime.now(timezone.utc)
             return
@@ -73,7 +77,7 @@ class Job:
         Called by the infrastructure adapter once the job started to run.
         """
         if self.state == JobState.RUNNING:
-            # TODO maybe add a warning message to indicate that job was already submitted
+            logger.warning(f"job {self} wants to be marked as {self.state.name} but it already is {self.state.name}")
             return
         if self.state != JobState.SUBMITTED:
             raise JobStateError(f"Cannot mark job as RUNNING from state {self.state.name}")
