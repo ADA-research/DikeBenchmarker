@@ -1,10 +1,12 @@
 """
 Local Runner Adapter
 """
+
 import pandas as pd
 
 from sustainablecompetition.infrastructureadapters.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
+
 
 class VirtualRunner(AbstractRunner):
     """

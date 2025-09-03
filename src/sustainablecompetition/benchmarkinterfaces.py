@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 from sustainablecompetition.benchmarkatoms import Job, Result
 
+
 class Benchmarker(ABC):
     """
     Decides which jobs to submit next; can depend on past results/dependencies.
@@ -22,4 +23,3 @@ class Benchmarker(ABC):
     def handle_result(self, result: Result) -> None:
         """Called for each finished/failed job to update planning or process results."""
         raise NotImplementedError
-

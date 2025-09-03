@@ -8,8 +8,9 @@ import requests
 
 from sustainablecompetition.benchmarkadapters.abstractinstance import AbstractInstanceAdapter
 
+
 class SATInstanceAdapter(AbstractInstanceAdapter):
-    """ Maintain paths to sat instances and make them accessible by their IDs """
+    """Maintain paths to sat instances and make them accessible by their IDs"""
 
     # Maps instance ids to instance paths
     registry = {}

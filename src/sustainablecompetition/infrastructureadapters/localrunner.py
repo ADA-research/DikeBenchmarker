@@ -9,21 +9,13 @@ from sustainablecompetition.benchmarkatoms import Job, Result
 from sustainablecompetition.solveradapters.abstractsolver import AbstractSolverAdapter
 from sustainablecompetition.benchmarkadapters.abstractinstance import AbstractInstanceAdapter
 
+
 def wrapper(solverpath: str, instancepath: str, job: Job):
     """Wrapper function to execute a job."""
     job.mark_running()
-    result = subprocess.run(
-        [solverpath, instancepath],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        check=False
-    )
-    return {
-        "stdout": result.stdout,
-        "stderr": result.stderr,
-        "returncode": result.returncode
-    }
+    result = subprocess.run([solverpath, instancepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
+    return {"stdout": result.stdout, "stderr": result.stderr, "returncode": result.returncode}
+
 
 class LocalRunner(AbstractRunner):
     """
@@ -61,4 +53,3 @@ class LocalRunner(AbstractRunner):
         if future.done():
             return Result(job, 0, 0)
         return None
-

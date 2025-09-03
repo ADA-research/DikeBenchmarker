@@ -8,8 +8,9 @@ import time
 
 from sustainablecompetition.benchmarkatoms import Job, JobState, Result
 
+
 class AbstractRunner(ABC):
-    """ Interface for Runners """
+    """Interface for Runners"""
 
     def __init__(self):
         self.jobs = list[Job]()

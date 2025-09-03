@@ -1,9 +1,10 @@
-""" Abstract Solver Adapter """
+"""Abstract Solver Adapter"""
 
 from abc import ABC, abstractmethod
 
+
 class AbstractSolverAdapter(ABC):
-    """ Interface for Solver Adapters """
+    """Interface for Solver Adapters"""
 
     @abstractmethod
     def get_path(self, solver_id: str) -> str:

@@ -1,14 +1,23 @@
-""" Basic benchmarking job and result representation """
+"""Basic benchmarking job and result representation"""
 
 from enum import Enum
 from datetime import datetime, timezone
 
+
 class JobState(Enum):
-    """ Possible states of a Job. """
-    CREATED = 1; SUBMITTED = 2; RUNNING = 3; FINISHED = 4; FAILED = 5; CANCELLED = 6
+    """Possible states of a Job."""
+
+    CREATED = 1
+    SUBMITTED = 2
+    RUNNING = 3
+    FINISHED = 4
+    FAILED = 5
+    CANCELLED = 6
+
 
 class JobStateError(Exception):
     """Raised when an invalid state transition is attempted on a Job."""
+
 
 class Job:
     """
@@ -16,17 +25,18 @@ class Job:
 
     Identity: benchmark_id, solver_id, created_at (ctor time).
     Lifecycle:
-      CREATED (initial) 
-        --[put into JobLog]--> SUBMITTED 
-        --[start working on]--> RUNNING 
+      CREATED (initial)
+        --[put into JobLog]--> SUBMITTED
+        --[start working on]--> RUNNING
         --[finish working on]--> FINISHED | FAILED
       CREATED/SUBMITTED -> CANCELLED
     """
+
     def __init__(self, benchmark_id: str, solver_id: str, tlimit: int = 5000, mlimit: int = 30) -> None:
         self.benchmark_id: str = benchmark_id
         self.solver_id: str = solver_id
-        self.timelimit: int = tlimit # seconds
-        self.memlimit: int = mlimit # gigabytes
+        self.timelimit: int = tlimit  # seconds
+        self.memlimit: int = mlimit  # gigabytes
 
         # timestamps
         self.created_at: datetime = datetime.now(timezone.utc)
@@ -48,7 +58,7 @@ class Job:
         Called by the infrastructure adapter upon receiving the job.
         """
         if self.state == JobState.SUBMITTED:
-            #TODO maybe add a warning message to indicate that job was already submitted
+            # TODO maybe add a warning message to indicate that job was already submitted
             if self.submitted_at is None:
                 self.submitted_at = datetime.now(timezone.utc)
             return
@@ -63,7 +73,7 @@ class Job:
         Called by the infrastructure adapter once the job started to run.
         """
         if self.state == JobState.RUNNING:
-            #TODO maybe add a warning message to indicate that job was already submitted
+            # TODO maybe add a warning message to indicate that job was already submitted
             return
         if self.state != JobState.SUBMITTED:
             raise JobStateError(f"Cannot mark job as RUNNING from state {self.state.name}")
@@ -91,7 +101,6 @@ class Job:
         self.state = JobState.FAILED
         self.finished_at = datetime.now(timezone.utc)
 
-    
     def cancel_local(self) -> bool:
         """
         Mark the job as cancelled.
@@ -112,10 +121,11 @@ class Result:
     Represents the result of a benchmark job.
     Contains a reference to the job and its resource usage.
     """
+
     def __init__(self, job: Job, runtime=None, memory=None):
         self.job = job
         self.runtime = runtime
         self.memory = memory
 
     def __repr__(self):
-        return (f"BenchmarkResult(cputime={self.runtime}, memory={self.memory})")
+        return f"BenchmarkResult(cputime={self.runtime}, memory={self.memory})"

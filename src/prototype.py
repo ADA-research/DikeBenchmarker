@@ -4,9 +4,9 @@ from sustainablecompetition.benchmarkatoms import Job, JobState, JobStateError, 
 from sustainablecompetition.benchmarkinterfaces import Benchmarker, Infrastructure
 
 
-
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()
