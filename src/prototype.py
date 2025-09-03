@@ -5,10 +5,10 @@ import argparse
 import os
 import sys
 
-import pandas as pd
+import polars as pl
 
 from sustainablecompetition.benchmarkatoms import Job, JobState, JobStateError, Result
-from sustainablecompetition.methods.methodinterface import Benchmarker
+from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
 from sustainablecompetition.infrastructureadapters.virtualrunner import VirtualRunner
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ def main():
         print(f"Error: File '{args.file}' does not exist.")
         sys.exit(1)
 
-    df = pd.read_csv(args.file, index_col="hash")
+    df = pl.read_csv(args.file, index_col="hash")
     runner = VirtualRunner(df)
 
 

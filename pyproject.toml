@@ -4,8 +4,7 @@ version = "0.1.0"
 description = "Sustainable Competition"
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies = [
-]
+dependencies = []
 
 [tool.ruff]
 line-length = 160
@@ -14,12 +13,7 @@ line-length = 160
 package = true
 
 [dependency-groups]
-dev = [
-    "pytest>=8.3.5",
-    "ruff>=0.12.11",
-    "requests>=2.31.0",
-    "pandas>=2.2.3",
-]
+dev = ["pytest>=8.3.5", "ruff>=0.12.11", "requests>=2.31.0", "polars>=1.33.0"]
 
 [tool.setuptools.packages.find]
-where = ["src"]  # This tells setuptools to look in src/
+where = ["src"] # This tells setuptools to look in src/

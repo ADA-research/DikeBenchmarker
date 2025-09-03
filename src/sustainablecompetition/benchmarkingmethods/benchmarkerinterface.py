@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 
 from sustainablecompetition.benchmarkatoms import Job, Result
 
+__all__ = ["Benchmarker"]
+
 
 class Benchmarker(ABC):
     """
