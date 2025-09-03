@@ -18,7 +18,7 @@ class Benchmarker(ABC):
 
     @abstractmethod
     def next_job(self) -> Job:
-        """Return the next job to submit (can be None if no job is ready)."""
+        """Return the next job to submit (can be None if there is nothing left to do)."""
         raise NotImplementedError
 
     @abstractmethod
