@@ -3,10 +3,15 @@ Adapter to execution environment (cluster, SLURM, K8s, cloud API, vendor queue).
 """
 
 from abc import ABC, abstractmethod
-from typing import Iterator
+from typing import Generator
 import time
 
 from sustainablecompetition.benchmarkatoms import Job, JobState, Result
+
+
+__all__ = ["AbstractRunner"]
+
+FINISHED_STATES = {JobState.CANCELLED, JobState.FAILED, JobState.FINISHED}
 
 
 class AbstractRunner(ABC):
@@ -30,17 +35,22 @@ class AbstractRunner(ABC):
         Otherwise, return None.
         """
 
-    def completions(self) -> Iterator[Result]:
+    def completions(self, sleep_duration: float = 1) -> Generator[Result, None, None]:
         """
-        Must yield whenever the external system reports a job as done/failed.
+        Yield whenever the external system reports a job as done/failed.
+        Stops when all jobs are either CANCELLED, FAILED or FINISHED.
+
+        Args:
+            sleep_duration (float, optional): sleep duration in s between two polls of completed jobs. Defaults to 1.
         """
-        while True:
-            for job in [j for j in self.jobs if j.state == JobState.RUNNING]:
-                result = self.completed(job)
-                if result is not None:
-                    yield result
-                else:
-                    time.sleep(1)
+        while not all(j.state in FINISHED_STATES for j in self.jobs):
+            for job in self.jobs:
+                if job.state == JobState.RUNNING:
+                    result = self.completed(job)
+                    if result is not None:
+                        yield result
+                    else:
+                        time.sleep(sleep_duration)
 
     @abstractmethod
     def cancel(self, job: Job):
