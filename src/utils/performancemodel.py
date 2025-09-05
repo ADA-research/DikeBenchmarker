@@ -1,7 +1,5 @@
 import polars as pl
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 
 
 class PerformanceModel:
@@ -45,17 +43,11 @@ class PerformanceModel:
         self.instances = pl.read_csv(self.instances_path)
         self.solvers = pl.read_csv(self.solvers_path)
         # Load performances
-        self.performances = pl.read_csv(self.performances_path)
+        self.perf = pl.read_csv(self.performances_path)
         
 
     def prepare_data(self):
-        """_summary_
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            _type_: _description_
+        """put all files together into X and Y
         """
         # Merge perf with environments on env_hash
         merged = self.perf.join(self.environments, left_on="env_hash", right_on="env_hash", how="left")
@@ -71,26 +63,16 @@ class PerformanceModel:
         self.Y = self.perf["perf"].to_numpy()
 
     def train(self):
-        """_summary_
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            _type_: _description_
+        """train the model
+        for now very basic but could be better tailored in the future (handling saturated right tail for example)
         """
-        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, test_size=0.2, random_state=42)
-        self.model.fit(X_train, y_train)
-        y_pred = self.model.predict(X_test)
-        mse = mean_squared_error(y_test, y_pred)
-        print(f"Model trained. Test MSE: {mse:.4f}")
+        self.model.fit(self.X, self.Y)
 
-    def predict(self, env_hash, inst_hash):
-        """_summary_
+    def predict(self, x_input):
+        """predicts stuff, for now simple but could be refined
 
         Args:
-            env_hash (bool): _description_
-            inst_hash (bool): _description_
+            x_input (dataframe): _description_
 
         Raises:
             ValueError: _description_
@@ -98,13 +80,8 @@ class PerformanceModel:
         Returns:
             _type_: _description_
         """
-        idx1 = self.hash_to_index.get(env_hash)
-        idx2 = self.hash_to_index.get(inst_hash)
-        if idx1 is not None and idx2 is not None:
-            combined = self.features[idx1].to_list() + self.features[idx2].to_list()
-            return self.model.predict([combined])[0]
-        else:
-            raise ValueError("One or both hashes not found in features.")
+        
+        return self.model.predict(x_input)
 
 
 if __name__ == "__main__":
@@ -116,5 +93,4 @@ if __name__ == "__main__":
     rf.train()
 
     # Predict
-    prediction = rf.predict("hash_a", "hash_b")
-    print(f"Predicted value: {prediction}")
+    prediction = rf.predict()

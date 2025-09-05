@@ -58,3 +58,68 @@ UNSAT,5.18748,36eac6a4993f061b093c760ba435a38d,02066c116dbacc40ec5cca2067db26c0,
 UNSAT,7.55715,b7d707a0d359c4decf845355b5efd89a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
 MEMOUT,1027.91,eb220cabfbee0d32d0b06b882a8e51f2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
 UNSAT,7.59061,3d56abc41530b192400ad9ddcad5c3a9,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+MEMOUT,1741.8,f51abf6169983ee2e7086a9fdc333360,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+UNSAT,6.67408,b7d707a0d359c4decf845355b5efd89a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+TIMEOUT,5000.04,b7d707a0d359c4decf845355b5efd89a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+UNSAT,3.46125,b9777da90aca14ee4b7f0e9a93f05f7a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+Traceback (most recent call last):
+  File "/storage/work/anastacio/SustainableCompetition/workdir/wrapper.py", line 46, in <module>
+srun: error: kathleencpu05: task 0: Exited with exit code 1
+    rtime = re.search(r"total CPU time \(s\): (\d+\.\d+)", output_str).group(1)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'group',b7d707a0d359c4decf845355b5efd89a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+UNSAT,5.19774,d1276465b65d6270cfa5f02f5fb30786,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+TIMEOUT,5000.13,36eac6a4993f061b093c760ba435a38d,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+TIMEOUT,5000.1,b7d707a0d359c4decf845355b5efd89a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+UNSAT,5.17681,25eebc161abb529151fd72b548d41f67,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+UNSAT,7.51151,d1276465b65d6270cfa5f02f5fb30786,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+TIMEOUT,5000.09,3d56abc41530b192400ad9ddcad5c3a9,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+UNSAT,7.56467,d35fa56a858acfdee1f6417c262eb8b3,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+TIMEOUT,5000.05,b7d707a0d359c4decf845355b5efd89a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+UNSAT,6.68954,d1276465b65d6270cfa5f02f5fb30786,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+TIMEOUT,5000.09,b9777da90aca14ee4b7f0e9a93f05f7a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+UNSAT,3.45675,b4f28bc5f78ead2bf150639790768df4,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+TIMEOUT,5000.03,d1276465b65d6270cfa5f02f5fb30786,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+UNSAT,5.19185,b4f28bc5f78ead2bf150639790768df4,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+TIMEOUT,5000.11,25eebc161abb529151fd72b548d41f67,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+TIMEOUT,5000.07,d1276465b65d6270cfa5f02f5fb30786,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+UNSAT,5.21531,68597f8951273c5f4593f041795b2b2e,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+UNSAT,7.54749,b4f28bc5f78ead2bf150639790768df4,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+TIMEOUT,5000.1,d35fa56a858acfdee1f6417c262eb8b3,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+UNSAT,7.55827,687af864064d31c870c069d948970d20,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+MEMOUT,144.016,b4f28bc5f78ead2bf150639790768df4,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+MEMOUT,68.7679,b4f28bc5f78ead2bf150639790768df4,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+UNSAT,3.46268,e98c7b68b089b43ebb9ab26a70f067b2,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+UNSAT,5.24382,e98c7b68b089b43ebb9ab26a70f067b2,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+MEMOUT,69.2132,68597f8951273c5f4593f041795b2b2e,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+MEMOUT,66.6253,b4f28bc5f78ead2bf150639790768df4,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+CRASHED,0.002292,e98c7b68b089b43ebb9ab26a70f067b2,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+CRASHED,0.002163,e98c7b68b089b43ebb9ab26a70f067b2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+UNSAT,5.23678,4361a3a9973e86933b147574f3ff6f40,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+UNSAT,7.53904,e98c7b68b089b43ebb9ab26a70f067b2,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+MEMOUT,66.2137,687af864064d31c870c069d948970d20,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+UNSAT,7.54143,4b9887900a545124e2e2e7209edbf026,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+MEMOUT,669.177,e98c7b68b089b43ebb9ab26a70f067b2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+UNSAT,7.53724,f5cab05873fe6348e155a5b79e63a5c6,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+MEMOUT,849.273,e98c7b68b089b43ebb9ab26a70f067b2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+UNSAT,3.45732,2e87fd2e67ae5c64d1ca60da1bd49e69,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+MEMOUT,891.941,4b9887900a545124e2e2e7209edbf026,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+UNSAT,7.5409,6a2b2a09be8444a6c4589834bb625a4f,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+TIMEOUT,5000.03,d1276465b65d6270cfa5f02f5fb30786,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+MEMOUT,966.444,e98c7b68b089b43ebb9ab26a70f067b2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+UNSAT,6.74785,b4f28bc5f78ead2bf150639790768df4,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+UNSAT,5.20974,2e87fd2e67ae5c64d1ca60da1bd49e69,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+MEMOUT,279.297,b4f28bc5f78ead2bf150639790768df4,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+UNSAT,6.76566,e98c7b68b089b43ebb9ab26a70f067b2,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+MEMOUT,1749.84,e98c7b68b089b43ebb9ab26a70f067b2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+UNSAT,6.68112,2e87fd2e67ae5c64d1ca60da1bd49e69,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
+TIMEOUT,5000.08,4361a3a9973e86933b147574f3ff6f40,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+MEMOUT,4054.54,2e87fd2e67ae5c64d1ca60da1bd49e69,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+UNSAT,5.21909,43f4e5efad542bb0516f18294a0c066c,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+UNSAT,5.21724,d459548c907139a76592864e8b9527e0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+TIMEOUT,5000.02,f5cab05873fe6348e155a5b79e63a5c6,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+UNSAT,7.53494,d459548c907139a76592864e8b9527e0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+TIMEOUT,5000.07,2e87fd2e67ae5c64d1ca60da1bd49e69,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+UNSAT,3.46706,d459548c907139a76592864e8b9527e0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+TIMEOUT,5000.09,6a2b2a09be8444a6c4589834bb625a4f,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+UNSAT,7.51127,df66d44b85010d8359e515176295d0cd,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
