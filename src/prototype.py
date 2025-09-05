@@ -33,7 +33,7 @@ def main():
     runner = VirtualRunner(CompetitionDataAdapter(df))
     benchmarks = df.select("hash").to_series().to_list()
     columns = df.columns
-    method = TrivialBenchmarker(benchmarks, columns[0])
+    method = TrivialBenchmarker(benchmarks, columns[1])
     consumer = EchoConsumer()
     controller = Controller(method, runner, njobs=1, consumers=[consumer])
     controller.run()
