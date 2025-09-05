@@ -9,10 +9,10 @@ import sys
 import polars as pl
 
 from sustainablecompetition.controller import Controller
-from sustainablecompetition.infrastructureadapters.virtual_runner import VirtualRunner
+from sustainablecompetition.infrastructureadaptors.virtual_runner import VirtualRunner
 from sustainablecompetition.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
 from sustainablecompetition.resultconsumers.echo_consumer import EchoConsumer
-from sustainablecompetition.dataadapters.competition_dataadapter import CompetitionDataAdapter
+from sustainablecompetition.dataadaptors.competition_dataadaptor import CompetitionDataAdaptor
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ async def main():
         sys.exit(1)
 
     df = pl.read_csv(args.file)
-    runner = VirtualRunner(CompetitionDataAdapter(df))
+    runner = VirtualRunner(CompetitionDataAdaptor(df))
     benchmarks = df.select("hash").to_series().to_list()
     columns = df.columns
     method = TrivialBenchmarker(benchmarks, columns[1])

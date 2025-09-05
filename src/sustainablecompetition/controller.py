@@ -1,6 +1,6 @@
 import asyncio
 from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
-from sustainablecompetition.infrastructureadapters.abstractrunner import AbstractRunner
+from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.resultconsumers.resultconsumer import ResultConsumer
 
 
@@ -9,7 +9,7 @@ __all__ = ["Controller"]
 
 class Controller:
     """
-    Connects the benchmarking method with the infrastructure adapter.
+    Connects the benchmarking method with the infrastructure adaptor.
     """
 
     def __init__(self, benchmarker: Benchmarker, runner: AbstractRunner, njobs: int = 1, consumers: list[ResultConsumer] = None):

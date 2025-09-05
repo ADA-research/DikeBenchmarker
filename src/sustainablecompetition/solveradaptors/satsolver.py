@@ -1,11 +1,11 @@
 """
-SAT Solver Adapter
+SAT Solver Adaptor
 """
 
-from sustainablecompetition.solveradapters.abstractsolver import AbstractSolverAdapter
+from sustainablecompetition.solveradaptors.abstractsolver import AbstractSolverAdaptor
 
 
-class SATSolverAdapter(AbstractSolverAdapter):
+class SATSolverAdaptor(AbstractSolverAdaptor):
     """Maintain paths to solvers and make them accessible by their IDs"""
 
     # Maps solver ids to solver paths

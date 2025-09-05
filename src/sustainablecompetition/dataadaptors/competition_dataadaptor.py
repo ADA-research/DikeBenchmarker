@@ -1,5 +1,5 @@
 """
-Competition data adapter to interact with the competition data from a single competition.
+Competition data adaptor to interact with the competition data from a single competition.
 The data from a single competition is typically served as a CSV file.
 It stems from benchmarking with a single hardware configuration.
 """
@@ -8,20 +8,20 @@ from typing import Optional
 
 import polars as pl
 
-from sustainablecompetition.dataadapters.dataadapter import DataAdapter
+from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
 
-__all__ = ["CompetitionDataAdapter"]
+__all__ = ["CompetitionDataAdaptor"]
 
 
-class CompetitionDataAdapter(DataAdapter):
+class CompetitionDataAdaptor(DataAdaptor):
     """
-    Implement the data adapter for competition data.
+    Implement the data adaptor for competition data.
     """
 
     def __init__(self, df: pl.DataFrame):
         """
-        Initialize the data adapter with a polars DataFrame.
+        Initialize the data adaptor with a polars DataFrame.
         Args:
             df (pl.DataFrame): DataFrame containing the competition data.
             The DataFrame must contain at least the following columns:
@@ -33,7 +33,7 @@ class CompetitionDataAdapter(DataAdapter):
     def get_performances(self, benchmark_id: str, solver_id: Optional[str] = None, hardware_id: Optional[str] = None) -> pl.DataFrame:
         """
         Get the performance of a specific benchmark instance.
-        Hardware id is ignored as this data adapter is for a single hardware configuration. (TODO: find a better way to handle this)
+        Hardware id is ignored as this data adaptor is for a single hardware configuration. (TODO: find a better way to handle this)
         Args:
             benchmark_id (str): the id of the instance to get the performances about
             solver_id (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.

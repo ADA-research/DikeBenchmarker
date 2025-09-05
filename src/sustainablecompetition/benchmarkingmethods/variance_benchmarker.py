@@ -4,7 +4,7 @@ Variance benchmarker implementation that submits each solver/instance pair.
 
 from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
 from sustainablecompetition.benchmarkatoms import Job, Result
-from sustainablecompetition.dataadapters.dataadapter import DataAdapter
+from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
 
 import polars as pl
@@ -14,7 +14,7 @@ __all__ = ["VarianceBenchmarker"]
 
 
 class VarianceBenchmarker(Benchmarker):
-    def __init__(self, benchmark_ids: list[str], solver_id: str, data: DataAdapter):
+    def __init__(self, benchmark_ids: list[str], solver_id: str, data: DataAdaptor):
         super().__init__(benchmark_ids, solver_id)
         self.jobs_submitted = set()
         self.data = data

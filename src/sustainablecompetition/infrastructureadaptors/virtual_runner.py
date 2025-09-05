@@ -1,10 +1,10 @@
 """
-Virtual Runner Adapter
+Virtual Runner Adaptor
 """
 
-from sustainablecompetition.infrastructureadapters.abstractrunner import AbstractRunner
+from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
-from sustainablecompetition.dataadapters.dataadapter import DataAdapter
+from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
 
 class VirtualRunner(AbstractRunner):
@@ -12,7 +12,7 @@ class VirtualRunner(AbstractRunner):
     Simulate a runner using given runtimes dataset.
     """
 
-    def __init__(self, runtimes: DataAdapter):
+    def __init__(self, runtimes: DataAdaptor):
         super().__init__()
         self.runtimes = runtimes
 

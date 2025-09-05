@@ -420,6 +420,7 @@ FodyWeavers.xsd
 # python compiled
 *.egg-info
 .venv*
+build/*
 
 # unziped solvers
 solvers/*/*/*/

@@ -8,6 +8,23 @@ import subprocess
 
 
 def save_environment(nb_assigned_cores, assigned_memory, csv_file="run_environment.csv"):
+    """saves the current environment a a new line into the defined environment csv file
+    The line is as follows:
+    {nb_assigned_cores},{nb_available_core},
+    {assigned_memory},{machine_memory},
+    {OS},{kernel_version},{activated_modules},
+    {cpu_freq},{boost},{cpu_vendor},{cpu_model},
+    {cpu_l1_size},{cpu_l2_size},{cpu_l3_size}
+
+    Args:
+        nb_assigned_cores (int): Indicates the amount of cores given to the process launched on this environment
+        assigned_memory (int): Indicates the amount of memory given to the process launched on this environment
+        csv_file (str, optional): path of the csv file in which to write. Defaults to "run_environment.csv".
+
+    Returns:
+        str: hash of the environment
+    """
+
     # Collect CPU information using py-cpuinfo
     cpu_info = cpuinfo.get_cpu_info()
 

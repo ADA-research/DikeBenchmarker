@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # move instances to local machine
 # use runsolver to run the solver and get running data
 
 # Check if the correct number of arguments is provided
-if [ "$#" -ne 3 ]; then
-    echo "Usage: $0 <environment_hash> <executable_path> <instance_path>"
+if [ "$#" -ne 5 ]; then
+    echo "Usage: $0 <environment_hash> <executable_path> <instance_path> <memory> <cutoff>"
     exit 1
 fi
 
@@ -13,6 +13,8 @@ fi
 environment_hash=$1
 executable_path=$2
 instance_path=$3
+memory=$4
+cutoff=$5
 
 # Extract solver name from the executable path
 name=$(basename $(dirname "$executable_path"))
@@ -25,4 +27,4 @@ instancehash=$(echo "$instance_filename" | cut -d'-' -f1)
 output_file="${environment_hash}_${name}_${instancehash}.log"
 
 # Run the executable and save the output to the constructed filename
-"$executable_path" "$instance_path" > "$output_file" 2>&1
+python wrapper.py --solver "$executable_path" --instance "$instance_path" --memory "$memory" --cutoff "$cutoff"

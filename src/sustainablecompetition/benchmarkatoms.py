@@ -59,7 +59,7 @@ class Job:
     def mark_submitted(self) -> None:
         """
         Mark the job as submitted.
-        Called by the infrastructure adapter upon receiving the job.
+        Called by the infrastructure adaptor upon receiving the job.
         """
         if self.state == JobState.SUBMITTED:
             logger.warning(f"job {self} wants to be marked as {self.state.name} but it already is {self.state.name}")
@@ -74,7 +74,7 @@ class Job:
     def mark_running(self) -> None:
         """
         Mark the job as running.
-        Called by the infrastructure adapter once the job started to run.
+        Called by the infrastructure adaptor once the job started to run.
         """
         if self.state == JobState.RUNNING:
             logger.warning(f"job {self} wants to be marked as {self.state.name} but it already is {self.state.name}")
@@ -87,7 +87,7 @@ class Job:
     def set_finished(self) -> None:
         """
         Mark the job as finished.
-        Called by the infrastructure adapter when the job has completed successfully.
+        Called by the infrastructure adaptor when the job has completed successfully.
         """
         if self.state != JobState.RUNNING:
             raise JobStateError(f"Cannot mark job as FINISHED from state {self.state.name}")
@@ -97,7 +97,7 @@ class Job:
     def set_failed(self, error: str) -> None:
         """
         Mark the job as failed.
-        Called by the infrastructure adapter when the job has completed unsuccessfully.
+        Called by the infrastructure adaptor when the job has completed unsuccessfully.
         """
         if self.state != JobState.RUNNING:
             raise JobStateError(f"Cannot mark job as FAILED from state {self.state.name}")

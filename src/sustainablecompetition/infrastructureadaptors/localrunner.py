@@ -1,13 +1,13 @@
 """
-Local Runner Adapter
+Local Runner Adaptor
 """
 
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
-from sustainablecompetition.infrastructureadapters.abstractrunner import AbstractRunner
+from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
-from sustainablecompetition.solveradapters.abstractsolver import AbstractSolverAdapter
-from sustainablecompetition.benchmarkadapters.abstractinstance import AbstractInstanceAdapter
+from sustainablecompetition.solveradaptors.abstractsolver import AbstractSolverAdaptor
+from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 
 
 def wrapper(solverpath: str, instancepath: str, job: Job):
@@ -22,7 +22,7 @@ class LocalRunner(AbstractRunner):
     Initialize and maintain a process pool for local job execution.
     """
 
-    def __init__(self, solvers: AbstractSolverAdapter, instances: AbstractInstanceAdapter, parallel=1):
+    def __init__(self, solvers: AbstractSolverAdaptor, instances: AbstractInstanceAdaptor, parallel=1):
         super().__init__()
         self.solvers = solvers
         self.instances = instances

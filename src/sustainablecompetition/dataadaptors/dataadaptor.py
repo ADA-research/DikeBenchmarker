@@ -5,10 +5,10 @@ from typing import Optional
 import polars as pl
 
 
-__all__ = ["DataAdapter"]
+__all__ = ["DataAdaptor"]
 
 
-class DataAdapter(ABC):
+class DataAdaptor(ABC):
     """
     Enables to interact with the data interactively without loading everything into memory.
     """

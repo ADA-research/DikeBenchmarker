@@ -1,15 +1,15 @@
 """
-SAT Instance Adapter
+SAT Instance Adaptor
 """
 
 import os
 import re
 import requests
 
-from sustainablecompetition.benchmarkadapters.abstractinstance import AbstractInstanceAdapter
+from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 
 
-class SATInstanceAdapter(AbstractInstanceAdapter):
+class SATInstanceAdaptor(AbstractInstanceAdaptor):
     """Maintain paths to sat instances and make them accessible by their IDs"""
 
     # Maps instance ids to instance paths
