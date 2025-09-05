@@ -20,15 +20,7 @@ builders = [
     lambda: VarianceBenchmarker(
         BENCHMARK_IDS,
         SOLVER_ID,
-        CompetitionDataAdapter(
-            pl.DataFrame(
-                {
-                    "hash": BENCHMARK_IDS * NPOINTS,
-                    "solver_id": [str(i) for i in range(NSOLVERS)] * (NPOINTS * NJOBS // NSOLVERS),
-                    "runtime": [int(i) for i in range(NPOINTS * NJOBS)],
-                }
-            )
-        ),
+        CompetitionDataAdapter(pl.DataFrame({"hash": BENCHMARK_IDS, **{str(solver_id): [int(solver_id)] * NJOBS for solver_id in range(NSOLVERS)}})),
     ),
 ]
 
