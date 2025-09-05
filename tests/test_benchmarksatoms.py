@@ -30,14 +30,13 @@ def test_mark_submitted_fails_if_not_created():
 
 
 # ---- Test job.mark_running() ----
-@pytest.mark.asyncio
-async def test_mark_running_success():
+def test_mark_running_success():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.SUBMITTED
 
     # Action
-    await job.mark_running()
+    job.mark_running()
 
     # Assert
     assert job.state == JobState.RUNNING
@@ -45,26 +44,24 @@ async def test_mark_running_success():
     assert isinstance(job.started_at, datetime)
 
 
-@pytest.mark.asyncio
-async def test_mark_running_fails_if_not_submitted():
+def test_mark_running_fails_if_not_submitted():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.CREATED
 
     # Action & Assert
     with pytest.raises(JobStateError):
-        await job.mark_running()
+        job.mark_running()
 
 
 # ---- test job.set_finished() ----
-@pytest.mark.asyncio
-async def test_set_finished_success():
+def test_set_finished_success():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.RUNNING
 
     # Action
-    await job.set_finished()
+    job.set_finished()
 
     # Assert
     assert job.state == JobState.FINISHED
@@ -72,27 +69,25 @@ async def test_set_finished_success():
     assert isinstance(job.finished_at, datetime)
 
 
-@pytest.mark.asyncio
-async def test_set_finished_fails_if_not_running():
+def test_set_finished_fails_if_not_running():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.SUBMITTED
 
     # Action & Assert
     with pytest.raises(JobStateError):
-        await job.set_finished()
+        job.set_finished()
 
 
 # ---- test job.set_failed(error_msg) ----
-@pytest.mark.asyncio
-async def test_set_failed_success():
+def test_set_failed_success():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.RUNNING
     error_msg = "Test error message"
 
     # Action
-    await job.set_failed(error_msg)
+    job.set_failed(error_msg)
 
     # Assert
     assert job.state == JobState.FAILED
@@ -101,8 +96,7 @@ async def test_set_failed_success():
     assert isinstance(job.finished_at, datetime)
 
 
-@pytest.mark.asyncio
-async def test_set_failed_fails_if_not_running():
+def test_set_failed_fails_if_not_running():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.SUBMITTED
@@ -110,18 +104,17 @@ async def test_set_failed_fails_if_not_running():
 
     # Action & Assert
     with pytest.raises(JobStateError):
-        await job.set_failed(error_msg)
+        job.set_failed(error_msg)
 
 
 # ---- test job.cancel_local() ----
-@pytest.mark.asyncio
-async def test_cancel_local_success_for_created():
+def test_cancel_local_success_for_created():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.CREATED
 
     # Action
-    result = await job.cancel_local()
+    result = job.cancel_local()
 
     # Assert
     assert result is True
@@ -130,14 +123,13 @@ async def test_cancel_local_success_for_created():
     assert isinstance(job.finished_at, datetime)
 
 
-@pytest.mark.asyncio
-async def test_cancel_local_success_for_submitted():
+def test_cancel_local_success_for_submitted():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.SUBMITTED
 
     # Action
-    result = await job.cancel_local()
+    result = job.cancel_local()
 
     # Assert
     assert result is True
@@ -146,14 +138,13 @@ async def test_cancel_local_success_for_submitted():
     assert isinstance(job.finished_at, datetime)
 
 
-@pytest.mark.asyncio
-async def test_cancel_local_fails_for_running():
+def test_cancel_local_fails_for_running():
     # Setup
     job = Job("bench_id", "solver_id")
     job.state = JobState.RUNNING
 
     # Action
-    result = await job.cancel_local()
+    result = job.cancel_local()
 
     # Assert
     assert result is False
