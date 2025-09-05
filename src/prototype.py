@@ -7,14 +7,20 @@ import sys
 
 import polars as pl
 
-from sustainablecompetition.benchmarkatoms import Job, JobState, JobStateError, Result
-from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
-from sustainablecompetition.infrastructureadapters.virtualrunner import VirtualRunner
+from sustainablecompetition.controller import Controller
+from sustainablecompetition.infrastructureadapters.virtual_runner import VirtualRunner
+from sustainablecompetition.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
+from sustainablecompetition.resultconsumers.echo_consumer import EchoConsumer
+from sustainablecompetition.dataadapters.competition_dataadapter import CompetitionDataAdapter
 
 logger = logging.getLogger(__name__)
 
 
 def main():
+    """
+    Integration test using the trivial benchmarker (which submits all the instances)
+    and the virtual runner (which returns the data from a csv file).
+    """
     parser = argparse.ArgumentParser(description="Test run the benchmarking tool")
     parser.add_argument("file", help="Path to CSV file containing solver runtimes")
     args = parser.parse_args()
@@ -23,8 +29,14 @@ def main():
         print(f"Error: File '{args.file}' does not exist.")
         sys.exit(1)
 
-    df = pl.read_csv(args.file, index_col="hash")
-    runner = VirtualRunner(df)
+    df = pl.read_csv(args.file)
+    runner = VirtualRunner(CompetitionDataAdapter(df))
+    benchmarks = df.select("hash").to_series().to_list()
+    columns = df.columns
+    method = TrivialBenchmarker(benchmarks, columns[1])
+    consumer = EchoConsumer()
+    controller = Controller(method, runner, njobs=1, consumers=[consumer])
+    controller.run()
 
 
 if __name__ == "__main__":

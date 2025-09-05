@@ -12,11 +12,11 @@ class Controller:
     Connects the benchmarking method with the infrastructure adapter.
     """
 
-    def __init__(self, benchmarker: Benchmarker, runner: AbstractRunner, njobs: int = 1, consumers: list[ResultConsumer] = []):
+    def __init__(self, benchmarker: Benchmarker, runner: AbstractRunner, njobs: int = 1, consumers: list[ResultConsumer] = None):
         self.benchmarker = benchmarker
         self.runner = runner
         self.njobs = njobs
-        self.consumers = consumers
+        self.consumers = consumers if consumers is not None else []
 
     async def run(self):
         """
