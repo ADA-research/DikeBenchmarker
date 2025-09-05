@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import asyncio
 import logging
 
 import argparse
@@ -16,7 +17,7 @@ from sustainablecompetition.dataadapters.competition_dataadapter import Competit
 logger = logging.getLogger(__name__)
 
 
-def main():
+async def main():
     """
     Integration test using the trivial benchmarker (which submits all the instances)
     and the virtual runner (which returns the data from a csv file).
@@ -36,8 +37,8 @@ def main():
     method = TrivialBenchmarker(benchmarks, columns[1])
     consumer = EchoConsumer()
     controller = Controller(method, runner, njobs=1, consumers=[consumer])
-    controller.run()
+    await controller.run()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
