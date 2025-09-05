@@ -11,7 +11,7 @@ __all__ = ["EchoConsumer"]
 class EchoConsumer(ResultConsumer):
     """Outputs the result of the benchmarking process to the console."""
 
-    def consume_result(self, result: Result):
+    async def consume_result(self, result: Result):
         """Output a Result.
 
         Args:
