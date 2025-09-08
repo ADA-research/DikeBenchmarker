@@ -13,11 +13,12 @@ from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
 __all__ = ["CompetitionDataAdaptor"]
 
-
 class CompetitionDataAdaptor(DataAdaptor):
     """
     Implement the data adaptor for competition data.
     """
+    
+    competition_environment = {"main2024": "b7ad30888a207d186290d1b584d32ed6"}
 
     def __init__(self, df: pl.DataFrame):
         """

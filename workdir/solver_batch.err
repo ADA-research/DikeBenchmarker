@@ -21,20 +21,20 @@ Shell debugging restarted
 + read -r instance1
 + instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
 + wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:11:40--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-05 22:01:45--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:11:40--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-05 22:01:45--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38368 (37K) [application/x-xz]
 Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 
-     0K .......... .......... .......... .......              100% 1.86M=0.02s
+     0K .......... .......... .......... .......              100% 1.96M=0.02s
 
-2025-09-05 10:11:40 (1.86 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+2025-09-05 22:01:45 (1.96 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
 
 + wait
 + xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
@@ -43,151 +43,31 @@ Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 + read -r instance2
 + instance2_hash=02066c116dbacc40ec5cca2067db26c0
 + wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:11:40--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-05 22:01:45--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:11:40--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-05 22:01:45--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 36384 (36K) [application/x-xz]
 Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 
-     0K .......... .......... .......... .....                100% 1.79M=0.02s
+     0K .......... .......... .......... .....                100% 1.74M=0.02s
 
-2025-09-05 10:11:40 (1.79 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+2025-09-05 22:01:46 (1.74 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
 
 + wait
 + xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
 + uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
 + wait
-++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh a627f788e0506f8e0cec2e2325fc4cde /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
-++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh a627f788e0506f8e0cec2e2325fc4cde /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
-+ output1=MEMOUT,67.1348
-+ echo MEMOUT,67.1348,2cc57fe884d246430c33f03bf6250c6d,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
-+ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
-+ true
-+ IFS=
-+ read -r instance1
-+ break
-+ for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 64
-+ output2=UNSAT,6.64518
-+ echo UNSAT,6.64518,a627f788e0506f8e0cec2e2325fc4cde,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
-+ env_hash=eb220cabfbee0d32d0b06b882a8e51f2
-+ true
-+ IFS=
-+ read -r instance1
-+ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
-+ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:11:49--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:11:49--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 38368 (37K) [application/x-xz]
-Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
-
-     0K .......... .......... .......... .......              100% 1.97M=0.02s
-
-2025-09-05 10:11:49 (1.97 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
-
-+ wait 577784
-+ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
-+ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
-+ IFS=
-+ read -r instance2
-+ instance2_hash=02066c116dbacc40ec5cca2067db26c0
-+ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:11:49--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:11:49--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 36384 (36K) [application/x-xz]
-Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
-
-     0K .......... .......... .......... .....                100% 1.99M=0.02s
-
-2025-09-05 10:11:49 (1.99 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
-
-+ wait 577784
-+ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
-+ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
-+ wait
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh eb220cabfbee0d32d0b06b882a8e51f2 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh eb220cabfbee0d32d0b06b882a8e51f2 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
-+ output1=MEMOUT,69.7638
-+ echo MEMOUT,69.7638,a627f788e0506f8e0cec2e2325fc4cde,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
-+ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
-+ true
-+ IFS=
-+ read -r instance1
-+ break
-+ for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 64
-+ env_hash=2827af43a52872d30b6bffafeddf988b
-+ true
-+ IFS=
-+ read -r instance1
-+ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
-+ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:11:57--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:11:57--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... + output2=UNSAT,7.56109
-+ echo UNSAT,7.56109,eb220cabfbee0d32d0b06b882a8e51f2,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
-connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 38368 (37K) [application/x-xz]
-Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
-
-     0K .......... .......... .......... .......              100% 2.19M=0.02s
-
-2025-09-05 10:11:57 (2.19 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
-
-+ wait 293382
-+ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
-+ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
-+ IFS=
-+ read -r instance2
-+ instance2_hash=02066c116dbacc40ec5cca2067db26c0
-+ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:11:57--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:11:58--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 36384 (36K) [application/x-xz]
-Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
-
-     0K .......... .......... .......... .....                100% 2.36M=0.01s
-
-2025-09-05 10:11:58 (2.36 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
-
-+ wait 293382
-+ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
-+ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
-+ wait
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2827af43a52872d30b6bffafeddf988b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 2827af43a52872d30b6bffafeddf988b /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
-+ output2=UNSAT,5.18868
-+ echo UNSAT,5.18868,2827af43a52872d30b6bffafeddf988b,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
-+ output1=MEMOUT,70.0408
-+ echo MEMOUT,70.0408,a627f788e0506f8e0cec2e2325fc4cde,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh a627f788e0506f8e0cec2e2325fc4cde /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
+++ srun --cpus-per-task=4 --mem=32 --cpu-bind=sockets bash ./run_solver.sh a627f788e0506f8e0cec2e2325fc4cde /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
++ output2=UNSAT,6.69429
++ echo UNSAT,6.69429,a627f788e0506f8e0cec2e2325fc4cde,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=MEMOUT,1287.8
++ echo MEMOUT,1287.8,a627f788e0506f8e0cec2e2325fc4cde,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
 + rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
 + true
 + IFS=
@@ -201,173 +81,53 @@ Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 + read -r instance1
 + instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
 + wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:12:08--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-05 22:23:20--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:12:08--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-05 22:23:20--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38368 (37K) [application/x-xz]
 Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 
-     0K .......... .......... .......... .......              100% 1.65M=0.02s
+     0K .......... .......... .......... .......              100% 2.18M=0.02s
 
-2025-09-05 10:12:08 (1.65 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+2025-09-05 22:23:20 (2.18 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
 
-+ wait 3398833
++ wait 3410640
 + xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
 + uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
 + IFS=
 + read -r instance2
 + instance2_hash=02066c116dbacc40ec5cca2067db26c0
 + wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:12:08--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-05 22:23:20--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:12:08--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-05 22:23:20--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 36384 (36K) [application/x-xz]
 Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 
-     0K .......... .......... .......... .....                100% 1.91M=0.02s
+     0K .......... .......... .......... .....                100% 2.39M=0.01s
 
-2025-09-05 10:12:08 (1.91 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+2025-09-05 22:23:21 (2.39 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
 
-+ wait 3398833
++ wait 3410640
 + xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
 + uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
 + wait
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
-+ output2=UNSAT,5.1914
-+ echo UNSAT,5.1914,f51abf6169983ee2e7086a9fdc333360,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
-+ output1=MEMOUT,144.656
-+ echo MEMOUT,144.656,a627f788e0506f8e0cec2e2325fc4cde,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
-+ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
-+ true
-+ IFS=
-+ read -r instance1
-+ break
-+ for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 64
-+ env_hash=f51abf6169983ee2e7086a9fdc333360
-+ true
-+ IFS=
-+ read -r instance1
-+ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
-+ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:12:33--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:12:33--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 38368 (37K) [application/x-xz]
-Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
-
-     0K .......... .......... .......... .......              100% 1.60M=0.02s
-
-2025-09-05 10:12:33 (1.60 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
-
-+ wait 620270
-+ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
-+ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
-+ IFS=
-+ read -r instance2
-+ instance2_hash=02066c116dbacc40ec5cca2067db26c0
-+ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:12:33--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:12:33--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 36384 (36K) [application/x-xz]
-Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
-
-     0K .......... .......... .......... .....                100% 1.80M=0.02s
-
-2025-09-05 10:12:33 (1.80 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
-
-+ wait 620270
-+ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
-+ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
-+ wait
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
-+ output2=UNSAT,3.4505
-+ echo UNSAT,3.4505,f51abf6169983ee2e7086a9fdc333360,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
-+ output1=MEMOUT,271.789
-+ echo MEMOUT,271.789,a627f788e0506f8e0cec2e2325fc4cde,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
-+ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
-+ true
-+ IFS=
-+ read -r instance1
-+ break
-+ for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 64
-+ env_hash=f51abf6169983ee2e7086a9fdc333360
-+ true
-+ IFS=
-+ read -r instance1
-+ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
-+ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:16:16--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:16:16--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 38368 (37K) [application/x-xz]
-Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
-
-     0K .......... .......... .......... .......              100% 1.77M=0.02s
-
-2025-09-05 10:16:16 (1.77 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
-
-+ wait 3023917
-+ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
-+ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
-+ IFS=
-+ read -r instance2
-+ instance2_hash=02066c116dbacc40ec5cca2067db26c0
-+ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:16:16--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:16:16--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
-Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 36384 (36K) [application/x-xz]
-Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
-
-     0K .......... .......... .......... .....                100% 1.83M=0.02s
-
-2025-09-05 10:16:16 (1.83 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
-
-+ wait 3023917
-+ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
-+ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
-+ wait
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
-++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
-+ output2=UNSAT,6.70472
-+ echo UNSAT,6.70472,f51abf6169983ee2e7086a9fdc333360,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/BreakID-Kissat/kissat
-+ output1=MEMOUT,849.805
-+ echo MEMOUT,849.805,f51abf6169983ee2e7086a9fdc333360,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
+++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
+++ srun --cpus-per-task=4 --mem=64 --cpu-bind=sockets bash ./run_solver.sh f51abf6169983ee2e7086a9fdc333360 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
++ output2=UNSAT,6.78527
++ echo UNSAT,6.78527,f51abf6169983ee2e7086a9fdc333360,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=MEMOUT,3288.57
++ echo MEMOUT,3288.57,f51abf6169983ee2e7086a9fdc333360,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
 + rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
 + true
 + IFS=
@@ -381,34 +141,94 @@ Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 + read -r instance1
 + instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
 + wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:26:49--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-05 22:52:37--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:26:49--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-05 22:52:37--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38368 (37K) [application/x-xz]
 Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 
-     0K .......... .......... .......... .......              100% 1.94M=0.02s
+     0K .......... .......... .......... .......              100% 1.98M=0.02s
 
-2025-09-05 10:26:49 (1.94 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+2025-09-05 22:52:37 (1.98 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
 
-+ wait 620390
++ wait 305230
 + xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
 + uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
 + IFS=
 + read -r instance2
 + instance2_hash=02066c116dbacc40ec5cca2067db26c0
 + wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:26:49--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-05 22:52:38--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:26:49--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-05 22:52:38--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.11M=0.02s
+
+2025-09-05 22:52:38 (2.11 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 305230
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,8.29116
++ echo UNSAT,8.29116,b7d707a0d359c4decf845355b5efd89a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3465.94
++ echo UNSAT,3465.94,f51abf6169983ee2e7086a9fdc333360,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 4 128
++ env_hash=b7d707a0d359c4decf845355b5efd89a
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-05 23:21:21--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-05 23:21:21--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.30M=0.02s
+
+2025-09-05 23:21:22 (2.30 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3411037
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-05 23:21:22--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-05 23:21:22--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 36384 (36K) [application/x-xz]
@@ -416,155 +236,881 @@ Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 
      0K .......... .......... .......... .....                100% 2.17M=0.02s
 
-2025-09-05 10:26:49 (2.17 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+2025-09-05 23:21:22 (2.17 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
 
-+ wait 620390
++ wait 3411037
 + xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
 + uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
 + wait
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
-+ output2=UNSAT,3.45874
-+ echo UNSAT,3.45874,b7d707a0d359c4decf845355b5efd89a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hCaD/cadical
-+ output1=MEMOUT,966.472
-+ echo MEMOUT,966.472,2827af43a52872d30b6bffafeddf988b,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
+++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,6.75352
++ echo UNSAT,6.75352,b7d707a0d359c4decf845355b5efd89a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=TIMEOUT,5000.05
++ echo TIMEOUT,5000.05,b7d707a0d359c4decf845355b5efd89a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
 + rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
 + true
 + IFS=
 + read -r instance1
 + break
 + for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 128
-+ env_hash=b7d707a0d359c4decf845355b5efd89a
+++ python ../src/utils/environment.py 4 256
++ env_hash=d1276465b65d6270cfa5f02f5fb30786
 + true
 + IFS=
 + read -r instance1
 + instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
 + wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:28:10--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 00:16:32--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:28:10--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 00:16:32--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38368 (37K) [application/x-xz]
 Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 
-     0K .......... .......... .......... .......              100% 2.07M=0.02s
+     0K .......... .......... .......... .......              100% 1.50M=0.02s
 
-2025-09-05 10:28:10 (2.07 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+2025-09-06 00:16:32 (1.50 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
 
-+ wait 293491
++ wait 306112
 + xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
 + uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
 + IFS=
 + read -r instance2
 + instance2_hash=02066c116dbacc40ec5cca2067db26c0
 + wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:28:10--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 00:16:32--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:28:10--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 00:16:33--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 36384 (36K) [application/x-xz]
 Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 
-     0K .......... .......... .......... .....                100% 2.36M=0.01s
+     0K .......... .......... .......... .....                100% 2.54M=0.01s
 
-2025-09-05 10:28:10 (2.36 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+2025-09-06 00:16:33 (2.54 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
 
-+ wait 293491
++ wait 306112
 + xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
 + uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
 + wait
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
-+ output2=UNSAT,5.20769
-+ echo UNSAT,5.20769,b7d707a0d359c4decf845355b5efd89a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-02/cadical
-+ output1=MEMOUT,969.738
-+ echo MEMOUT,969.738,f51abf6169983ee2e7086a9fdc333360,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
+++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d1276465b65d6270cfa5f02f5fb30786 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d1276465b65d6270cfa5f02f5fb30786 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,8.31256
++ echo UNSAT,8.31256,d1276465b65d6270cfa5f02f5fb30786,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3474.74
++ echo UNSAT,3474.74,b7d707a0d359c4decf845355b5efd89a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
 + rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
 + true
 + IFS=
 + read -r instance1
 + break
 + for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 128
-+ env_hash=36eac6a4993f061b093c760ba435a38d
+++ python ../src/utils/environment.py 4 256
++ env_hash=d1276465b65d6270cfa5f02f5fb30786
 + true
 + IFS=
 + read -r instance1
 + instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
 + wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:28:24--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 00:19:45--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:28:24--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 00:19:45--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38368 (37K) [application/x-xz]
 Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 
-     0K .......... .......... .......... .......              100% 1.81M=0.02s
+     0K .......... .......... .......... .......              100% 1.65M=0.02s
 
-2025-09-05 10:28:24 (1.81 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+2025-09-06 00:19:46 (1.65 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
 
-+ wait 3398939
++ wait 3411975
 + xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
 + uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
 + IFS=
 + read -r instance2
 + instance2_hash=02066c116dbacc40ec5cca2067db26c0
 + wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:28:24--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 00:19:46--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:28:24--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 00:19:46--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 36384 (36K) [application/x-xz]
 Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 
-     0K .......... .......... .......... .....                100% 1.88M=0.02s
+     0K .......... .......... .......... .....                100% 1.59M=0.02s
 
-2025-09-05 10:28:24 (1.88 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+2025-09-06 00:19:46 (1.59 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
 
-+ wait 3398939
++ wait 3411975
 + xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
 + uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
 + wait
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 36eac6a4993f061b093c760ba435a38d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 36eac6a4993f061b093c760ba435a38d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
-+ output1=MEMOUT,1031.3
-+ echo MEMOUT,1031.3,ff0458ba4694acfca41416cd8df4712c,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
+++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d1276465b65d6270cfa5f02f5fb30786 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=4 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d1276465b65d6270cfa5f02f5fb30786 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,6.69284
++ echo UNSAT,6.69284,d1276465b65d6270cfa5f02f5fb30786,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=UNSAT,3461.19
++ echo UNSAT,3461.19,d1276465b65d6270cfa5f02f5fb30786,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 8 32
++ env_hash=b4f28bc5f78ead2bf150639790768df4
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 01:18:00--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 01:18:00--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.75M=0.01s
+
+2025-09-06 01:18:01 (2.75 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3412903
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 01:18:01--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 01:18:01--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.20M=0.02s
+
+2025-09-06 01:18:01 (2.20 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3412903
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh b4f28bc5f78ead2bf150639790768df4 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
+++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh b4f28bc5f78ead2bf150639790768df4 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
++ output2=UNSAT,6.77026
++ echo UNSAT,6.77026,b4f28bc5f78ead2bf150639790768df4,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=MEMOUT,1292.2
++ echo MEMOUT,1292.2,b4f28bc5f78ead2bf150639790768df4,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
 + rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
 + true
 + IFS=
 + read -r instance1
 + break
 + for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 128
-+ env_hash=b7d707a0d359c4decf845355b5efd89a
+++ python ../src/utils/environment.py 8 64
++ env_hash=e98c7b68b089b43ebb9ab26a70f067b2
 + true
 + IFS=
 + read -r instance1
 + instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
 + wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:28:28--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 01:39:58--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:28:29--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 01:39:58--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.25M=0.02s
+
+2025-09-06 01:39:59 (2.25 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3413856
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 01:39:59--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 01:39:59--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.25M=0.02s
+
+2025-09-06 01:39:59 (2.25 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3413856
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh e98c7b68b089b43ebb9ab26a70f067b2 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
+++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh e98c7b68b089b43ebb9ab26a70f067b2 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
++ output2=UNSAT,6.7332
++ echo UNSAT,6.7332,e98c7b68b089b43ebb9ab26a70f067b2,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=TIMEOUT,5000.1
++ echo TIMEOUT,5000.1,d1276465b65d6270cfa5f02f5fb30786,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 8 32
++ env_hash=b4f28bc5f78ead2bf150639790768df4
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 01:40:30--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 01:40:30--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.18M=0.02s
+
+2025-09-06 01:40:31 (2.18 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 307440
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 01:40:31--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 01:40:31--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.00M=0.02s
+
+2025-09-06 01:40:31 (2.00 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 307440
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh b4f28bc5f78ead2bf150639790768df4 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
+++ srun --cpus-per-task=8 --mem=32 --cpu-bind=sockets bash ./run_solver.sh b4f28bc5f78ead2bf150639790768df4 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
++ output2=UNSAT,8.34015
++ echo UNSAT,8.34015,b4f28bc5f78ead2bf150639790768df4,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=MEMOUT,490.968
++ echo MEMOUT,490.968,b4f28bc5f78ead2bf150639790768df4,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 8 64
++ env_hash=dc6a00c4e3f8caba6872395f1bb77623
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 01:49:04--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 01:49:04--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.28M=0.02s
+
+2025-09-06 01:49:04 (2.28 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 308761
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 01:49:05--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 01:49:05--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.83M=0.01s
+
+2025-09-06 01:49:05 (2.83 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 308761
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh dc6a00c4e3f8caba6872395f1bb77623 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
+++ srun --cpus-per-task=8 --mem=64 --cpu-bind=sockets bash ./run_solver.sh dc6a00c4e3f8caba6872395f1bb77623 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
++ output2=UNSAT,8.30754
++ echo UNSAT,8.30754,dc6a00c4e3f8caba6872395f1bb77623,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3441.66
++ echo UNSAT,3441.66,e98c7b68b089b43ebb9ab26a70f067b2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 8 128
++ env_hash=2e87fd2e67ae5c64d1ca60da1bd49e69
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 02:37:49--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 02:37:49--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.60M=0.02s
+
+2025-09-06 02:37:49 (1.60 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3414247
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 02:37:49--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 02:37:49--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.18M=0.02s
+
+2025-09-06 02:37:50 (2.18 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3414247
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 2e87fd2e67ae5c64d1ca60da1bd49e69 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 2e87fd2e67ae5c64d1ca60da1bd49e69 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,6.8126
++ echo UNSAT,6.8126,2e87fd2e67ae5c64d1ca60da1bd49e69,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=MEMOUT,3254.64
++ echo MEMOUT,3254.64,dc6a00c4e3f8caba6872395f1bb77623,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 8 128
++ env_hash=2e87fd2e67ae5c64d1ca60da1bd49e69
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 02:43:46--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 02:43:46--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.84M=0.02s
+
+2025-09-06 02:43:46 (1.84 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 308970
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 02:43:46--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 02:43:46--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.12M=0.02s
+
+2025-09-06 02:43:46 (2.12 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 308970
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 2e87fd2e67ae5c64d1ca60da1bd49e69 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=8 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 2e87fd2e67ae5c64d1ca60da1bd49e69 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,8.35845
++ echo UNSAT,8.35845,2e87fd2e67ae5c64d1ca60da1bd49e69,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3470.68
++ echo UNSAT,3470.68,2e87fd2e67ae5c64d1ca60da1bd49e69,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 8 256
++ env_hash=d459548c907139a76592864e8b9527e0
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 03:36:13--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 03:36:13--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.73M=0.02s
+
+2025-09-06 03:36:13 (1.73 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3415190
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 03:36:13--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 03:36:13--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.43M=0.01s
+
+2025-09-06 03:36:14 (2.43 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3415190
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d459548c907139a76592864e8b9527e0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d459548c907139a76592864e8b9527e0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,6.72468
++ echo UNSAT,6.72468,d459548c907139a76592864e8b9527e0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=TIMEOUT,5000.02
++ echo TIMEOUT,5000.02,2e87fd2e67ae5c64d1ca60da1bd49e69,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 8 256
++ env_hash=d459548c907139a76592864e8b9527e0
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 04:07:43--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 04:07:43--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.51M=0.02s
+
+2025-09-06 04:07:43 (1.51 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 309861
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 04:07:43--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 04:07:43--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.96M=0.02s
+
+2025-09-06 04:07:43 (1.96 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 309861
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d459548c907139a76592864e8b9527e0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=8 --mem=256 --cpu-bind=sockets bash ./run_solver.sh d459548c907139a76592864e8b9527e0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,8.29825
++ echo UNSAT,8.29825,d459548c907139a76592864e8b9527e0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3438.72
++ echo UNSAT,3438.72,d459548c907139a76592864e8b9527e0,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 16 32
++ env_hash=c2f962ffa2c452f59263a7c1b2d1c6a0
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 04:34:05--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 04:34:05--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.24M=0.02s
+
+2025-09-06 04:34:05 (2.24 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3416140
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 04:34:05--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 04:34:05--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.44M=0.01s
+
+2025-09-06 04:34:06 (2.44 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3416140
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh c2f962ffa2c452f59263a7c1b2d1c6a0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
+++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh c2f962ffa2c452f59263a7c1b2d1c6a0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
++ output2=UNSAT,6.71316
++ echo UNSAT,6.71316,c2f962ffa2c452f59263a7c1b2d1c6a0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=MEMOUT,1277.81
++ echo MEMOUT,1277.81,c2f962ffa2c452f59263a7c1b2d1c6a0,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 16 64
++ env_hash=b896c5aec72d19ea1e52759bb07965f9
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 04:55:45--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 04:55:45--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.12M=0.02s
+
+2025-09-06 04:55:45 (2.12 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3417057
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 04:55:45--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 04:55:45--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.62M=0.01s
+
+2025-09-06 04:55:46 (2.62 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3417057
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh b896c5aec72d19ea1e52759bb07965f9 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
+++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh b896c5aec72d19ea1e52759bb07965f9 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
++ output2=UNSAT,6.74289
++ echo UNSAT,6.74289,b896c5aec72d19ea1e52759bb07965f9,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=TIMEOUT,5000.09
++ echo TIMEOUT,5000.09,d459548c907139a76592864e8b9527e0,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 16 32
++ env_hash=c2f962ffa2c452f59263a7c1b2d1c6a0
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 05:31:37--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 05:31:37--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.99M=0.02s
+
+2025-09-06 05:31:38 (1.99 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 311181
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 05:31:38--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 05:31:38--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.87M=0.02s
+
+2025-09-06 05:31:38 (1.87 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 311181
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh c2f962ffa2c452f59263a7c1b2d1c6a0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
+++ srun --cpus-per-task=16 --mem=32 --cpu-bind=sockets bash ./run_solver.sh c2f962ffa2c452f59263a7c1b2d1c6a0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
++ output2=UNSAT,8.30797
++ echo UNSAT,8.30797,c2f962ffa2c452f59263a7c1b2d1c6a0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=MEMOUT,488.447
++ echo MEMOUT,488.447,c2f962ffa2c452f59263a7c1b2d1c6a0,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 16 64
++ env_hash=b896c5aec72d19ea1e52759bb07965f9
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 05:40:02--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 05:40:02--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.26M=0.02s
+
+2025-09-06 05:40:02 (2.26 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 312512
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 05:40:03--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 05:40:03--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.67M=0.02s
+
+2025-09-06 05:40:03 (1.67 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 312512
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh b896c5aec72d19ea1e52759bb07965f9 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
+++ srun --cpus-per-task=16 --mem=64 --cpu-bind=sockets bash ./run_solver.sh b896c5aec72d19ea1e52759bb07965f9 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
++ output2=UNSAT,8.30604
++ echo UNSAT,8.30604,b896c5aec72d19ea1e52759bb07965f9,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3453.25
++ echo UNSAT,3453.25,b896c5aec72d19ea1e52759bb07965f9,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 16 128
++ env_hash=21273e103038a4db0d6f3d56e525023d
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 05:53:44--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 05:53:44--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38368 (37K) [application/x-xz]
@@ -572,97 +1118,711 @@ Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 
      0K .......... .......... .......... .......              100% 2.10M=0.02s
 
-2025-09-05 10:28:29 (2.10 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+2025-09-06 05:53:45 (2.10 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
 
-+ wait 2567564
++ wait 3417461
 + xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
 + uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
 + IFS=
 + read -r instance2
 + instance2_hash=02066c116dbacc40ec5cca2067db26c0
 + wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:28:29--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 05:53:45--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:28:29--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 05:53:45--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 36384 (36K) [application/x-xz]
 Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 
-     0K .......... .......... .......... .....                100% 1.68M=0.02s
+     0K .......... .......... .......... .....                100% 2.54M=0.01s
 
-2025-09-05 10:28:29 (1.68 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+2025-09-06 05:53:45 (2.54 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
 
-+ wait 2567564
++ wait 3417461
 + xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
 + uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
 + wait
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh b7d707a0d359c4decf845355b5efd89a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
-+ output2=UNSAT,5.18748
-+ echo UNSAT,5.18748,36eac6a4993f061b093c760ba435a38d,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-02/cadical
-+ output2=UNSAT,7.55715
-+ echo UNSAT,7.55715,b7d707a0d359c4decf845355b5efd89a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/SBVA-scavel-01/cadical
-+ output1=MEMOUT,1027.91
-+ echo MEMOUT,1027.91,eb220cabfbee0d32d0b06b882a8e51f2,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 21273e103038a4db0d6f3d56e525023d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 21273e103038a4db0d6f3d56e525023d /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,6.68977
++ echo UNSAT,6.68977,21273e103038a4db0d6f3d56e525023d,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=MEMOUT,3267.84
++ echo MEMOUT,3267.84,b896c5aec72d19ea1e52759bb07965f9,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
 + rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
 + true
 + IFS=
 + read -r instance1
 + break
 + for current_mem in "${mem_array[@]}"
-++ python ../src/utils/environment.py 4 128
-+ env_hash=3d56abc41530b192400ad9ddcad5c3a9
+++ python ../src/utils/environment.py 16 128
++ env_hash=a94530cc9c2405bd01066400101169ca
 + true
 + IFS=
 + read -r instance1
 + instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
 + wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
---2025-09-05 10:29:04--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 06:34:49--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
---2025-09-05 10:29:04--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+--2025-09-06 06:34:49--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 38368 (37K) [application/x-xz]
 Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
 
-     0K .......... .......... .......... .......              100% 1.87M=0.02s
+     0K .......... .......... .......... .......              100% 2.11M=0.02s
 
-2025-09-05 10:29:04 (1.87 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+2025-09-06 06:34:49 (2.11 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
 
-+ wait 577893
++ wait 312730
 + xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
 + uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
 + IFS=
 + read -r instance2
 + instance2_hash=02066c116dbacc40ec5cca2067db26c0
 + wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
---2025-09-05 10:29:04--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 06:34:49--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
 HTTP request sent, awaiting response... 301 Moved Permanently
 Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
---2025-09-05 10:29:04--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+--2025-09-06 06:34:49--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
 Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 36384 (36K) [application/x-xz]
 Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
 
-     0K .......... .......... .......... .....                100% 2.78M=0.01s
+     0K .......... .......... .......... .....                100% 1.60M=0.02s
 
-2025-09-05 10:29:04 (2.78 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+2025-09-06 06:34:49 (1.60 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
 
-+ wait 577893
++ wait 312730
 + xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
 + uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
 + wait
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 3d56abc41530b192400ad9ddcad5c3a9 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
-++ srun --cpus-per-task=4 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 3d56abc41530b192400ad9ddcad5c3a9 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
-+ output2=UNSAT,7.59061
-+ echo UNSAT,7.59061,3d56abc41530b192400ad9ddcad5c3a9,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/cadical-scavel-01/cadical
+++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh a94530cc9c2405bd01066400101169ca /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=16 --mem=128 --cpu-bind=sockets bash ./run_solver.sh a94530cc9c2405bd01066400101169ca /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,8.29129
++ echo UNSAT,8.29129,a94530cc9c2405bd01066400101169ca,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3401.98
++ echo UNSAT,3401.98,21273e103038a4db0d6f3d56e525023d,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 16 256
++ env_hash=f8cf1277db724896de8e4cab069482cd
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 06:50:44--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 06:50:44--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.83M=0.02s
+
+2025-09-06 06:50:45 (1.83 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3418391
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 06:50:45--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 06:50:45--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.87M=0.02s
+
+2025-09-06 06:50:45 (1.87 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3418391
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh f8cf1277db724896de8e4cab069482cd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh f8cf1277db724896de8e4cab069482cd /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,6.72755
++ echo UNSAT,6.72755,f8cf1277db724896de8e4cab069482cd,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=UNSAT,3499.48
++ echo UNSAT,3499.48,f8cf1277db724896de8e4cab069482cd,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 32
++ env_hash=f3b356e967575c4c7d9ccbb31bfeee4c
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 07:49:20--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 07:49:20--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.47M=0.02s
+
+2025-09-06 07:49:20 (1.47 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3419313
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 07:49:20--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 07:49:20--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.80M=0.02s
+
+2025-09-06 07:49:21 (1.80 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3419313
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh f3b356e967575c4c7d9ccbb31bfeee4c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
+++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh f3b356e967575c4c7d9ccbb31bfeee4c /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
++ output2=UNSAT,6.71944
++ echo UNSAT,6.71944,f3b356e967575c4c7d9ccbb31bfeee4c,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=TIMEOUT,5000.1
++ echo TIMEOUT,5000.1,a94530cc9c2405bd01066400101169ca,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 16 256
++ env_hash=945bb468cff3a0419e6657e811e61fee
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 07:58:31--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 07:58:31--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.49M=0.02s
+
+2025-09-06 07:58:31 (1.49 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 313591
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 07:58:31--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 07:58:31--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.71M=0.02s
+
+2025-09-06 07:58:31 (1.71 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 313591
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 945bb468cff3a0419e6657e811e61fee /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=16 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 945bb468cff3a0419e6657e811e61fee /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,8.28966
++ echo UNSAT,8.28966,945bb468cff3a0419e6657e811e61fee,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=MEMOUT,1385.52
++ echo MEMOUT,1385.52,f3b356e967575c4c7d9ccbb31bfeee4c,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 64
++ env_hash=0528d6b16f44bbedcc39597218ca9d0a
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 08:12:34--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 08:12:34--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.85M=0.02s
+
+2025-09-06 08:12:34 (1.85 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3420260
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 08:12:34--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 08:12:34--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.91M=0.02s
+
+2025-09-06 08:12:34 (1.91 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3420260
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 0528d6b16f44bbedcc39597218ca9d0a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
+++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 0528d6b16f44bbedcc39597218ca9d0a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
++ output2=UNSAT,6.82393
++ echo UNSAT,6.82393,0528d6b16f44bbedcc39597218ca9d0a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=UNSAT,3416.25
++ echo UNSAT,3416.25,0528d6b16f44bbedcc39597218ca9d0a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 128
++ env_hash=9ccc20b0311af1810f324e13112bd7f6
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 09:09:46--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 09:09:46--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.16M=0.02s
+
+2025-09-06 09:09:46 (2.16 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3420694
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 09:09:46--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 09:09:46--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.99M=0.02s
+
+2025-09-06 09:09:46 (1.99 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3420694
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 9ccc20b0311af1810f324e13112bd7f6 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 9ccc20b0311af1810f324e13112bd7f6 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,6.77335
++ echo UNSAT,6.77335,9ccc20b0311af1810f324e13112bd7f6,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=TIMEOUT,5000.03
++ echo TIMEOUT,5000.03,945bb468cff3a0419e6657e811e61fee,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_cores in "${cores_array[@]}"
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 32
++ env_hash=3a6484a19208f7066cb176d2a0b4d9d0
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 09:22:13--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 09:22:13--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.27M=0.02s
+
+2025-09-06 09:22:14 (2.27 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 314895
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 09:22:14--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 09:22:14--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.71M=0.02s
+
+2025-09-06 09:22:14 (1.71 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 314895
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 3a6484a19208f7066cb176d2a0b4d9d0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 32 5000
+++ srun --cpus-per-task=32 --mem=32 --cpu-bind=sockets bash ./run_solver.sh 3a6484a19208f7066cb176d2a0b4d9d0 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 32 5000
++ output2=UNSAT,8.31936
++ echo UNSAT,8.31936,3a6484a19208f7066cb176d2a0b4d9d0,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=MEMOUT,491.47
++ echo MEMOUT,491.47,3a6484a19208f7066cb176d2a0b4d9d0,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 64
++ env_hash=0528d6b16f44bbedcc39597218ca9d0a
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 09:30:30--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 09:30:30--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 1.58M=0.02s
+
+2025-09-06 09:30:30 (1.58 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 316218
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 09:30:30--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 09:30:30--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.59M=0.02s
+
+2025-09-06 09:30:30 (1.59 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 316218
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 0528d6b16f44bbedcc39597218ca9d0a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 64 5000
+++ srun --cpus-per-task=32 --mem=64 --cpu-bind=sockets bash ./run_solver.sh 0528d6b16f44bbedcc39597218ca9d0a /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 64 5000
++ output2=UNSAT,8.34064
++ echo UNSAT,8.34064,0528d6b16f44bbedcc39597218ca9d0a,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3453.62
++ echo UNSAT,3453.62,9ccc20b0311af1810f324e13112bd7f6,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 256
++ env_hash=30aeaa52714d8480520c90ddbe87ff22
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 10:07:37--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 10:07:37--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.19M=0.02s
+
+2025-09-06 10:07:38 (2.19 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 3421602
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 10:07:38--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 10:07:38--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 1.91M=0.02s
+
+2025-09-06 10:07:38 (1.91 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 3421602
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 30aeaa52714d8480520c90ddbe87ff22 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 30aeaa52714d8480520c90ddbe87ff22 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,6.72225
++ echo UNSAT,6.72225,30aeaa52714d8480520c90ddbe87ff22,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ output1=MEMOUT,3270.59
++ echo MEMOUT,3270.59,0528d6b16f44bbedcc39597218ca9d0a,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 128
++ env_hash=9ccc20b0311af1810f324e13112bd7f6
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 10:25:16--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 10:25:16--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.67M=0.01s
+
+2025-09-06 10:25:16 (2.67 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 316426
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 10:25:16--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 10:25:16--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.14M=0.02s
+
+2025-09-06 10:25:16 (2.14 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 316426
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 9ccc20b0311af1810f324e13112bd7f6 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 128 5000
+++ srun --cpus-per-task=32 --mem=128 --cpu-bind=sockets bash ./run_solver.sh 9ccc20b0311af1810f324e13112bd7f6 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 128 5000
++ output2=UNSAT,8.33919
++ echo UNSAT,8.33919,9ccc20b0311af1810f324e13112bd7f6,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=UNSAT,3402.2
++ echo UNSAT,3402.2,30aeaa52714d8480520c90ddbe87ff22,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/kissat-sc2024/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ output1=TIMEOUT,5000.04
++ echo TIMEOUT,5000.04,9ccc20b0311af1810f324e13112bd7f6,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
++ for current_mem in "${mem_array[@]}"
+++ python ../src/utils/environment.py 32 256
++ env_hash=30aeaa52714d8480520c90ddbe87ff22
++ true
++ IFS=
++ read -r instance1
++ instance1_hash=00d1fe07ab948b348bb3fb423b1ef40d
++ wget http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d -O 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
+--2025-09-06 11:48:57--  http://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d [following]
+--2025-09-06 11:48:58--  https://benchmark-database.de/file/00d1fe07ab948b348bb3fb423b1ef40d
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 38368 (37K) [application/x-xz]
+Saving to: ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’
+
+     0K .......... .......... .......... .......              100% 2.12M=0.02s
+
+2025-09-06 11:48:58 (2.12 MB/s) - ‘00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz’ saved [38368/38368]
+
++ wait 317312
++ xz -d 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz
++ uncompressed_file1=00d1fe07ab948b348bb3fb423b1ef40d.cnf
++ IFS=
++ read -r instance2
++ instance2_hash=02066c116dbacc40ec5cca2067db26c0
++ wget http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 -O 02066c116dbacc40ec5cca2067db26c0.cnf.xz
+--2025-09-06 11:48:58--  http://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Resolving benchmark-database.de (benchmark-database.de)... 202.61.200.228
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0 [following]
+--2025-09-06 11:48:58--  https://benchmark-database.de/file/02066c116dbacc40ec5cca2067db26c0
+Connecting to benchmark-database.de (benchmark-database.de)|202.61.200.228|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 36384 (36K) [application/x-xz]
+Saving to: ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’
+
+     0K .......... .......... .......... .....                100% 2.72M=0.01s
+
+2025-09-06 11:48:58 (2.72 MB/s) - ‘02066c116dbacc40ec5cca2067db26c0.cnf.xz’ saved [36384/36384]
+
++ wait 317312
++ xz -d 02066c116dbacc40ec5cca2067db26c0.cnf.xz
++ uncompressed_file2=02066c116dbacc40ec5cca2067db26c0.cnf
++ wait
+++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 30aeaa52714d8480520c90ddbe87ff22 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 00d1fe07ab948b348bb3fb423b1ef40d.cnf 256 5000
+++ srun --cpus-per-task=32 --mem=256 --cpu-bind=sockets bash ./run_solver.sh 30aeaa52714d8480520c90ddbe87ff22 /storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat 02066c116dbacc40ec5cca2067db26c0.cnf 256 5000
++ output2=UNSAT,8.29677
++ echo UNSAT,8.29677,30aeaa52714d8480520c90ddbe87ff22,02066c116dbacc40ec5cca2067db26c0,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ output1=TIMEOUT,5000.09
++ echo TIMEOUT,5000.09,30aeaa52714d8480520c90ddbe87ff22,00d1fe07ab948b348bb3fb423b1ef40d,,/storage/work/anastacio/SustainableCompetition/solvers/sat/main_2024/hKis/kissat
++ rm -f 00d1fe07ab948b348bb3fb423b1ef40d.cnf.xz 00d1fe07ab948b348bb3fb423b1ef40d.cnf 02066c116dbacc40ec5cca2067db26c0.cnf.xz 02066c116dbacc40ec5cca2067db26c0.cnf
++ true
++ IFS=
++ read -r instance1
++ break
