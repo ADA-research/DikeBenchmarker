@@ -27,6 +27,11 @@ for current_cores in "${cores_array[@]}"; do
             fi
 
             instance1_hash=${instance1##*/}
+
+            if grep -q "$env_hash,$instance1_hash,$1$" kathleen_results.csv; then
+                continue
+            fi
+
             # Download the first file
             wget "$instance1" -O "${instance1_hash}.cnf.xz"
             wait $!  # Wait for wget to finish
