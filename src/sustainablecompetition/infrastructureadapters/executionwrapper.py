@@ -27,7 +27,7 @@ class AbstractExecutionWrapper(ABC):
         pass
 
     @abstractmethod
-    def set_solver_output(self, solveroutput: str):
+    def set_outputs(self, tooloutput: str, solveroutput: str, headlimit: int = 10, taillimit: int = 10):
         """
         Set the output file for the solver's output.
         """
@@ -78,11 +78,18 @@ class RunSolverWrapper(AbstractExecutionWrapper):
         if cputimelimit is not None:
             self.cmd += ["--cpu-limit", str(cputimelimit)]
 
-    def set_solver_output(self, solveroutput: str):
+    def set_outputs(self, tooloutput: str, solveroutput: str, headlimit: int = 10, taillimit: int = 10):
         """
         Set the output file for the solver's output.
+        Parameters:
+        - tooloutput: Path to the file where runsolver will write its log output.
+        - solveroutput: Path to the file where the solver's output will be written.
+        - headlimit: Number of megabytes from the start of the solver output to include in the solver output file.
+        - taillimit: Number of megabytes from the end of the solver output to include in the solver output file.
         """
+        self.cmd += ["--var", tooloutput]
         self.cmd += ["--solver-data", solveroutput]
+        self.cmd += ["--output-limit", headlimit, taillimit]
 
     def get_command(self) -> List[str]:
         """

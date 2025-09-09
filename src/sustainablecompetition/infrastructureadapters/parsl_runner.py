@@ -24,11 +24,7 @@ class ParslRunner(AbstractRunner):
     """
 
     def __init__(
-        self,
-        rootdir: str,
-        solver_adapter: AbstractSolverAdapter = None,
-        instance_adapter: AbstractInstanceAdapter = None,
-        execution_wrapper: AbstractExecutionWrapper = None,
+        self, rootdir: str, solver_adapter: AbstractSolverAdapter, instance_adapter: AbstractInstanceAdapter, execution_wrapper: AbstractExecutionWrapper
     ):
         super().__init__(solver_adapter=solver_adapter, instance_adapter=instance_adapter, execution_wrapper=execution_wrapper)
         parsl.load(config)
@@ -38,16 +34,17 @@ class ParslRunner(AbstractRunner):
         os.makedirs(self.logsdir, exist_ok=True)
 
     @bash_app
-    def runsolver(self, wrapper: AbstractExecutionWrapper, inputs, outputs, stdout, stderr):
+    def runsolver(self, wrapper: AbstractExecutionWrapper, inputs, outputs):
         """
         Run the solver with the given input and output files.
         """
         wrapper_bin = inputs[0]
         solver_bin = inputs[1]
         instance_file = inputs[2]
-        output = outputs[0]
+        tool_output = outputs[0]
+        solver_output = outputs[1]
 
-        wrapper.set_solver_output(output.filepath)
+        wrapper.set_outputs(tool_output.filepath, solver_output.filepath)
         wrapper_args = " ".join(wrapper.get_command_args())
 
         return f"""
@@ -55,10 +52,9 @@ class ParslRunner(AbstractRunner):
         set -e
         
         # create output directories if they do not exist
-        mkdir -p $(dirname "{output.filename}")
-        mkdir -p $(dirname "{stdout.filename}")
-        mkdir -p $(dirname "{stderr.filename}")
-        
+        mkdir -p $(dirname "{tool_output.filename}")
+        mkdir -p $(dirname "{solver_output.filename}")
+
         # ensure executable flags are set, since files may be fetched via HTTP etc.:
         chmod +x "{wrapper_bin.filepath}" 
         chmod +x "{solver_bin.filepath}"
@@ -79,9 +75,7 @@ class ParslRunner(AbstractRunner):
         inputs = [wrapper_bin, solver_bin, instance_file]
         output_root = f"{self.logsdir}/{job.solver_id}/{job.benchmark_id}"
         self.execution_wrapper.set_resource_limits(cputimelimit=job.timelimit, memorylimit=job.memlimit)
-        runsolver_future = self.runsolver(
-            self.execution_wrapper, inputs=inputs, outputs=["{output_root}.log"], stdout=f"{output_root}.out", stderr=f"{output_root}.err"
-        )
+        runsolver_future = self.runsolver(self.execution_wrapper, inputs=inputs, outputs=[f"{output_root}.log", f"{output_root}.out"])
         self.futures.append(runsolver_future)
         job.external_id = len(self.futures) - 1
 
