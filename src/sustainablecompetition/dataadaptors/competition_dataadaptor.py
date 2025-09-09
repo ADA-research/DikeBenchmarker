@@ -13,14 +13,15 @@ from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
 __all__ = ["CompetitionDataAdaptor"]
 
+
 class CompetitionDataAdaptor(DataAdaptor):
     """
     Implement the data adaptor for competition data.
     """
-    
+
     competition_environment = {"main2024": "b7ad30888a207d186290d1b584d32ed6"}
 
-    def __init__(self,df=None,csv=None):
+    def __init__(self, df=None, csv=None):
         """Initialize the data adaptor with a polars DataFrame or a csv
         Args:
             df (pl.DataFrame): DataFrame containing the competition data.
@@ -32,12 +33,11 @@ class CompetitionDataAdaptor(DataAdaptor):
             self.data = df
         elif csv:
             self.data = pl.read_csv(csv)
-            
+
         self.prepare_data()
-            
 
     @classmethod
-    def from_dataframe(cls,df: pl.DataFrame):
+    def from_dataframe(cls, df: pl.DataFrame):
         """
         Initialize the data adaptor with a polars DataFrame.
         Args:
@@ -46,11 +46,10 @@ class CompetitionDataAdaptor(DataAdaptor):
                 - hash: the id of the benchmark instance
                 - other columns names are the ids of the solvers
         """
-        return cls(df,None)
-        
-        
+        return cls(df, None)
+
     @classmethod
-    def from_competition_csv(cls,competition_data: str):
+    def from_competition_csv(cls, competition_data: str):
         """
         Initialize the data adaptor with the corresponding csv data from the sat competition website
         following recent competition format (since 2021)
@@ -60,8 +59,8 @@ class CompetitionDataAdaptor(DataAdaptor):
                 - hash: the id of the benchmark instance
                 - other columns names are the ids of the solvers
         """
-        return cls(None,competition_data)
-        
+        return cls(None, competition_data)
+
     def prepare_data(self):
         """pivot data and use our database for getting the environment, instances and solver features
         TODO

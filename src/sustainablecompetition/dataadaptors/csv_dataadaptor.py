@@ -15,10 +15,10 @@ class CsvDataAdaptor(DataAdaptor):
         """
         Reads the csv files, loads the data into memory, and prepares it
         csv files are similar in structure to the sustainable competition database
-        self.data has 
-        - one column per hash, 
-        - one column per instance/environment/solver feature, 
-        - one for the performance and 
+        self.data has
+        - one column per hash,
+        - one column per instance/environment/solver feature,
+        - one for the performance and
         - one for the exit status of the solver
 
         Raises:
@@ -64,4 +64,3 @@ class CsvDataAdaptor(DataAdaptor):
             result = result.filter(pl.col("hardware_hash") == hardware_id)
 
         return result
-            
