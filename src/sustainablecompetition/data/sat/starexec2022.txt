@@ -1,0 +1,34 @@
+#https://web.archive.org/web/20220327064954/https://www.starexec.org/starexec/public/machine-specs.txt
+
+# Starexec stats nodes 001 - 192:
+Intel(R) Xeon(R) CPU E5-2609 0 @ 2.40GHz (2393 MHZ)
+    10240  KB Cache
+    263932744 kB main memory
+
+# Software:
+OS:       CentOS Linux release 7.7.1908 (Core)
+kernel:   3.10.0-1062.4.3.el7.x86_64
+glibc:    glibc-2.17-292.el7.x86_64
+          gcc-4.8.5-39.el7.x86_64
+          glibc-2.17-292.el7.i686
+
+------------------------------------------------------------------------------------
+Stats gathered from these commands on the nodes:
+starexec1:~$ cat /etc/centos-release
+CentOS Linux release 7.7.1908 (Core)
+
+starexec1:~$ uname -r
+3.10.0-1062.4.3.el7.x86_64
+
+n100:~$ cat /proc/cpuinfo  | egrep "^model name|^cache size" | head -2
+model name	: Intel(R) Xeon(R) CPU E5-2609 0 @ 2.40GHz
+cache size	: 10240 KB
+
+n100:~$ cat /proc/meminfo  | grep MemTotal
+MemTotal:       263932744 kB
+
+n100:~$ rpm -qa | egrep "^glibc-[0-9]|^gcc-[0-9]"
+glibc-2.17-292.el7.x86_64
+gcc-4.8.5-39.el7.x86_64
+glibc-2.17-292.el7.i686
+
