@@ -11,6 +11,12 @@ class SATSolverAdaptor(AbstractSolverAdaptor):
     # Maps solver ids to solver paths
     registry = {}
 
+    def register_solver(self, solver_id: str, solver_path: str):
+        """
+        Register a solver with its ID and path.
+        """
+        self.registry[solver_id] = solver_path
+
     def get_path(self, solver_id: str) -> str:
         """
         Get the file path for a given solver ID.

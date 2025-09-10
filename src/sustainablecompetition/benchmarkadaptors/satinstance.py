@@ -50,4 +50,5 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
         instance_path = os.path.join(self.local_folder, filename)
         with open(instance_path, "wb") as f:
             f.write(response.content)
+        self.registry[instance_id] = instance_path
         return instance_path

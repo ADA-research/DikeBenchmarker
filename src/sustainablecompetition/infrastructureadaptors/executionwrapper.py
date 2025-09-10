@@ -96,7 +96,7 @@ class RunSolverWrapper(AbstractExecutionWrapper):
         """
         self.cmd += ["--var", tooloutput]
         self.cmd += ["--solver-data", solveroutput]
-        self.cmd += ["--output-limit", headlimit, taillimit]
+        self.cmd += ["--output-limit", str(headlimit), str(taillimit)]
 
     def get_command(self) -> List[str]:
         """
