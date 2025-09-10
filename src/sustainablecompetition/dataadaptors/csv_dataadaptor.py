@@ -45,7 +45,7 @@ class CsvDataAdaptor(DataAdaptor):
         benchmark_id: Optional[str] = None,
         solver_id: Optional[str] = None,
         hardware_id: Optional[str] = None,
-        ) -> pl.DataFrame:
+    ) -> pl.DataFrame:
         """Get as a data frame all performances for the specified benchmark_id, solver_id and hardware_id.
         If none are specified, returns all the data
 
