@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 
 
-class AbstractSolverAdapter(ABC):
+class AbstractSolverAdaptor(ABC):
     """Interface for Solver Adapters"""
 
     @abstractmethod
