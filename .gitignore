@@ -426,3 +426,7 @@ build/*
 
 # unziped solvers
 solvers/*/*/*/
+
+# databases
+data/sustainablecompetition.db
+!data/dump.sql
