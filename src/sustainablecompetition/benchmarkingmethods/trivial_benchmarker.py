@@ -11,7 +11,7 @@ __all__ = ["TrivialBenchmarker"]
 
 class TrivialBenchmarker(Benchmarker):
     """
-    Create jobs from a list of benchmark ids and a solver id return them one by one.
+    Create jobs from a list of benchmark ids and a solver id return them one by one and only stops when all jobs are exhausted.
     """
 
     def __init__(self, benchmark_ids: list[str], solver_id: str):
@@ -19,9 +19,6 @@ class TrivialBenchmarker(Benchmarker):
         self.jobs_submitted = set()
 
     def next_job(self) -> Optional[Job]:
-        """
-        Return the next job to submit or None if there is nothing left to do.
-        """
         for bid in self.benchmark_ids:
             if bid not in self.jobs_submitted:
                 self.jobs_submitted.add(bid)
@@ -31,3 +28,6 @@ class TrivialBenchmarker(Benchmarker):
     def handle_result(self, result: Result) -> None:
         """Handle the result of a finished job (no-op for this trivial benchmarker)."""
         pass
+
+    def should_stop(self):
+        return len(self.jobs_submitted) >= len(self.benchmark_ids)
