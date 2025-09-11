@@ -1,11 +1,8 @@
 import pytest
-import polars as pl
 
 
 from sustainablecompetition.benchmarkatoms import Job
 from sustainablecompetition.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
-from sustainablecompetition.benchmarkingmethods.variance_benchmarker import VarianceBenchmarker
-from sustainablecompetition.dataadaptors.competition_dataadaptor import CompetitionDataAdaptor
 
 
 NJOBS = 50
@@ -15,19 +12,14 @@ NSOLVERS = 10
 NPOINTS = 10
 
 
-builders = [
+BENCHMARKERS = [
     lambda: TrivialBenchmarker(BENCHMARK_IDS, SOLVER_ID),
-    lambda: VarianceBenchmarker(
-        BENCHMARK_IDS,
-        SOLVER_ID,
-        CompetitionDataAdaptor(pl.DataFrame({"hash": BENCHMARK_IDS, **{str(solver_id): [int(solver_id)] * NJOBS for solver_id in range(NSOLVERS)}})),
-    ),
 ]
 
-TEST_IDS = ["TrivialBenchmarker", "VarianceBenchmarker"]
+BENCHMARKERS_IDS = ["TrivialBenchmarker"]
 
 
-@pytest.mark.parametrize("benchmarker_builder", builders, ids=TEST_IDS)
+@pytest.mark.parametrize("benchmarker_builder", BENCHMARKERS, ids=BENCHMARKERS_IDS)
 def test_run_all_jobs(benchmarker_builder):
     jobs_left = NJOBS
     benchmarker = benchmarker_builder()
@@ -40,7 +32,7 @@ def test_run_all_jobs(benchmarker_builder):
         jobs_left -= 1
 
 
-@pytest.mark.parametrize("benchmarker_builder", builders, ids=TEST_IDS)
+@pytest.mark.parametrize("benchmarker_builder", BENCHMARKERS, ids=BENCHMARKERS_IDS)
 def test_valid_jobs(benchmarker_builder):
     jobs_left = NJOBS
     benchmarker = benchmarker_builder()

@@ -3,14 +3,14 @@ Variance benchmarker implementation that submits each solver/instance pair.
 """
 
 from typing import Optional
-from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
 from sustainablecompetition.benchmarkatoms import Job, Result
+from sustainablecompetition.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
 from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
-__all__ = ["VarianceBenchmarker"]
+__all__ = ["VarianceInstanceSelector"]
 
 
-class VarianceBenchmarker(Benchmarker):
+class VarianceInstanceSelector(InstanceSelector):
     def __init__(self, benchmark_ids: list[str], solver_id: str, data: DataAdaptor):
         super().__init__(benchmark_ids, solver_id)
         self.jobs_submitted = set()

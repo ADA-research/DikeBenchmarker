@@ -1,14 +1,14 @@
-"""Benchmark Interfaces"""
+"""Instance Selector Interfaces"""
 
 from abc import ABC, abstractmethod
 from typing import Optional
 
 from sustainablecompetition.benchmarkatoms import Job, Result
 
-__all__ = ["Benchmarker"]
+__all__ = ["InstanceSelector"]
 
 
-class Benchmarker(ABC):
+class InstanceSelector(ABC):
     """
     Decides which jobs to submit next; can depend on past results/dependencies.
     """
@@ -20,13 +20,6 @@ class Benchmarker(ABC):
     @abstractmethod
     def next_job(self) -> Optional[Job]:
         """Return the next job to submit (can be None if there is nothing left to do)."""
-        raise NotImplementedError
-
-    @abstractmethod
-    def should_stop(self) -> bool:
-        """
-        Return true if and only if the benchmarker has enough data to conclude
-        """
         raise NotImplementedError
 
     @abstractmethod
