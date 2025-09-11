@@ -4,6 +4,7 @@ SAT Instance Adaptor
 
 import os
 import re
+import sqlite3
 import requests
 from gbd_core.api import GBD
 
@@ -27,7 +28,9 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
         self.gbd = gbd or os.path.join(os.path.dirname(__file__), "cnf_data.db")
         self.timeout = timeout
         # initialize cnf_data.db if empty
-        with GBD(self.gbd) as db:
+        if not os.path.isfile(self.gbd):
+            sqlite3.connect(self.gbd).close()
+        with GBD([self.gbd]) as db:
             if "local" not in db.get_features():
                 db.create_feature("local")
 
@@ -38,11 +41,11 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
         If a path is found and the file exists, return the path.
         Otherwise, clear any stale entries in the database and return None.
         """
-        with GBD(self.gbd) as db:
+        with GBD([self.gbd]) as db:
             result = db.query(hashes=[instance_id], resolve=["local"], collapse="min")
             if len(result) == 0:
                 return None
-            path = result[0]["local"]
+            path = result.loc[0, "local"]
             if not os.path.isfile(path):
                 db.reset_values("local", values=[path], hashes=[instance_id])
                 return None
@@ -75,6 +78,6 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
         instance_path = os.path.join(self.local_folder, filename)
         with open(instance_path, "wb") as f:
             f.write(response.content)
-        with GBD(self.gbd) as db:
+        with GBD([self.gbd]) as db:
             db.set_values("local", instance_path, hashes=[instance_id])
         return instance_path

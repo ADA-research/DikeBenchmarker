@@ -9,7 +9,7 @@ dependencies = [
     "py-cpuinfo>=9.0.0",
     "scikit-learn>=1.4.1.post1",
     "parsl>=2025.9.1",
-    "gbd-tools>=4.9.11",
+    "gbd-tools>=4.9.12",
 ]
 
 [tool.ruff]
@@ -23,7 +23,12 @@ max-args = 7
 package = true
 
 [dependency-groups]
-dev = ["pytest>=8.3.5", "ruff>=0.12.11", "requests>=2.31.0", "pytest-dependency>=0.6.0"]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.12.11",
+    "requests>=2.31.0",
+    "pytest-dependency>=0.6.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"] # This tells setuptools to look in src/
