@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+"""
+A prototype integration test using the virtual runner and the parsl runner.
+"""
+
 import asyncio
 import logging
 
@@ -9,7 +14,7 @@ import sys
 import polars as pl
 
 from sustainablecompetition.controller import Controller
-from sustainablecompetition.infrastructureadaptors.parsl_configs import make_local_processes, make_local_threads
+from sustainablecompetition.infrastructureadaptors.parsl_configs import make_local_processes
 from sustainablecompetition.infrastructureadaptors.virtual_runner import VirtualRunner
 from sustainablecompetition.infrastructureadaptors.parsl_runner import ParslRunner
 from sustainablecompetition.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
@@ -67,7 +72,7 @@ async def parsl_integration_test():
         solver_adaptor=solver_adaptor,
         instance_adaptor=SATInstanceAdaptor("."),
         execution_wrapper=RunSolverWrapper("."),
-        parsl_config=make_local_threads(4),
+        parsl_config=make_local_processes(4),
     )
     benchmarks = df.select("hash").to_series().to_list()
     method = TrivialBenchmarker(benchmarks, "kissat")

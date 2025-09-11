@@ -4,7 +4,6 @@ SAT Instance Adaptor
 
 import os
 import re
-from typing import Optional
 import requests
 from gbd_core.api import GBD
 
