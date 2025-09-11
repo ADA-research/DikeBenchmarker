@@ -50,8 +50,9 @@ async def parsl_integration_test(benchmarks):
     solver_adaptor = SATSolverAdaptor()
     solver_adaptor.register_solver("kissat", "./examples/solverAdaptors/sat/kissat")  # Update
     instance_adaptor = SATInstanceAdaptor("./instances/sat/", "./instances/cnf_data.db")
-    execution_wrapper = RunSolverWrapper(".")
+    execution_wrapper = RunSolverWrapper("./external/runsolver")
     execution_wrapper.set_resource_limits(cputimelimit=600, memorylimit=2048)
+    # CachedRunner(DataAdaptor, Runner)
     runner = ParslRunner(
         rootdir=".",
         solver_adaptor=solver_adaptor,
@@ -60,7 +61,7 @@ async def parsl_integration_test(benchmarks):
         parsl_config=make_local_processes(3),
     )
     method = TrivialBenchmarker(benchmarks, "kissat")
-    consumer = LambdaConsumer(print)
+    consumer = LambdaConsumer(print)  # Print result to CSV
     controller = Controller(method, runner, njobs=10, consumers=[consumer])
     await controller.run()
 

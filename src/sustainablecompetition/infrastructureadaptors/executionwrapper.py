@@ -16,9 +16,6 @@ class AbstractExecutionWrapper(ABC):
     Abstract base class for execution wrappers.
     """
 
-    def __init__(self, root: str):
-        self.root = root
-
     @abstractmethod
     def set_resource_limits(self, cputimelimit: int = None, walltimelimit: int = None, memorylimit: int = None):
         """
@@ -67,9 +64,7 @@ class RunSolverWrapper(AbstractExecutionWrapper):
     A class to manage the "runsolver" execution wrapper.
     """
 
-    def __init__(self, root: str):
-        super().__init__(root)
-        binpath = os.path.join(self.root, "external", "runsolver")
+    def __init__(self, binpath: str = "./external/runsolver"):
         if not os.path.isfile(binpath) and not os.access(binpath, os.X_OK):
             raise FileNotFoundError(f"runsolver binary not found or not executable at {binpath}")
         self.cmd = [binpath]

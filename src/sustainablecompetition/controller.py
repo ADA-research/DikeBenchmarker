@@ -23,7 +23,6 @@ class Controller:
         Maintains the benchmarking process and blocks until benchmarking is finished (i.e., all jobs are completed).
         Also blocks until all consumers are finished.
         """
-        tasks = set()
         # submit njobs to the runner
         for _ in range(self.njobs):
             job = self.benchmarker.next_job()
@@ -36,11 +35,4 @@ class Controller:
             job = self.benchmarker.next_job()
             if job is not None:
                 self.runner.submit(job)
-            for consumer in self.consumers:
-                task = asyncio.create_task(consumer.consume_result(result))
-                tasks.add(task)
-
-                task.add_done_callback(tasks.discard)
-
-        if tasks:
-            await asyncio.gather(*tasks)
+            await asyncio.gather(*[asyncio.create_task(consumer.consume_result(result)) for consumer in self.consumers])
