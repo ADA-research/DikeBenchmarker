@@ -2,13 +2,10 @@
 Variance benchmarker implementation that submits each solver/instance pair.
 """
 
+from typing import Optional
 from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
 from sustainablecompetition.benchmarkatoms import Job, Result
 from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
-
-
-import polars as pl
-
 
 __all__ = ["VarianceBenchmarker"]
 
@@ -21,13 +18,15 @@ class VarianceBenchmarker(Benchmarker):
 
         ordered = []
         for benchmark_id in benchmark_ids:
-            perf_data = data.get_performances(benchmark_id)
-            score = pl.var(perf_data) / pl.median(perf_data)
+            perf_data = data.get_performances(benchmark_id).get_column("perf")
+            # Perf data has columns
+            # print(perf_data.columns)
+            score = perf_data.var() / perf_data.median()
             ordered.append((score, benchmark_id))
         ordered.sort(key=lambda x: x[0])
         self.queue = [x[1] for x in ordered]
 
-    def next_job(self) -> Job:
+    def next_job(self) -> Optional[Job]:
         if self.queue:
             benchmark_id = self.queue.pop()
             self.jobs_submitted.add(benchmark_id)
