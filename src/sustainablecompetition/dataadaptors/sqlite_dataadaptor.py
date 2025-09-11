@@ -43,18 +43,14 @@ class SqlDataAdaptor(DataAdaptor):
 
         try:
             # Base query
-            query = (
-                "SELECT p.perf, p.status,"
-                + f"{'e.env_hash' if filter == 'no_env_features' else 'e.*'},"
-                + f"{'i.inst_hash' if filter == 'no_inst_features' else 'i.*'},"
-                + f"{'s.solver_hash' if filter == 'no_solver_features' else 's.*'}"
-                + """
+            query = """
+                SELECT p.perf, p.status,
+                    e.*, i.*, s.*
                 FROM performances p
                 LEFT JOIN environments e ON p.env_hash = e.env_hash
                 LEFT JOIN instances i ON p.inst_hash = i.inst_hash
                 LEFT JOIN solvers s ON p.solver_hash = s.solver_hash
             """
-            )
 
             # List to hold conditions and parameters
             conditions = []
