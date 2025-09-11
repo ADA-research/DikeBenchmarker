@@ -2,6 +2,7 @@
 Trivial benchmarker implementation that submits each solver/instance pair.
 """
 
+from typing import Optional
 from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
 from sustainablecompetition.benchmarkatoms import Job, Result
 
@@ -17,7 +18,7 @@ class TrivialBenchmarker(Benchmarker):
         super().__init__(benchmark_ids, solver_id)
         self.jobs_submitted = set()
 
-    def next_job(self) -> Job | None:
+    def next_job(self) -> Optional[Job]:
         """
         Return the next job to submit or None if there is nothing left to do.
         """

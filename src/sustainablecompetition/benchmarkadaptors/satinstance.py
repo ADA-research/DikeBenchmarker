@@ -4,9 +4,13 @@ SAT Instance Adaptor
 
 import os
 import re
+from typing import Optional
 import requests
 
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
+
+
+__all__ = ["SATInstanceAdaptor"]
 
 
 class SATInstanceAdaptor(AbstractInstanceAdaptor):
@@ -15,10 +19,10 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
     # Maps instance ids to instance paths
     registry = {}
 
-    def __init__(self, local_folder: str | None = None, timeout: tuple[float, float] = (5, 300)):
+    def __init__(self, local_folder: Optional[str] = None, timeout: tuple[float, float] = (5, 300)):
         """
         Args:
-            local_folder (str | None, optional): Folder in which to save downloaded instances. Defaults to None.
+            local_folder (str, optional): Folder in which to save downloaded instances. Defaults to None.
             timeout (tuple[float, float], optional): (connection_timeout, read_timeout) in seconds. Defaults to (5, 300).
         """
         self.local_folder = local_folder or os.path.dirname(__file__)

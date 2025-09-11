@@ -3,6 +3,7 @@
 import logging
 from enum import Enum
 from datetime import datetime, timezone
+from typing import Optional
 
 
 logger = logging.getLogger(__name__)
@@ -44,17 +45,17 @@ class Job:
 
         # timestamps
         self.created_at: datetime = datetime.now(timezone.utc)
-        self.submitted_at: datetime | None = None
-        self.started_at: datetime | None = None
-        self.finished_at: datetime | None = None
+        self.submitted_at: Optional[datetime] = None
+        self.started_at: Optional[datetime] = None
+        self.finished_at: Optional[datetime] = None
 
         # state data
         self.state: JobState = JobState.CREATED
-        self.result: Result | None = None
-        self.error: str | None = None
+        self.result: Optional[Result] = None
+        self.error: Optional[str] = None
 
         # set by worker when submitted to external system
-        self.external_id: str | None = None
+        self.external_id: Optional[str] = None
 
     def mark_submitted(self) -> None:
         """
