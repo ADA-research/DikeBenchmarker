@@ -46,7 +46,7 @@ class SqlDataAdaptor(DataAdaptor):
         try:
             # Base query
             query = """
-                SELECT p.env_hash, p.inst_hash, p.solver_hash, p.performance, p.status,
+                SELECT p.perf, p.status,
                     e.*, i.*, s.*
                 FROM performances p
                 LEFT JOIN environments e ON p.env_hash = e.env_hash
