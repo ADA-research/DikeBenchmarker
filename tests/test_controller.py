@@ -1,4 +1,3 @@
-import asyncio
 import polars as pl
 from sustainablecompetition.benchmarkatoms import Result
 from sustainablecompetition.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
@@ -20,5 +19,5 @@ def test_run():
     results: list[Result] = []
     consumer = LambdaConsumer(results.append)
     controller = Controller(method, runner, njobs=1, consumers=[consumer])
-    asyncio.run(controller.run())
+    controller.run()
     assert len(results) == NJOBS
