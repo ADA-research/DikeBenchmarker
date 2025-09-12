@@ -12,7 +12,6 @@ import sys
 
 import polars as pl
 
-from sustainablecompetition.controller import Controller
 from sustainablecompetition.infrastructureadaptors.parsl_configs import make_local_processes
 from sustainablecompetition.infrastructureadaptors.virtual_runner import VirtualRunner
 from sustainablecompetition.infrastructureadaptors.parsl_runner import ParslRunner
@@ -36,9 +35,8 @@ def virtual_integration_test(simulation_data_csv: str):
     benchmarks = df.select("hash").to_series().to_list()
     solver = df.columns[1]
     method = TrivialBenchmarker(benchmarks, solver)
-    consumer = LambdaConsumer(print)
-    controller = Controller(method, runner, njobs=1, consumers=[consumer])
-    controller.run()
+    method.register_consumer(LambdaConsumer(print))
+    method.run(runner, 1)
 
 
 def parsl_integration_test(benchmarks):
@@ -60,9 +58,9 @@ def parsl_integration_test(benchmarks):
         parsl_config=make_local_processes(3),
     )
     method = TrivialBenchmarker(benchmarks, "kissat")
-    consumer = LambdaConsumer(print)  # Print result to CSV
-    controller = Controller(method, runner, njobs=10, consumers=[consumer])
-    controller.run()
+    # TODO: Also print result to CSV
+    method.register_consumer(LambdaConsumer(print))
+    method.run(runner, njobs=10)
 
 
 if __name__ == "__main__":
