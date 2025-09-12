@@ -3,13 +3,13 @@ Trivial benchmarker implementation that submits each solver/instance pair.
 """
 
 from typing import Optional
-from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
+from sustainablecompetition.benchmarkingmethods.abstract_benchmarker import AbstractBenchmarker
 from sustainablecompetition.benchmarkatoms import Job, Result
 
 __all__ = ["TrivialBenchmarker"]
 
 
-class TrivialBenchmarker(Benchmarker):
+class TrivialBenchmarker(AbstractBenchmarker):
     """
     Create jobs from a list of benchmark ids and a solver id return them one by one and only stops when all jobs are exhausted.
     """
