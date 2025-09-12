@@ -46,7 +46,7 @@ class SqlDataAdaptor(DataAdaptor):
                 "SELECT p.perf, p.status,"
                 + f"{'e.env_hash' if filter == 'no_env_features' else 'e.*'},"
                 + f"{'i.inst_hash' if filter == 'no_inst_features' else 'i.*'},"
-                + f"{'s.solver_hash' if filter == 'no_solver_features' else 's.*'},"
+                + f"{'s.solver_hash' if filter == 'no_solver_features' else 's.*'}"
                 + """
                 FROM performances p
                 LEFT JOIN environments e ON p.env_hash = e.env_hash
