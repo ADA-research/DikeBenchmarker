@@ -41,32 +41,29 @@ class CsvDataAdaptor(DataAdaptor):
         self.data = self.data.join(self.solvers, left_on="solver_hash", right_on="solver_hash", how="left")
 
     def get_performances(
-        self,
-        benchmark_id: Optional[str] = None,
-        solver_id: Optional[str] = None,
-        hardware_id: Optional[str] = None,
+        self, inst_hash: Optional[str] = None, solver_hash: Optional[str] = None, env_hash: Optional[str] = None, filter: Optional[str] = None
     ) -> pl.DataFrame:
-        """Get as a data frame all performances for the specified benchmark_id, solver_id and hardware_id.
+        """Get as a data frame all performances for the specified inst_hash, solver_hash and env_hash.
         If none are specified, returns all the data
 
 
         Args:
-            benchmark_id (str, optional): the id of the instance to get the performances about
-            solver_id (str, optional): If set, only gives the performance with the specified id. Defaults to None.
-            hardware_id (str, optional): If set, only gives the performance with the specified id. Defaults to None.
+            inst_hash (str, optional): the id of the instance to get the performances about
+            solver_hash (str, optional): If set, only gives the performance with the specified id. Defaults to None.
+            env_hash (str, optional): If set, only gives the performance with the specified id. Defaults to None.
 
         Returns:
             pl.DataFrame: _description_
         """
         result = self.data
 
-        if benchmark_id:
-            result = result.filter(pl.col("inst_hash") == benchmark_id)
+        if inst_hash:
+            result = result.filter(pl.col("inst_hash") == inst_hash)
 
-        if solver_id:
-            result = result.filter(pl.col("solver_hash") == solver_id)
+        if solver_hash:
+            result = result.filter(pl.col("solver_hash") == solver_hash)
 
-        if hardware_id:
-            result = result.filter(pl.col("hardware_hash") == hardware_id)
+        if env_hash:
+            result = result.filter(pl.col("hardware_hash") == env_hash)
 
         return result

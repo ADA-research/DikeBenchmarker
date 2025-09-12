@@ -23,19 +23,17 @@ class SqlDataAdaptor(DataAdaptor):
         self.database_path = database_path
 
     def get_performances(
-        self,
-        benchmark_id: Optional[str] = None,
-        solver_id: Optional[str] = None,
-        hardware_id: Optional[str] = None,
+        self, inst_hash: Optional[str] = None, solver_hash: Optional[str] = None, env_hash: Optional[str] = None, filter: Optional[str] = None
     ) -> pl.DataFrame:
         """
-        Get as a DataFrame all performances for the specified benchmark_id, solver_id, and hardware_id.
+        Get as a DataFrame all performances for the specified inst_hash, solver_hash, and env_hash.
         If none are specified, returns all the data (not recommended).
 
         Args:
-            benchmark_id (str, optional): The id of the instance (inst_hash) to get the performances about.
-            solver_id (str, optional): If set, only gives the performance with the specified solver_hash. Defaults to None.
-            hardware_id (str, optional): If set, only gives the performance with the specified env_hash. Defaults to None.
+            inst_hash (str, optional): The id of the instance (inst_hash) to get the performances about.
+            solver_hash (str, optional): If set, only gives the performance with the specified solver_hash. Defaults to None.
+            env_hash (str, optional): If set, only gives the performance with the specified env_hash. Defaults to None.
+            filter (str): can contain 'no_inst_features' | 'no_env_features' | 'no_solver_features' to omit the features of one aspect
 
         Returns:
             pl.DataFrame: A DataFrame containing the performances.
@@ -45,28 +43,32 @@ class SqlDataAdaptor(DataAdaptor):
 
         try:
             # Base query
-            query = """
-                SELECT p.perf, p.status,
-                    e.*, i.*, s.*
+            query = (
+                "SELECT p.perf, p.status,"
+                + f"{'e.env_hash' if filter == 'no_env_features' else 'e.*'},"
+                + f"{'i.inst_hash' if filter == 'no_inst_features' else 'i.*'},"
+                + f"{'s.solver_hash' if filter == 'no_solver_features' else 's.*'}"
+                + """
                 FROM performances p
                 LEFT JOIN environments e ON p.env_hash = e.env_hash
                 LEFT JOIN instances i ON p.inst_hash = i.inst_hash
                 LEFT JOIN solvers s ON p.solver_hash = s.solver_hash
             """
+            )
 
             # List to hold conditions and parameters
             conditions = []
             params = []
 
-            if benchmark_id is not None:
+            if inst_hash is not None:
                 conditions.append("p.inst_hash = ?")
-                params.append(benchmark_id)
-            if solver_id is not None:
+                params.append(inst_hash)
+            if solver_hash is not None:
                 conditions.append("p.solver_hash = ?")
-                params.append(solver_id)
-            if hardware_id is not None:
+                params.append(solver_hash)
+            if env_hash is not None:
                 conditions.append("p.env_hash = ?")
-                params.append(hardware_id)
+                params.append(env_hash)
 
             if conditions:
                 query += " WHERE " + " AND ".join(conditions)
@@ -179,12 +181,12 @@ class SqlDataAdaptor(DataAdaptor):
         finally:
             conn.close()
 
-    def get_solvers(self, solver_ids: list) -> pl.DataFrame:
+    def get_solvers(self, solver_hashs: list) -> pl.DataFrame:
         """
         Returns the full solver rows for the given solver IDs.
 
         Args:
-            solver_ids: List of solver hashes.
+            solver_hashs: List of solver hashes.
 
         Returns:
             pl.DataFrame: DataFrame containing the solver rows.
@@ -195,7 +197,7 @@ class SqlDataAdaptor(DataAdaptor):
                 SELECT *
                 FROM solvers
                 WHERE solver_hash IN (?{})
-            """.format(",?" * (len(solver_ids) - 1))  # Parameterize for all solver_ids
-            return pl.read_database(query, conn, execute_options={"parameters": solver_ids})
+            """.format(",?" * (len(solver_hashs) - 1))  # Parameterize for all solver_hashs
+            return pl.read_database(query, conn, execute_options={"parameters": solver_hashs})
         finally:
             conn.close()

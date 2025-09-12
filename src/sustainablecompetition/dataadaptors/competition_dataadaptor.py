@@ -114,7 +114,7 @@ class CompetitionDataAdaptor(DataAdaptor):
         if db_adaptor is not None:
             self.environments = db_adaptor.get_environments(env_ids=[env_hash])
             self.instances = db_adaptor.get_instances(inst_ids=list(self.perfs["inst_hash"]))
-            self.solvers = db_adaptor.get_solvers(solver_ids=list(self.perfs["solver_hash"]))
+            self.solvers = db_adaptor.get_solvers(solver_hashs=list(self.perfs["solver_hash"]))
             # Merge perf with environments on env_hash
             self.data = self.perfs.join(self.environments, left_on="env_hash", right_on="env_hash", how="left")
 
@@ -126,23 +126,25 @@ class CompetitionDataAdaptor(DataAdaptor):
         else:
             self.data = self.perfs
 
-    def get_performances(self, benchmark_id: Optional[str] = None, solver_id: Optional[str] = None, hardware_id: Optional[str] = None) -> pl.DataFrame:
+    def get_performances(
+        self, inst_hash: Optional[str] = None, solver_hash: Optional[str] = None, env_hash: Optional[str] = None, filter: Optional[str] = None
+    ) -> pl.DataFrame:
         """
         Get the performance of a specific benchmark instance.
         Hardware id is ignored as this data adaptor is for a single hardware configuration. (TODO: find a better way to handle this)
         Args:
-            benchmark_id (str): the id of the instance to get the performances about
-            solver_id (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
+            inst_hash (str): the id of the instance to get the performances about
+            solver_hash (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
         """
         result = self.data
 
-        if benchmark_id:
-            result = result.filter(pl.col("inst_hash") == benchmark_id)
+        if inst_hash:
+            result = result.filter(pl.col("inst_hash") == inst_hash)
 
-        if solver_id:
-            result = result.filter(pl.col("solver_hash") == solver_id)
+        if solver_hash:
+            result = result.filter(pl.col("solver_hash") == solver_hash)
 
-        if hardware_id:
-            result = result.filter(pl.col("env_hash") == hardware_id)
+        if env_hash:
+            result = result.filter(pl.col("env_hash") == env_hash)
 
         return result

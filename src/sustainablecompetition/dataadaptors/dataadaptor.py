@@ -14,14 +14,14 @@ class DataAdaptor(ABC):
     """
 
     @abstractmethod
-    def get_performances(self, benchmark_id: str, solver_id: Optional[str] = None, hardware_id: Optional[str] = None) -> pl.DataFrame:
-        """Get as a data frame all performances for the specific benchmark_id.
+    def get_performances(self, inst_hash: str, solver_hash: Optional[str] = None, env_hash: Optional[str] = None, filter: Optional[str] = None) -> pl.DataFrame:
+        """Get as a data frame all performances for the specific inst_hash.
 
 
         Args:
-            benchmark_id (str): the id of the instance to get the performances about
-            solver_id (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
-            hardware_id (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
+            inst_hash (str): the id of the instance to get the performances about
+            solver_hash (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
+            env_hash (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
 
         Returns:
             pl.DataFrame: _description_

@@ -11,6 +11,6 @@ db_adaptor = SqlDataAdaptor(db_path)
 
 solvers = db_adaptor.get_competition_solver_hash("main2024")
 
-print(cp_adaptor.get_performances(solver_id=solvers[-1]))
+print(cp_adaptor.get_performances(solver_hash=solvers[-1]))
 print(cp_adaptor.perfs)
 print(cp_adaptor.solvers)
