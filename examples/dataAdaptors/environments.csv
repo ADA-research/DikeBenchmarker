@@ -1,3 +1,4 @@
-env_hash,nb_assigned_cores,nb_available_core,assigned_memory,machine_memory,OS,kernel_version,activated_modules,cpu_freq,cpu_boost,cpu_brand,cpu_model,L1,L2,L3
-1d37fbe0a5edc41057ed7c3a666ae02d,32,16,256,263588804,0,3.10.0-1160.62.1.el7.x86_64,NaN,3.6000,NaN,GenuineIntel,Intel(R) Xeon(R) Gold 6334 CPU @ 3.60GHz,80,1280,18432
-81c5e2d9617f05fd655a74900a7608ba,NaN,NaN,256,263932744,0,3.10.0-1062.4.3.el7.x86_64,NaN,2.4000,NaN,GenuineIntel,Intel(R) Xeon(R) CPU E5-2609 0 @ 2.40GHz,NaN,1024,10240
+env_hash,nb_assigned_cores,assigned_memory,nb_available_core,machine_memory,OS,kernel_version,min_cpu_freq,max_cpu_freq,arch,cpu_brand,cpu_model,l1_instruction_cache_size,l1_data_cache_size,l2_cache_size,l2_cache_line_size,l2_cache_associativity,l3_cache_size
+88ca7c241064d3ada037118ac909d9a6,32,256,16,263588804,Linux,3.10.0-1160.62.1.el7.x86_64,,3600.0,x86_64,GenuineIntel,Intel(R) Xeon(R) Gold 6334 CPU @ 3.60GHz,32,48,1280,,,18432
+f7db74a72ee00381155988e82609f03c,,256,,263932744,Linux,3.10.0-1062.4.3.el7.x86_64,,2400.0,x86_64,GenuineIntel,Intel(R) Xeon(R) CPU E5-2609 0 @ 2.40GHz,,,1024,,,10240
+597c479a9bc71e9bdc080f1d491b0ac4,4,,64,1031671,Linux,5.14.0-362.24.1.el9_3.0.1.x86_64,1500.0,2800.0,x86_64,AuthenticAMD,AMD EPYC 7543 32-Core Processor,2097152,2097152,33554432,,,524288
