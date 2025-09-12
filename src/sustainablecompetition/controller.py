@@ -2,8 +2,8 @@
 Controller module for connecting benchmarking methods with infrastructure adaptors.
 """
 
-from multiprocessing import Process, Queue
-import time
+from threading import Thread
+from queue import Queue
 
 from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
 from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
@@ -22,21 +22,18 @@ class Controller:
         self.runner = runner
         self.njobs = njobs
         self.consumers = consumers if consumers is not None else []
-        # safe concurrent access to results queue to be consumed by consumers in a separate process:
+        # safe concurrent access to results queue to be consumed by consumers in a separate thread:
         self.results_to_consume: Queue = Queue()
-        self.result_consumer_process = Process(target=self._consume_results, args=(self.results_to_consume,))
-        self.result_consumer_process.start()
+        self.result_consumer_thread = Thread(target=self._consume_results, args=(self.results_to_consume,), daemon=False)
+        self.result_consumer_thread.start()
 
     def _consume_results(self, results):
         while True:
-            if not results.empty():
-                result = results.get()
-                if result is None:
-                    break
-                for consumer in self.consumers:
-                    consumer.consume_result(result)
-            else:
-                time.sleep(0.1)
+            result = results.get()  # blocks until an item is available
+            if result is None:
+                break
+            for consumer in self.consumers:
+                consumer.consume_result(result)
 
     def run(self):
         """
@@ -59,4 +56,4 @@ class Controller:
 
         # signal the consumer process to finish
         self.results_to_consume.put(None)
-        self.result_consumer_process.join()
+        self.result_consumer_thread.join()
