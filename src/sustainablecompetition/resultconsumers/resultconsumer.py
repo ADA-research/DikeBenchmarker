@@ -12,7 +12,7 @@ class ResultConsumer(ABC):
     """
 
     @abstractmethod
-    async def consume_result(self, result: Result):
+    def consume_result(self, result: Result):
         """Process a Result.
 
         Args:

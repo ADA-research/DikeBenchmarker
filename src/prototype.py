@@ -4,7 +4,6 @@
 A prototype integration test using the virtual runner and the parsl runner.
 """
 
-import asyncio
 import logging
 
 import argparse
@@ -27,7 +26,7 @@ from sustainablecompetition.benchmarkadaptors.satinstance import SATInstanceAdap
 logger = logging.getLogger(__name__)
 
 
-async def virtual_integration_test(simulation_data_csv: str):
+def virtual_integration_test(simulation_data_csv: str):
     """
     Integration test using the trivial benchmarker (which submits all the instances)
     and the virtual runner (which returns the data from a csv file).
@@ -39,10 +38,10 @@ async def virtual_integration_test(simulation_data_csv: str):
     method = TrivialBenchmarker(benchmarks, solver)
     consumer = LambdaConsumer(print)
     controller = Controller(method, runner, njobs=1, consumers=[consumer])
-    await controller.run()
+    controller.run()
 
 
-async def parsl_integration_test(benchmarks):
+def parsl_integration_test(benchmarks):
     """
     Integration test using the parsl local runner.
     """
@@ -63,7 +62,7 @@ async def parsl_integration_test(benchmarks):
     method = TrivialBenchmarker(benchmarks, "kissat")
     consumer = LambdaConsumer(print)  # Print result to CSV
     controller = Controller(method, runner, njobs=10, consumers=[consumer])
-    await controller.run()
+    controller.run()
 
 
 if __name__ == "__main__":
@@ -76,7 +75,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print("Running virtual integration test...")
-    asyncio.run(virtual_integration_test(args.file))
+    virtual_integration_test(args.file)
 
     print("Running parsl integration test...")
     easybatch = [
@@ -100,4 +99,4 @@ if __name__ == "__main__":
         "f349621e75ede4e9e9422b3d0f677268",
         "f42d2ce7b4efd3f96e063dd1f6fec7f1",
     ]
-    asyncio.run(parsl_integration_test(benchmarks=easybatch))
+    parsl_integration_test(benchmarks=easybatch)

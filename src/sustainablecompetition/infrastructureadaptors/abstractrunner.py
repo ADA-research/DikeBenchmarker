@@ -42,7 +42,7 @@ class AbstractRunner(ABC):
         Otherwise, return None.
         """
 
-    async def completions(self, sleep_duration: float = 1):
+    def completions(self, sleep_duration: float = 1):
         """
         Yield whenever the external system reports a job as done/failed.
         Stops when all jobs are either CANCELLED, FAILED or FINISHED.
