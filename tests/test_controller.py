@@ -1,7 +1,6 @@
 import polars as pl
 from sustainablecompetition.benchmarkatoms import Result
 from sustainablecompetition.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
-from sustainablecompetition.controller import Controller
 from sustainablecompetition.dataadaptors.competition_dataadaptor import CompetitionDataAdaptor
 from sustainablecompetition.infrastructureadaptors.virtual_runner import VirtualRunner
 from sustainablecompetition.resultconsumers.lambda_consumer import LambdaConsumer
@@ -18,6 +17,6 @@ def test_run():
     method = TrivialBenchmarker(benchmarks, columns[1])
     results: list[Result] = []
     consumer = LambdaConsumer(results.append)
-    controller = Controller(method, runner, njobs=1, consumers=[consumer])
-    controller.run()
+    method.register_consumer(consumer)
+    method.run(runner, NJOBS)
     assert len(results) == NJOBS

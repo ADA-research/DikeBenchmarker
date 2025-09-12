@@ -1,21 +1,20 @@
 """Benchmark Interfaces"""
 
 from sustainablecompetition.benchmarkatoms import Job, Result
-from sustainablecompetition.benchmarkingmethods.benchmarkerinterface import Benchmarker
+from sustainablecompetition.benchmarkingmethods.abstract_benchmarker import AbstractBenchmarker
 from sustainablecompetition.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
 from sustainablecompetition.benchmarkingmethods.stopping_criterion.stopping_criteria import StoppingCriteria
 
 __all__ = ["CombinedBenchmarker"]
 
 
-class CombinedBenchmarker(Benchmarker):
+class CombinedBenchmarker(AbstractBenchmarker):
     """
     Decides which jobs to submit next; can depend on past results/dependencies.
     """
 
     def __init__(self, selector: InstanceSelector, stopping_criteria: StoppingCriteria, benchmark_ids: list[str], solver_id: str):
-        self.benchmark_ids = benchmark_ids
-        self.solver_id = solver_id
+        super().__init__(benchmark_ids, solver_id)
         self.selector = selector
         self.stopping_criteria = stopping_criteria
 
