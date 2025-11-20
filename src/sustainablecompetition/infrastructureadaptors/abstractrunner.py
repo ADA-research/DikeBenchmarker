@@ -6,9 +6,9 @@ from abc import ABC, abstractmethod
 import time
 
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
-from sustainablecompetition.solveradaptors.abstractsolver import AbstractSolverAdaptor
+from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
 from sustainablecompetition.benchmarkatoms import Job, JobState, Result
-from sustainablecompetition.infrastructureadaptors.executionwrapper import AbstractExecutionWrapper
+from sustainablecompetition.solveradaptors.executionwrapper import ExecutionWrapper
 
 
 __all__ = ["AbstractRunner"]
@@ -20,7 +20,7 @@ class AbstractRunner(ABC):
     """Interface for Runners"""
 
     def __init__(
-        self, solver_adaptor: AbstractSolverAdaptor = None, instance_adaptor: AbstractInstanceAdaptor = None, execution_wrapper: AbstractExecutionWrapper = None
+        self, solver_adaptor: AbstractExecutable = None, instance_adaptor: AbstractInstanceAdaptor = None, execution_wrapper: ExecutionWrapper = None
     ):
         self.jobs = list[Job]()
         self.execution_wrapper = execution_wrapper

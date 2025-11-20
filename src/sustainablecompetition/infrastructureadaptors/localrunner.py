@@ -6,8 +6,8 @@ import subprocess
 from concurrent.futures import ProcessPoolExecutor
 from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
-from sustainablecompetition.infrastructureadaptors.executionwrapper import AbstractExecutionWrapper
-from sustainablecompetition.solveradaptors.abstractsolver import AbstractSolverAdaptor
+from sustainablecompetition.solveradaptors.executionwrapper import ExecutionWrapper
+from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 
 
@@ -23,9 +23,9 @@ class LocalRunner(AbstractRunner):
     Initialize and maintain a process pool for local job execution.
     """
 
-    def __init__(self, solvers: AbstractSolverAdaptor, instances: AbstractInstanceAdaptor, parallel=1, execution_wrapper: AbstractExecutionWrapper = None):
+    def __init__(self, solver: AbstractExecutable, instances: AbstractInstanceAdaptor, parallel=1, execution_wrapper: ExecutionWrapper = None):
         super().__init__()
-        self.solvers = solvers
+        self.solver = solver
         self.instances = instances
         self.pool = ProcessPoolExecutor(max_workers=parallel)
         self.futures = []
@@ -38,7 +38,7 @@ class LocalRunner(AbstractRunner):
         Submit a function to the process pool.
         Return an id for identification of the process future.
         """
-        solverpath = self.solvers.get_path(job.solver_id)
+        solverpath = self.solver.get_path(job.solver_id)
         instancepath = self.instances.get_path(job.benchmark_id)
         future = self.pool.submit(wrapper, solverpath, instancepath, job)
         self.futures.append(future)

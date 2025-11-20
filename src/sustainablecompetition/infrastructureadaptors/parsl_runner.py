@@ -15,60 +15,57 @@ from parsl.data_provider.files import File
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
-from sustainablecompetition.infrastructureadaptors.executionwrapper import AbstractExecutionWrapper
-from sustainablecompetition.solveradaptors.abstractsolver import AbstractSolverAdaptor
+from sustainablecompetition.solveradaptors.executionwrapper import ExecutionWrapper
+from sustainablecompetition.solveradaptors.solveradaptor import SolverAdaptor
 
 
 @bash_app
-def runsolver(wrapper: AbstractExecutionWrapper, inputs, outputs):
-    """
-    Run the solver with the given input and output files.
-    """
+def runsolver(serialized_wrapper: dict, serialized_solver: dict, wrapper_id: str, solver_id: str, inputs: list[File], outputs: list[File]):
+    """Run the solver with the given input and output files."""
+    
     wrapper_bin, solver_bin, instance_file = inputs
-    tool_output, solver_output, system_output = outputs
+    system_output, tool_output, solver_output, cert_output = outputs
 
-    wrapper.set_outputs(tool_output.filepath, solver_output.filepath)
-    wrapper_args = " ".join(wrapper.get_command_args())
+    wrapper = ExecutionWrapper.from_dict(serialized_wrapper)
+    solver = SolverAdaptor.from_dict(serialized_solver)
+
+    solve_cmd = solver.format_command(solver_id, solver_bin.filepath, instance_file.filepath, cert_output.filepath)
+    wrapper_cmd = wrapper.format_command(wrapper_id, wrapper_bin.filepath, solve_cmd, tool_output.filepath, solver_output.filepath)
 
     return f"""
     # stop eagerly on error
     set -e
+    set -x  # enable debug output to see which commands are executed
     
-    # create output directories if they do not exist
-    mkdir -p $(dirname "{tool_output.filename}")
-    mkdir -p $(dirname "{solver_output.filename}")
-    mkdir -p $(dirname "{system_output.filename}")
+    for f in "{system_output.filepath}" "{tool_output.filepath}" "{solver_output.filepath}" "{cert_output.filepath}"; do
+        touch "$f"
+    done
 
     # ensure executable flags are set, since files may be fetched via HTTP etc.:
-    chmod +x "{wrapper_bin.filepath}" 
-    chmod +x "{solver_bin.filepath}"
+    chmod +x "{wrapper_bin.filepath}" "{solver_bin.filepath}"
     
     # log system information
-    uname -a > "{system_output.filepath}"
-    lscpu >> "{system_output.filepath}"
-    free -h >> "{system_output.filepath}"
-    df -h >> "{system_output.filepath}"
+    uname -a; echo; lscpu; echo; free -h; echo; df -h; echo > "{system_output.filepath}"
     "{wrapper_bin.filepath}" --version >> "{system_output.filepath}"
+    echo "{wrapper_cmd}" >> "{system_output.filepath}"
 
     # run the solver
-    "{wrapper_bin.filepath}" {wrapper_args} "{solver_bin.filepath}" "{instance_file.filepath}"
+    {wrapper_cmd}
     """
 
 
 class ParslRunner(AbstractRunner):
-    """
-    Use parsl to run jobs on various infrastructures.
-    """
+    """Use parsl to run jobs on various infrastructures."""
 
     def __init__(
         self,
         rootdir: str,
-        solver_adaptor: AbstractSolverAdaptor,
+        solver_adaptor: SolverAdaptor,
         instance_adaptor: AbstractInstanceAdaptor,
-        execution_wrapper: AbstractExecutionWrapper,
+        execution_wrapper: ExecutionWrapper,
         parsl_config: Config = default_config,
     ):
-        super().__init__(solver_adaptor=solver_adaptor, instance_adaptor=instance_adaptor, execution_wrapper=execution_wrapper)
+        super().__init__(solver_adaptor, instance_adaptor, execution_wrapper)
         parsl.load(parsl_config)
         self.futures = []
         self.rootdir = rootdir
@@ -85,23 +82,20 @@ class ParslRunner(AbstractRunner):
         Return an id for identification of the process future.
         """
         super().submit(job)  # this marks the job as submitted
-        job.mark_running()  # mark as running immediately upon submission is a workaround. TODO: introduce proper monitoring of parsl jobs
-        # wrap input files as parsl File objects
-        wrapper_bin = File(self.execution_wrapper.get_binary_path())
-        solver_bin = File(self.solver_adaptor.get_path(job.solver_id))
-        instance_file = File(self.instance_adaptor.get_path(job.benchmark_id))
-        # wrap output files as parsl File objects
+        job.mark_running()  # mark as running immediately (workaround) TODO: proper monitoring of PARSL jobs
         output_root = f"{self.logsdir}/{job.solver_id}/{job.benchmark_id}"
-        tool_output = File(f"{output_root}.log")
-        solver_output = File(f"{output_root}.out")
-        system_output = File(f"{output_root}.system")
         os.makedirs(os.path.dirname(output_root), exist_ok=True)
+
         # set execution wrapper resource limits
         self.execution_wrapper.set_resource_limits(cputimelimit=job.timelimit, memorylimit=job.memlimit)
         runsolver_future = runsolver(
-            self.execution_wrapper,
-            inputs=[wrapper_bin, solver_bin, instance_file],
-            outputs=[tool_output, solver_output, system_output],
+            self.execution_wrapper.to_dict(), self.solver_adaptor.to_dict(), "runsolver", job.solver_id,
+            inputs = [
+                File(self.execution_wrapper.get_binary("runsolver")),
+                File(self.solver_adaptor.get_binary(job.solver_id)),
+                File(self.instance_adaptor.get_path(job.benchmark_id))
+            ],
+            outputs = [ File(output_root + ext) for ext in [ ".log", ".out", ".system", ".cert" ] ],
         )
         self.futures.append(runsolver_future)
         job.external_id = len(self.futures) - 1

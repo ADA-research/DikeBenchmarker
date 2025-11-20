@@ -1,0 +1,3 @@
+kissat;./examples/solverAdaptors/sat/kissat;$BIN $INST $CERT
+kissat_sat;./examples/solverAdaptors/sat/kissat;$BIN --sat $INST $CERT
+kissat_unsat;./examples/solverAdaptors/sat/kissat;$BIN --unsat $INST $CERT
