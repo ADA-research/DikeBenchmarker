@@ -22,7 +22,7 @@ from sustainablecompetition.solveradaptors.solveradaptor import SolverAdaptor
 @bash_app
 def runsolver(serialized_wrapper: dict, serialized_solver: dict, wrapper_id: str, solver_id: str, inputs: list[File], outputs: list[File]):
     """Run the solver with the given input and output files."""
-    
+
     wrapper_bin, solver_bin, instance_file = inputs
     system_output, tool_output, solver_output, cert_output = outputs
 
@@ -89,13 +89,16 @@ class ParslRunner(AbstractRunner):
         # set execution wrapper resource limits
         self.execution_wrapper.set_resource_limits(cputimelimit=job.timelimit, memorylimit=job.memlimit)
         runsolver_future = runsolver(
-            self.execution_wrapper.to_dict(), self.solver_adaptor.to_dict(), "runsolver", job.solver_id,
-            inputs = [
+            self.execution_wrapper.to_dict(),
+            self.solver_adaptor.to_dict(),
+            "runsolver",
+            job.solver_id,
+            inputs=[
                 File(self.execution_wrapper.get_binary("runsolver")),
                 File(self.solver_adaptor.get_binary(job.solver_id)),
-                File(self.instance_adaptor.get_path(job.benchmark_id))
+                File(self.instance_adaptor.get_path(job.benchmark_id)),
             ],
-            outputs = [ File(output_root + ext) for ext in [ ".log", ".out", ".system", ".cert" ] ],
+            outputs=[File(output_root + ext) for ext in [".log", ".out", ".system", ".cert"]],
         )
         self.futures.append(runsolver_future)
         job.external_id = len(self.futures) - 1

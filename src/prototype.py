@@ -30,7 +30,7 @@ short_easybatch = [
     "04327b18171b43ff06586707499b97fc",
     "076d4d6f83306ee69c35e3c99e30d8f8",
     "0928111a3d5d5ce05dffb83cb5982eba",
-    "0ef68fc7aa6f2bc7fb74ada9d865da06"
+    "0ef68fc7aa6f2bc7fb74ada9d865da06",
 ]
 
 long_easybatch = short_easybatch + [
@@ -44,8 +44,9 @@ long_easybatch = short_easybatch + [
     "db3be4cbdcf663dbd37f6fa58d4f6bce",
     "e49c408c713af6dde16f707e38419a3c",
     "f349621e75ede4e9e9422b3d0f677268",
-    "f42d2ce7b4efd3f96e063dd1f6fec7f1"
+    "f42d2ce7b4efd3f96e063dd1f6fec7f1",
 ]
+
 
 def virtual_integration_test(simulation_data_csv: str):
     """Integration test using the trivial benchmarker (which submits all the instances) and the virtual runner (which returns the data from a csv file)."""
@@ -56,6 +57,7 @@ def virtual_integration_test(simulation_data_csv: str):
     method = TrivialBenchmarker(benchmarks, solver)
     method.register_consumer(LambdaConsumer(print))
     method.run(runner, 1)
+
 
 def create_parsl_runner(solver_adaptor, instance_adaptor, config):
     """Create a ParslRunner with SAT solvers and instance adaptors."""
@@ -69,6 +71,7 @@ def create_parsl_runner(solver_adaptor, instance_adaptor, config):
     )
     return runner
 
+
 def parsl_local_integration_test(benchmarks):
     """Integration test using the parsl local runner."""
     solver_adaptor = SolverAdaptor()
@@ -81,6 +84,7 @@ def parsl_local_integration_test(benchmarks):
         method.register_consumer(LambdaConsumer(print))
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
         method.run(runner, njobs=10)
+
 
 def parsl_slurm_integration_test(benchmarks, machine: str):
     """Integration test using the parsl slurm runner."""
@@ -103,17 +107,17 @@ def parsl_slurm_integration_test(benchmarks, machine: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test run the benchmarking tool")
     subparsers = parser.add_subparsers(dest="command", required=True, help="Execution mode")
-    
+
     parser_virtual = subparsers.add_parser("virtual", help="Run virtual integration test")
     parser_virtual.add_argument("file", help="Path to CSV file containing solver runtimes")
-    
+
     parser_local = subparsers.add_parser("local", help="Run local parsl integration test")
-    
+
     parser_slurm = subparsers.add_parser("slurm", help="Run slurm parsl integration test")
     parser_slurm.add_argument("machine", help="Machine/partition name for SLURM")
-    
+
     args = parser.parse_args()
-    
+
     if args.command == "virtual":
         if not os.path.isfile(args.file):
             print(f"Error: File '{args.file}' does not exist.")
