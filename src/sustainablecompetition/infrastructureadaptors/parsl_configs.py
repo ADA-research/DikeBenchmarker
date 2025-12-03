@@ -44,24 +44,26 @@ def make_slurm_config(
     partition: str = "compute",
     account: str | None = None,  # your account name or None to skip
     jobname: str = "benchmark_job",
-    max_workers_per_node: int = 32,
+    exclusive: bool = True,
+    tasks_per_node: int = None,
     mem_per_node: int | None = None,  # in MB; or leave None to skip
     nodes_per_block: int = 1,
-    init_blocks: int = 0,  # start with zero and grow
-    min_blocks: int = 0,
-    max_blocks: int = 10,
+    init_blocks: int = 1,
+    min_blocks: int = 1,
+    max_blocks: int = 100,
     walltime: str = "02:00:00",
     worker_init: str = """# Load your environment here""",
 ) -> Config:
-    """
-    Create a Parsl config for SLURM-managed clusters.
-    Scales from 0 to max_blocks blocks > allocates 'nodes_per_block' nodes > starts 'max_workers_per_node' workers per node.
-    """
+    """Create a Parsl config for SLURM-managed clusters."""
     scheduler_opts = [f"#SBATCH --job-name={jobname}"]
     if account:
         scheduler_opts.append(f"#SBATCH --account={account}")
     if mem_per_node:
         scheduler_opts.append(f"#SBATCH --mem={mem_per_node}")
+    if exclusive:
+        scheduler_opts.append("#SBATCH --exclusive")
+    if tasks_per_node:
+        scheduler_opts.append(f"#SBATCH --ntasks-per-node={tasks_per_node}")
 
     return Config(
         executors=[
@@ -70,7 +72,7 @@ def make_slurm_config(
                 address=address_by_hostname(),
                 # Worker layout on each node:
                 cores_per_worker=1,  # one worker per core by default
-                max_workers_per_node=max_workers_per_node,
+                max_workers_per_node=1,
                 worker_debug=True,
                 provider=SlurmProvider(
                     partition=partition,

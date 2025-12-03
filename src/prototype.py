@@ -82,15 +82,16 @@ def parsl_local_integration_test(benchmarks):
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
         method.run(runner, njobs=10)
 
-def parsl_slurm_integration_test(benchmarks, machine: str):
+def parsl_slurm_integration_test(benchmarks, machine: str, account: str | None = None, tasks_per_node: int = 32, jobname: str = "benchmark_job"):
     """Integration test using the parsl slurm runner."""
     solver_adaptor = SolverAdaptor()
     solver_adaptor.read_registry("./examples/solverAdaptors/sat/solvers1.csv")
     instance_adaptor = SATInstanceAdaptor("./instances/sat/", "./instances/cnf_data.db")
     config = make_slurm_config(
         partition=machine,
-        account=None,  # your account name or None to skip
-        jobname="test_benchmark_job",
+        account=account,  # your account name or None to skip
+        jobname=jobname,
+        tasks_per_node=tasks_per_node
     )
     runner = create_parsl_runner(solver_adaptor, instance_adaptor, config)
     for sid in solver_adaptor.get_ids():
@@ -110,7 +111,10 @@ if __name__ == "__main__":
     parser_local = subparsers.add_parser("local", help="Run local parsl integration test")
     
     parser_slurm = subparsers.add_parser("slurm", help="Run slurm parsl integration test")
-    parser_slurm.add_argument("machine", help="Machine/partition name for SLURM")
+    parser_slurm.add_argument("machine", help="machine/partition name for SLURM")
+    parser_slurm.add_argument("--account", help="Account name for SLURM", default=None)
+    parser_slurm.add_argument("--tasks-per-node", type=int, help="Number of tasks per node", default=32)
+    parser_slurm.add_argument("--jobname", help="Job name for SLURM", default="benchmark_job")
     
     args = parser.parse_args()
     
@@ -125,4 +129,4 @@ if __name__ == "__main__":
         parsl_local_integration_test(benchmarks=short_easybatch)
     elif args.command == "slurm":
         print("Running parsl slurm integration test...")
-        parsl_slurm_integration_test(benchmarks=long_easybatch, machine=args.machine)
+        parsl_slurm_integration_test(benchmarks=long_easybatch, machine=args.machine, account=args.account, tasks_per_node=args.tasks_per_node, jobname=args.jobname)
