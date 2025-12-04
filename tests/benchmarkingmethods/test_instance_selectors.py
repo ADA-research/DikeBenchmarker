@@ -18,7 +18,7 @@ def build_adaptor() -> SqlDataAdaptor:
 INSTANCE_SELECTORS = [
     lambda bench_ids, solver_id, adap: VarianceInstanceSelector(bench_ids, solver_id, adap),
     lambda bench_ids, solver_id, adap: RandomInstanceSelector(bench_ids, solver_id),
-    lambda bench_ids, solver_id, adap: DiscriminationInstanceSelector(bench_ids, solver_id),
+    lambda bench_ids, solver_id, adap: DiscriminationInstanceSelector(bench_ids, solver_id, adap),
 ]
 INSTANCE_SELECTOR_NAMES = ["VarianceInstanceSelector", "RandomInstanceSelector", "DiscriminationInstanceSelector"]
 
@@ -26,7 +26,7 @@ INSTANCE_SELECTOR_NAMES = ["VarianceInstanceSelector", "RandomInstanceSelector",
 @pytest.mark.parametrize("instance_selector_builder", INSTANCE_SELECTORS, ids=INSTANCE_SELECTOR_NAMES)
 def test_run_all_jobs(instance_selector_builder):
     adaptor = build_adaptor()
-    benchmark_ids = adaptor.get_performances().get_column("inst_hash").to_list()
+    benchmark_ids = list(set(adaptor.get_performances().get_column("inst_hash").to_list()))
     jobs_left = len(benchmark_ids)
     solver_id = adaptor.get_competition_solver_hash("main2024")
     selector = instance_selector_builder(benchmark_ids, solver_id, adaptor)
@@ -43,7 +43,7 @@ def test_run_all_jobs(instance_selector_builder):
 @pytest.mark.parametrize("instance_selector_builder", INSTANCE_SELECTORS, ids=INSTANCE_SELECTOR_NAMES)
 def test_valid_jobs(instance_selector_builder):
     adaptor = build_adaptor()
-    benchmark_ids = adaptor.get_performances().get_column("inst_hash").to_list()
+    benchmark_ids = list(set(adaptor.get_performances().get_column("inst_hash").to_list()))
     jobs_left = len(benchmark_ids)
     solver_id = adaptor.get_competition_solver_hash("main2024")
     selector = instance_selector_builder(benchmark_ids, solver_id, adaptor)
