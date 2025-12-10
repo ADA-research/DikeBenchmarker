@@ -1,0 +1,1 @@
+process_worker_pool.py --debug --max_workers_per_node=32 -a 10.0.0.1 -p 0 -c 1 -m None --poll 10 --port=54639 --cert_dir None --logdir=/nfs/home/iser/git/SustainableCompetition/runinfo/005/test_benchmark_job --block_id=0 --hb_period=30  --hb_threshold=120 --drain_period=None --cpu-affinity none  --mpi-launcher=mpiexec --available-accelerators 
