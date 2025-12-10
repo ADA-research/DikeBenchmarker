@@ -4,4 +4,4 @@ git config filter.dumpsql.clean 'tmp=$(mktemp); cat > $tmp; sqlite3 $tmp .dump; 
 git config filter.dumpsql.smudge 'tmp=$(mktemp); sqlite3 $tmp; cat $tmp; rm $tmp'
 
 # Trigger the smudge filter to restore the database
-git checkout -- data/sustainablecompetition.db
+git checkout -- src/sustainablecompetition/data/sustainablecompetition.db

@@ -11,6 +11,8 @@ __all__ = ["VarianceInstanceSelector"]
 
 
 class VarianceInstanceSelector(InstanceSelector):
+    """Instance selector that prioritizes instances based on the variance of their performance scores."""
+
     def __init__(self, benchmark_ids: list[str], solver_id: str, data: DataAdaptor):
         super().__init__(benchmark_ids, solver_id)
         self.jobs_submitted = set()

@@ -1,13 +1,13 @@
 """Stopping Criteria Interfaces"""
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+# from typing import TYPE_CHECKING
 
 from sustainablecompetition.benchmarkatoms import Result
 
-if TYPE_CHECKING:
-    from sustainablecompetition.benchmarkingmethods.stopping_criterion.or_stopping_criteria import OrStoppingCriteria
-    from sustainablecompetition.benchmarkingmethods.stopping_criterion.and_stopping_criteria import AndStoppingCriteria
+# if TYPE_CHECKING:
+from sustainablecompetition.benchmarkingmethods.stopping_criterion.or_stopping_criteria import OrStoppingCriteria
+from sustainablecompetition.benchmarkingmethods.stopping_criterion.and_stopping_criteria import AndStoppingCriteria
 
 
 __all__ = ["StoppingCriteria"]

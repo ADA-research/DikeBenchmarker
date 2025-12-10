@@ -201,3 +201,37 @@ class SqlDataAdaptor(DataAdaptor):
             return pl.read_database(query, conn, execute_options={"parameters": solver_hashs})
         finally:
             conn.close()
+
+    def get_all_instance_ids(self) -> list[str]:
+        """
+        Returns a list of all instance IDs in the database.
+
+        Returns:
+            list[str]: List of all instance hashes.
+        """
+        conn = sqlite3.connect(self.database_path)
+        try:
+            cursor = conn.cursor()
+            query = "SELECT inst_hash FROM instances"
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return [row[0] for row in results]
+        finally:
+            conn.close()
+
+    def get_all_solver_ids(self) -> list[str]:
+        """
+        Returns a list of all solver IDs in the database.
+
+        Returns:
+            list[str]: List of all solver hashes.
+        """
+        conn = sqlite3.connect(self.database_path)
+        try:
+            cursor = conn.cursor()
+            query = "SELECT solver_hash FROM solvers"
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return [row[0] for row in results]
+        finally:
+            conn.close()

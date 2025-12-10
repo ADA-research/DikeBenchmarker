@@ -19,9 +19,7 @@ FINISHED_STATES = {JobState.CANCELLED, JobState.FAILED, JobState.FINISHED}
 class AbstractRunner(ABC):
     """Interface for Runners"""
 
-    def __init__(
-        self, solver_adaptor: AbstractExecutable = None, instance_adaptor: AbstractInstanceAdaptor = None, execution_wrapper: ExecutionWrapper = None
-    ):
+    def __init__(self, solver_adaptor: AbstractExecutable = None, instance_adaptor: AbstractInstanceAdaptor = None, execution_wrapper: ExecutionWrapper = None):
         self.jobs = list[Job]()
         self.execution_wrapper = execution_wrapper
         self.instance_adaptor = instance_adaptor

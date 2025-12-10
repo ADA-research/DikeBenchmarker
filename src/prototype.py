@@ -30,7 +30,7 @@ short_easybatch = [
     "04327b18171b43ff06586707499b97fc",
     "076d4d6f83306ee69c35e3c99e30d8f8",
     "0928111a3d5d5ce05dffb83cb5982eba",
-    "0ef68fc7aa6f2bc7fb74ada9d865da06"
+    "0ef68fc7aa6f2bc7fb74ada9d865da06",
 ]
 
 long_easybatch = short_easybatch + [
@@ -44,8 +44,9 @@ long_easybatch = short_easybatch + [
     "db3be4cbdcf663dbd37f6fa58d4f6bce",
     "e49c408c713af6dde16f707e38419a3c",
     "f349621e75ede4e9e9422b3d0f677268",
-    "f42d2ce7b4efd3f96e063dd1f6fec7f1"
+    "f42d2ce7b4efd3f96e063dd1f6fec7f1",
 ]
+
 
 def virtual_integration_test(simulation_data_csv: str):
     """Integration test using the trivial benchmarker (which submits all the instances) and the virtual runner (which returns the data from a csv file)."""
@@ -56,6 +57,7 @@ def virtual_integration_test(simulation_data_csv: str):
     method = TrivialBenchmarker(benchmarks, solver)
     method.register_consumer(LambdaConsumer(print))
     method.run(runner, 1)
+
 
 def create_parsl_runner(solver_adaptor, instance_adaptor, config):
     """Create a ParslRunner with SAT solvers and instance adaptors."""
@@ -68,6 +70,7 @@ def create_parsl_runner(solver_adaptor, instance_adaptor, config):
         parsl_config=config,
     )
     return runner
+
 
 def parsl_local_integration_test(benchmarks):
     """Integration test using the parsl local runner."""
@@ -82,15 +85,17 @@ def parsl_local_integration_test(benchmarks):
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
         method.run(runner, njobs=10)
 
-def parsl_slurm_integration_test(benchmarks, machine: str):
+
+def parsl_slurm_integration_test(benchmarks, machine: str, account: str | None = None, tasks_per_node: int = 32, jobname: str = "benchmark_job"):
     """Integration test using the parsl slurm runner."""
     solver_adaptor = SolverAdaptor()
     solver_adaptor.read_registry("./examples/solverAdaptors/sat/solvers1.csv")
     instance_adaptor = SATInstanceAdaptor("./instances/sat/", "./instances/cnf_data.db")
     config = make_slurm_config(
         partition=machine,
-        account=None,  # your account name or None to skip
-        jobname="test_benchmark_job",
+        account=account,  # your account name or None to skip
+        jobname=jobname,
+        tasks_per_node=tasks_per_node,
     )
     runner = create_parsl_runner(solver_adaptor, instance_adaptor, config)
     for sid in solver_adaptor.get_ids():
@@ -103,17 +108,20 @@ def parsl_slurm_integration_test(benchmarks, machine: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test run the benchmarking tool")
     subparsers = parser.add_subparsers(dest="command", required=True, help="Execution mode")
-    
+
     parser_virtual = subparsers.add_parser("virtual", help="Run virtual integration test")
     parser_virtual.add_argument("file", help="Path to CSV file containing solver runtimes")
-    
+
     parser_local = subparsers.add_parser("local", help="Run local parsl integration test")
-    
+
     parser_slurm = subparsers.add_parser("slurm", help="Run slurm parsl integration test")
-    parser_slurm.add_argument("machine", help="Machine/partition name for SLURM")
-    
+    parser_slurm.add_argument("machine", help="machine/partition name for SLURM")
+    parser_slurm.add_argument("--account", help="Account name for SLURM", default=None)
+    parser_slurm.add_argument("--tasks-per-node", type=int, help="Number of tasks per node", default=32)
+    parser_slurm.add_argument("--jobname", help="Job name for SLURM", default="benchmark_job")
+
     args = parser.parse_args()
-    
+
     if args.command == "virtual":
         if not os.path.isfile(args.file):
             print(f"Error: File '{args.file}' does not exist.")
@@ -125,4 +133,6 @@ if __name__ == "__main__":
         parsl_local_integration_test(benchmarks=short_easybatch)
     elif args.command == "slurm":
         print("Running parsl slurm integration test...")
-        parsl_slurm_integration_test(benchmarks=long_easybatch, machine=args.machine)
+        parsl_slurm_integration_test(
+            benchmarks=long_easybatch, machine=args.machine, account=args.account, tasks_per_node=args.tasks_per_node, jobname=args.jobname
+        )

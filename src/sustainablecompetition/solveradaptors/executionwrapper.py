@@ -3,7 +3,6 @@ This module provides Wrapper classes to manage execution wrappers like runexec, 
 It resolves the paths to these binaries and constructs command-line arguments based on specified resource limits.
 """
 
-
 from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
 
 
@@ -14,16 +13,20 @@ class ExecutionWrapper(AbstractExecutable):
     """
     A class to manage execution wrappers.
     """
-    
-    def __init__(self, mem=64*1024, cputime=3600, walltime=3700, serialized: dict = None):
+
+    def __init__(self, mem=64 * 1024, cputime=3600, walltime=3700, serialized: dict = None):
         """Initialize the ExecutionWrapper with resource limits and registry, or from a serialized dictionary if provided."""
         super().__init__(serialized)
         if "runsolver" not in self.registry:
-            self.register("runsolver", "./external/runsolver", "$BIN --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --vsize-limit $MEMORY --var $TOOLOUT --solver-data $SOLVEROUT --output-limit 10,110 $SOLVECMD")
-        self.memorylimit = serialized.get("memorylimit", 64*1024) if serialized else mem
+            self.register(
+                "runsolver",
+                "./external/runsolver",
+                "$BIN --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --vsize-limit $MEMORY --var $TOOLOUT --solver-data $SOLVEROUT --output-limit 10,110 $SOLVECMD",
+            )
+        self.memorylimit = serialized.get("memorylimit", 64 * 1024) if serialized else mem
         self.cputimelimit = serialized.get("cputimelimit", 3600) if serialized else cputime
         self.walltimelimit = serialized.get("walltimelimit", 3700) if serialized else walltime
-        
+
     def to_dict(self) -> dict:
         """Convert the execution wrapper to a dictionary representation."""
         return {
@@ -32,7 +35,7 @@ class ExecutionWrapper(AbstractExecutable):
             "cputimelimit": self.cputimelimit,
             "walltimelimit": self.walltimelimit,
         }
-    
+
     @classmethod
     def from_dict(cls, data: dict) -> "ExecutionWrapper":
         """Create an execution wrapper from a dictionary representation."""
@@ -46,20 +49,15 @@ class ExecutionWrapper(AbstractExecutable):
 
     def format_command(self, xid: str, xbin: str, scmd: str, tooloutput: str, solveroutput: str) -> str:
         """Construct the commandline specific to runsolver with the specified resource limits."""
-        return self.registry[xid][1].replace(
-            "$BIN", xbin
-        ).replace(
-            "$SOLVECMD", scmd
-        ).replace(
-            "$WALLTIME", str(self.walltimelimit)
-        ).replace(
-            "$CPUTIME", str(self.cputimelimit)
-        ).replace(
-            "$MEMORY", str(self.memorylimit)
-        ).replace(
-            "$TOOLOUT", tooloutput
-        ).replace(
-            "$SOLVEROUT", solveroutput
+        return (
+            self.registry[xid][1]
+            .replace("$BIN", xbin)
+            .replace("$SOLVECMD", scmd)
+            .replace("$WALLTIME", str(self.walltimelimit))
+            .replace("$CPUTIME", str(self.cputimelimit))
+            .replace("$MEMORY", str(self.memorylimit))
+            .replace("$TOOLOUT", tooloutput)
+            .replace("$SOLVEROUT", solveroutput)
         )
 
     def parse_result(self, outfile: str):

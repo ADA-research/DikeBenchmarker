@@ -15,7 +15,6 @@ class MergeDataAdaptor(DataAdaptor):
     Duplicated data is duplicated.
 
     """
-    
 
     def __init__(self, data_adaptors: list[DataAdaptor]):
         super().__init__()
