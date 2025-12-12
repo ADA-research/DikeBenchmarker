@@ -86,7 +86,7 @@ def parsl_local_integration_test(benchmarks):
         method.run(runner, njobs=10)
 
 
-def parsl_slurm_integration_test(benchmarks, machine: str, account: str | None = None, tasks_per_node: int = 32, jobname: str = "benchmark_job"):
+def parsl_slurm_integration_test(benchmarks, machine: str, account: str = None, tasks_per_node: int = 32, jobname: str = "benchmark_job"):
     """Integration test using the parsl slurm runner."""
     solver_adaptor = SolverAdaptor()
     solver_adaptor.read_registry("./examples/solverAdaptors/sat/solvers1.csv")

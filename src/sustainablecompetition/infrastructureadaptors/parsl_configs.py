@@ -42,11 +42,11 @@ def make_local_threads(n: int = 8) -> Config:
 
 def make_slurm_config(
     partition: str = "compute",
-    account: str | None = None,  # your account name or None to skip
+    account: str = None,  # your account name or None to skip
     jobname: str = "benchmark_job",
     exclusive: bool = True,
     tasks_per_node: int = None,
-    mem_per_node: int | None = None,  # in MB; or leave None to skip
+    mem_per_node: int = None,  # in MB; or leave None to skip
     nodes_per_block: int = 1,
     init_blocks: int = 1,
     min_blocks: int = 1,
