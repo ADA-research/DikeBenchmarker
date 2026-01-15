@@ -20,12 +20,15 @@ class ExecutionWrapper(AbstractExecutable):
         if "runsolver" not in self.registry:
             self.register(
                 "runsolver",
-                "./external/runsolver",
-                "$BIN --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --vsize-limit $MEMORY --var $TOOLOUT --solver-data $SOLVEROUT --output-limit 10,110 $SOLVECMD",
+                ["./external/runsolver"],
+                "$BIN --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --vsize-limit $MEMORY --var $WRAPPEROUT --solver-data $SOLVEROUT $SOLVECMD",
+                None,
             )
         self.memorylimit = serialized.get("memorylimit", 64 * 1024) if serialized else mem
         self.cputimelimit = serialized.get("cputimelimit", 3600) if serialized else cputime
         self.walltimelimit = serialized.get("walltimelimit", 3700) if serialized else walltime
+        if self.walltimelimit < self.cputimelimit:
+            self.walltimelimit = self.cputimelimit + 100  # ensure walltime is always larger than cputime
 
     def to_dict(self) -> dict:
         """Convert the execution wrapper to a dictionary representation."""
@@ -47,7 +50,7 @@ class ExecutionWrapper(AbstractExecutable):
         self.cputimelimit = cputimelimit or self.cputimelimit
         self.walltimelimit = walltimelimit or self.walltimelimit
 
-    def format_command(self, xid: str, xbin: str, scmd: str, tooloutput: str, solveroutput: str) -> str:
+    def format_command(self, xid: str, xbin: str, scmd: str, wrapperoutput: str, solveroutput: str) -> str:
         """Construct the commandline specific to runsolver with the specified resource limits."""
         return (
             self.registry[xid][1]
@@ -56,7 +59,7 @@ class ExecutionWrapper(AbstractExecutable):
             .replace("$WALLTIME", str(self.walltimelimit))
             .replace("$CPUTIME", str(self.cputimelimit))
             .replace("$MEMORY", str(self.memorylimit))
-            .replace("$TOOLOUT", tooloutput)
+            .replace("$WRAPPEROUT", wrapperoutput)
             .replace("$SOLVEROUT", solveroutput)
         )
 

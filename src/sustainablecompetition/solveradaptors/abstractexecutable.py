@@ -13,24 +13,29 @@ class AbstractExecutable(ABC):
     def __init__(self, serialized: dict = None):
         self.registry = serialized.get("registry", {}) if serialized else {}
 
-    def register(self, xid: str, sbin: str, sfmt: str):
+    # TODO: sbin should be a list of strings to allow for more binaries to make up a joint sfmt command
+    def register(self, xid: str, sbin: list[str], sfmt: str, checker: str = None):
         """Register an executable with its path and command format."""
-        self.registry[xid] = (sbin, sfmt)
+        self.registry[xid] = (sbin, sfmt, checker)
 
     def read_registry(self, registry_path: str):
         """Read a CSV file containing id, command, and format to populate the registry."""
         with open(registry_path, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f, fieldnames=["id", "bin", "fmt"], delimiter=";")
+            reader = csv.DictReader(f, fieldnames=["id", "bin", "fmt", "checker"], delimiter=";")
             for row in reader:
-                self.register(row["id"], row["bin"], row["fmt"])
+                self.register(row["id"], row["bin"].split(","), row["fmt"], row["checker"] if "checker" in row else None)
 
     def get_ids(self) -> list[str]:
         """Return a list of available solver IDs."""
         return list(self.registry.keys())
 
-    def get_binary(self, xid: str) -> str:
-        """Return the binary path for a given executable ID."""
+    def get_binaries(self, xid: str) -> list[str]:
+        """Return the binary paths for a given executables ID."""
         return self.registry[xid][0]
+    
+    def get_checker(self, xid: str) -> str:
+        """Return the checker command for a given executable ID."""
+        return self.registry[xid][2]
 
     @abstractmethod
     def format_command(self, *args, **kwargs) -> str:

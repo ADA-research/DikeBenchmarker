@@ -1,0 +1,17 @@
+ae-kissat2025-rescale;./solvers/sat/satcomp2025/ae/ae-kissat2025-rescale/kissat;$BIN "$INST" "$CERT";gratbin
+ae-kissat2025-mab;./solvers/sat/satcomp2025/ae/ae-kissat2025-mab/kissat;$BIN "$INST" "$CERT";gratbin
+ae-kissat2025-bump;./solvers/sat/satcomp2025/ae/ae-kissat2025-bump/kissat;$BIN "$INST" "$CERT";gratbin
+kissat-pred;./solvers/sat/satcomp2025/pred/kissat-pred/kissat;$BIN "$INST" "$CERT";gratbin
+kissat-pred-aggressive;./solvers/sat/satcomp2025/pred/kissat-pred-aggressive/kissat;$BIN --aggressive "$INST" "$CERT";gratbin
+kissat-public;./solvers/sat/satcomp2025/biere/kissat-public/kissat;$BIN "$INST" "$CERT";gratbin
+cadical-sc2025;./solvers/sat/satcomp2025/biere/cadical-sc2025/kissat;$BIN "$INST" "$CERT";gratbin
+kissat-sc2025;./solvers/sat/satcomp2025/biere/kissat-sc2025/kissat;$BIN "$INST" "$CERT";gratbin
+kissat-vsa;./solvers/sat/satcomp2025/vsa/kissat-vsa/kissat;$BIN "$INST" "$CERT";gratbin
+ulc-cadical-alignable-order;./solvers/sat/satcomp2025/ulc/ulc-cadical-alignable-order/cadical;$BIN "$INST" "$CERT" --orderencode --orderencodeelim=1 --orderencodetype=1 --orderencodealigntype=1 --no-binary;dpr
+ulc-cadical-xlc;./solvers/sat/satcomp2025/ulc/ulc-cadical-xlc/cadical;$BIN "$INST" "$CERT" --orderencode --orderencodetype=3 --no-binary;dpr
+ulc-cadical-alignable;./solvers/sat/satcomp2025/ulc/ulc-cadical-alignable/cadical;$BIN "$INST" "$CERT" --orderencode --orderencodetype=1 --orderencodealigntype=1 --no-binary;dpr
+ulc-cadical-alignable-independent;./solvers/sat/satcomp2025/ulc/ulc-cadical-alignable-independent/cadical;$BIN "$INST" "$CERT" --orderencode --orderencodetype=1 --orderencodealigntype=2 --no-binary;dpr
+dynamical;./solvers/sat/satcomp2025/dynamical/dynamical/dynamiccadical;$BIN "$INST" "$CERT";gratbin
+kissat-corephase-coreward;./solvers/sat/satcomp2025/corephase/kissat-corephase-coreward/kissat;$BIN "$INST" "$CERT";gratbin
+kissat-mab-corephase;./solvers/sat/satcomp2025/corephase/kissat-mab-corephase/kissat;$BIN "$INST" "$CERT";gratbin
+kissat-cure;./solvers/sat/satcomp2025/cure/kissat-cure/kissat;$BIN --coldrestart=1 --coldrestartfc=1 --coldrestartfo=0 --coldrestartfp=0 "$INST" "$CERT" --no-binary;grat

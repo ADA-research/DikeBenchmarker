@@ -6,6 +6,7 @@
 .vscode/
 logs/
 runinfo/
+venv/
 
 # User-specific files
 *.rsuser
@@ -428,7 +429,7 @@ FodyWeavers.xsd
 build/*
 
 # unziped solvers
-solvers/*/*/*/
+solvers/main_*/*/*/
 
 # databases
 data/sustainablecompetition.db
