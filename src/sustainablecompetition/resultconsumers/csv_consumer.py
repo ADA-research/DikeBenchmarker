@@ -28,7 +28,7 @@ class CSVConsumer(AbstractConsumer):
             self.df.write_csv(csv_path)
 
     def consume_result(self, result: Result):
-        row = {"inst_hash": result.job.benchmark_id, "solver_hash": result.job.solver_id, "perf": result.runtime}
+        row = {"inst_hash": result.job.benchmark_id, "solver_hash": result.job.solver_id, "perf": str(result.runtime)}
         new_row = pl.DataFrame([row])
         self.df = pl.concat([self.df, new_row], how="vertical")
         self.df.write_csv(self.csv_path)
