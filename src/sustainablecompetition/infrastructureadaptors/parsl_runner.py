@@ -67,7 +67,11 @@ def runsolver(
 
     proof_checker_cmd = checker.format_command(checker_id, checker_binaries_paths, cnf, cert_out, trimmer_out.filepath, checker_out.filepath)
     proof_checker_wrapper_cmd = checker_wrapper.format_command(
-        checker_wrapper_id, checker_wrapper_binaries_paths, proof_checker_cmd, wrapper_out.filepath + ".checker_wrapper", checker_out.filepath + ".checker_wrapped"
+        checker_wrapper_id,
+        checker_wrapper_binaries_paths,
+        proof_checker_cmd,
+        wrapper_out.filepath + ".checker_wrapper",
+        checker_out.filepath + ".checker_wrapped",
     )
     model_checker_cmd = checker.format_command("satchecker", satchecker_binaries_paths, cnf, solver_out.filepath, "", checker_out.filepath)
     return f"""
