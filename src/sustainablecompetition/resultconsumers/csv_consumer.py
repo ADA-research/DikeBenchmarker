@@ -24,11 +24,11 @@ class CSVConsumer(AbstractConsumer):
                 raise ValueError("csv exists and has wrong format")
             self.df = df
         else:
-            self.df = pl.DataFrame(schema={"inst_hash": pl.Utf8, "solver_hash": pl.Utf8, "perf": pl.Float64})
+            self.df = pl.DataFrame(schema={"inst_hash": pl.Utf8, "solver_hash": pl.Utf8, "perf": pl.Utf8})
             self.df.write_csv(csv_path)
 
     def consume_result(self, result: Result):
-        row = {"inst_hash": result.job.benchmark_id, "solver_hash": result.job.solver_id, "perf": float(result.runtime)}
+        row = {"inst_hash": result.job.benchmark_id, "solver_hash": result.job.solver_id, "perf": result.runtime}
         new_row = pl.DataFrame([row])
         self.df = pl.concat([self.df, new_row], how="vertical")
         self.df.write_csv(self.csv_path)
