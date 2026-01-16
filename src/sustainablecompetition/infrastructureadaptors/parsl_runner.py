@@ -22,15 +22,18 @@ from sustainablecompetition.solveradaptors.solveradaptor import SolverAdaptor
 
 @bash_app
 def runsolver(
-    wrapper_id: str,
-    wrapper_serialized: dict,
-    wrapper_binaries: list[File],
+    solver_wrapper_id: str,
+    solver_wrapper_serialized: dict,
+    solver_wrapper_binaries: list[File],
     solver_id: str,
     solver_serialized: dict,
     solver_binaries: list[File],
     checker_id: str,
     checker_serialized: dict,
     checker_binaries: list[File],
+    checker_wrapper_id: str,
+    checker_wrapper_serialized: dict,
+    checker_wrapper_binaries: list[File],
     satchecker_binaries: list[File],
     benchmark_instance: File,
     outputs: list[File],
@@ -38,20 +41,25 @@ def runsolver(
     """Run the solver with the given input and output files."""
 
     # ensure executable flags are set, since files may be fetched via HTTP etc.:
-    for f in wrapper_binaries + solver_binaries + checker_binaries + satchecker_binaries:
+    for f in solver_wrapper_binaries + solver_binaries + checker_binaries + checker_wrapper_binaries + satchecker_binaries:
         os.chmod(f.filepath, 0o755)
 
     out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = outputs
     cnf = f"{benchmark_instance.filepath}.unpacked.cnf"
     cert_out = f"{solver_out.filepath}.cert"
 
-    wrapper = ExecutionWrapper.from_dict(wrapper_serialized)
+    solver_wrapper = ExecutionWrapper.from_dict(solver_wrapper_serialized)
     solver = SolverAdaptor.from_dict(solver_serialized)
+    checker_wrapper = ExecutionWrapper.from_dict(checker_wrapper_serialized)
     checker = CheckerAdaptor.from_dict(checker_serialized)
 
     solve_cmd = solver.format_command(solver_id, solver_binaries, cnf, cert_out)
-    wrapper_cmd = wrapper.format_command(wrapper_id, wrapper_binaries, solve_cmd, wrapper_out.filepath, solver_out.filepath)
+    wrapper_cmd = solver_wrapper.format_command(solver_wrapper_id, solver_wrapper_binaries, solve_cmd, wrapper_out.filepath, solver_out.filepath)
+
     proof_checker_cmd = checker.format_command(checker_id, checker_binaries, cnf, cert_out, trimmer_out.filepath, checker_out.filepath)
+    checker_wrapper_cmd = checker_wrapper.format_command(
+        checker_wrapper_id, checker_wrapper_binaries, proof_checker_cmd, trimmer_out.filepath, checker_out.filepath
+    )
     model_checker_cmd = checker.format_command("satchecker", satchecker_binaries, cnf, solver_out.filepath, "", checker_out.filepath)
 
     return f"""
@@ -96,11 +104,14 @@ class ParslRunner(AbstractRunner):
         rootdir: str,
         solver_adaptor: SolverAdaptor,
         instance_adaptor: AbstractInstanceAdaptor,
-        execution_wrapper: ExecutionWrapper,
+        solver_wrapper: ExecutionWrapper,
+        checker_wrapper: ExecutionWrapper,
         parsl_config: Config = default_config,
     ):
-        super().__init__(solver_adaptor, instance_adaptor, execution_wrapper)
+        super().__init__(solver_adaptor, instance_adaptor)
         self.checker_adaptor = CheckerAdaptor()
+        self.solver_wrapper = solver_wrapper
+        self.checker_wrapper = checker_wrapper
         parsl.load(parsl_config)
         self.futures = []
         self.rootdir = rootdir
@@ -125,16 +136,16 @@ class ParslRunner(AbstractRunner):
         job.mark_running()  # mark as running immediately (workaround) TODO: proper monitoring of PARSL jobs
         os.makedirs(os.path.dirname(output_root), exist_ok=True)
 
-        # set execution wrapper resource limits
-        self.execution_wrapper.set_resource_limits(cputimelimit=job.timelimit, memorylimit=job.memlimit)
-
         runsolver_future = runsolver(
-            wrapper_id="runsolver",
-            wrapper_serialized=self.execution_wrapper.to_dict(),
-            wrapper_binaries=[File(f) for f in self.execution_wrapper.get_binaries("runsolver")],
+            solver_wrapper_id="runsolver",
+            solver_wrapper_serialized=self.solver_wrapper.to_dict(),
+            solver_wrapper_binaries=[File(f) for f in self.solver_wrapper.get_binaries("runsolver")],
             solver_id=job.solver_id,
             solver_serialized=self.solver_adaptor.to_dict(),
             solver_binaries=[File(f) for f in self.solver_adaptor.get_binaries(job.solver_id)],
+            checker_wrapper_id="runsolver",
+            checker_wrapper_serialized=self.checker_wrapper.to_dict(),
+            checker_wrapper_binaries=[File(f) for f in self.checker_wrapper.get_binaries("runsolver")],
             checker_id=job.checker_id,
             checker_serialized=self.checker_adaptor.to_dict(),
             checker_binaries=[File(f) for f in self.checker_adaptor.get_binaries(job.checker_id)],
@@ -167,7 +178,7 @@ class ParslRunner(AbstractRunner):
             output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]
         ]
 
-        resource_usage = self.execution_wrapper.parse_result(wrapper_out)
+        resource_usage = self.solver_wrapper.parse_result(wrapper_out)
         solver_result = self.solver_adaptor.parse_result(solver_out)
 
         job.set_finished()

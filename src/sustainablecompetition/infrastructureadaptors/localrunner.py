@@ -6,7 +6,6 @@ import subprocess
 from concurrent.futures import ProcessPoolExecutor
 from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
-from sustainablecompetition.solveradaptors.executionwrapper import ExecutionWrapper
 from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 
@@ -23,7 +22,7 @@ class LocalRunner(AbstractRunner):
     Initialize and maintain a process pool for local job execution.
     """
 
-    def __init__(self, solver: AbstractExecutable, instances: AbstractInstanceAdaptor, parallel=1, execution_wrapper: ExecutionWrapper = None):
+    def __init__(self, solver: AbstractExecutable, instances: AbstractInstanceAdaptor, parallel=1):
         super().__init__()
         self.solver = solver
         self.instances = instances

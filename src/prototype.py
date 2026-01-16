@@ -59,14 +59,26 @@ def virtual_integration_test(simulation_data_csv: str):
     method.run(runner, 1)
 
 
-def create_parsl_runner(solver_adaptor, instance_adaptor, config):
+def create_parsl_runner(
+    solver_adaptor,
+    instance_adaptor,
+    config,
+    solver_cputime=5000,
+    solver_walltime=7000,
+    solver_memory=64 * 1024,
+    checker_cputime=45000,
+    checker_walltime=70000,
+    checker_memory=64 * 1024,
+):
     """Create a ParslRunner with SAT solvers and instance adaptors."""
-    execution_wrapper = ExecutionWrapper(mem=2048, cputime=600)
+    solver_wrapper = ExecutionWrapper(cputime=solver_cputime, walltime=solver_walltime, mem=solver_memory)
+    checker_wrapper = ExecutionWrapper(cputime=checker_cputime, walltime=checker_walltime, mem=checker_memory)
     runner = ParslRunner(
         rootdir=".",
         solver_adaptor=solver_adaptor,
         instance_adaptor=instance_adaptor,
-        execution_wrapper=execution_wrapper,
+        solver_wrapper=solver_wrapper,
+        checker_wrapper=checker_wrapper,
         parsl_config=config,
     )
     return runner
@@ -86,7 +98,20 @@ def parsl_local_integration_test(benchmarks):
         method.run(runner, njobs=10)
 
 
-def parsl_slurm_integration_test(benchmarks, solvers, machine: str, account: str = None, tasks_per_node: int = 32, jobname: str = "benchmark_job"):
+def parsl_slurm_integration_test(
+    benchmarks,
+    solvers,
+    machine: str,
+    account: str = None,
+    tasks_per_node: int = 32,
+    jobname: str = "benchmark_job",
+    solver_cputime: int = 5000,
+    solver_walltime: int = 7000,
+    solver_memory: int = 64 * 1024,
+    checker_cputime: int = 45000,
+    checker_walltime: int = 70000,
+    checker_memory: int = 64 * 1024,
+):
     """Integration test using the parsl slurm runner."""
     solver_adaptor = SolverAdaptor()
     solver_adaptor.read_registry(solvers)
@@ -97,7 +122,9 @@ def parsl_slurm_integration_test(benchmarks, solvers, machine: str, account: str
         jobname=jobname,
         tasks_per_node=tasks_per_node,
     )
-    runner = create_parsl_runner(solver_adaptor, instance_adaptor, config)
+    runner = create_parsl_runner(
+        solver_adaptor, instance_adaptor, config, solver_cputime, solver_walltime, solver_memory, checker_cputime, checker_walltime, checker_memory
+    )
     for sid in solver_adaptor.get_ids():
         method = TrivialBenchmarker(benchmarks, sid)
         method.register_consumer(LambdaConsumer(print))
@@ -107,6 +134,14 @@ def parsl_slurm_integration_test(benchmarks, solvers, machine: str, account: str
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test run the benchmarking tool")
+
+    parser.add_argument("--solver_cputime", type=int, default=5000, help="CPU time limit for solvers in seconds")
+    parser.add_argument("--solver_walltime", type=int, default=7000, help="Wall time limit for solvers in seconds")
+    parser.add_argument("--solver_memory", type=int, default=64 * 1024, help="Memory limit for solvers in MB")
+    parser.add_argument("--checker_cputime", type=int, default=45000, help="CPU time limit for checkers in seconds")
+    parser.add_argument("--checker_walltime", type=int, default=70000, help="Wall time limit for checkers in seconds")
+    parser.add_argument("--checker_memory", type=int, default=64 * 1024, help="Memory limit for checkers in MB")
+
     subparsers = parser.add_subparsers(dest="command", required=True, help="Execution mode")
 
     parser_virtual = subparsers.add_parser("virtual", help="Run virtual integration test")
@@ -154,5 +189,16 @@ if __name__ == "__main__":
             solvers = "./examples/solverAdaptors/sat/solvers1.csv"
 
         parsl_slurm_integration_test(
-            benchmarks=benchmarks, solvers=solvers, machine=args.machine, account=args.account, tasks_per_node=args.tasks_per_node, jobname=args.jobname
+            benchmarks=benchmarks,
+            solvers=solvers,
+            machine=args.machine,
+            account=args.account,
+            tasks_per_node=args.tasks_per_node,
+            jobname=args.jobname,
+            solver_cputime=args.solver_cputime,
+            solver_walltime=args.solver_walltime,
+            solver_memory=args.solver_memory,
+            checker_cputime=args.checker_cputime,
+            checker_walltime=args.checker_walltime,
+            checker_memory=args.checker_memory,
         )

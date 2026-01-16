@@ -8,7 +8,6 @@ import time
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
 from sustainablecompetition.benchmarkatoms import Job, JobState, Result
-from sustainablecompetition.solveradaptors.executionwrapper import ExecutionWrapper
 
 
 __all__ = ["AbstractRunner"]
@@ -19,9 +18,8 @@ FINISHED_STATES = {JobState.CANCELLED, JobState.FAILED, JobState.FINISHED}
 class AbstractRunner(ABC):
     """Interface for Runners"""
 
-    def __init__(self, solver_adaptor: AbstractExecutable = None, instance_adaptor: AbstractInstanceAdaptor = None, execution_wrapper: ExecutionWrapper = None):
+    def __init__(self, solver_adaptor: AbstractExecutable = None, instance_adaptor: AbstractInstanceAdaptor = None):
         self.jobs = list[Job]()
-        self.execution_wrapper = execution_wrapper
         self.instance_adaptor = instance_adaptor
         self.solver_adaptor = solver_adaptor
 

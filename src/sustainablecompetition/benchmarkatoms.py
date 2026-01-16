@@ -37,12 +37,10 @@ class Job:
       CREATED/SUBMITTED -> CANCELLED
     """
 
-    def __init__(self, benchmark_id: str, solver_id: str, checker_id: str, tlimit: int = 5000, mlimit: int = 30) -> None:
+    def __init__(self, benchmark_id: str, solver_id: str, checker_id: str) -> None:
         self.benchmark_id: str = benchmark_id
         self.solver_id: str = solver_id
         self.checker_id: str = checker_id
-        self.timelimit: int = tlimit  # seconds
-        self.memlimit: int = mlimit  # gigabytes
 
         # timestamps
         self.created_at: datetime = datetime.now(timezone.utc)
