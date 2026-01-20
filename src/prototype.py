@@ -10,6 +10,8 @@ import sys
 
 import polars as pl
 
+from sustainablecompetition.infrastructureadaptors import slurm_limits
+
 from sustainablecompetition.infrastructureadaptors.parsl_configs import make_local_processes, make_slurm_config
 from sustainablecompetition.infrastructureadaptors.virtual_runner import VirtualRunner
 from sustainablecompetition.infrastructureadaptors.parsl_runner import ParslRunner
@@ -116,13 +118,17 @@ def parsl_slurm_integration_test(
     solver_adaptor = SolverAdaptor()
     solver_adaptor.read_registry(solvers)
     instance_adaptor = SATInstanceAdaptor("./instances/sat/", "./instances/cnf_data.db")
-    walltime_seconds = solver_walltime + checker_walltime + 600 # extra buffer
+    walltime_seconds = solver_walltime + checker_walltime + 600  # extra buffer
+
+    queue_max = slurm_limits.compute_max_blocks(safety_factor=0.8, fallback=10)
+
     config = make_slurm_config(
         partition=machine,
         account=account,  # your account name or None to skip
         jobname=jobname,
         tasks_per_node=tasks_per_node,
-        walltime=f"{walltime_seconds//3600:02d}:{(walltime_seconds%3600)//60:02d}:{walltime_seconds%60:02d}",
+        walltime=f"{walltime_seconds // 3600:02d}:{(walltime_seconds % 3600) // 60:02d}:{walltime_seconds % 60:02d}",
+        max_blocks=queue_max,
     )
     runner = create_parsl_runner(
         solver_adaptor, instance_adaptor, config, solver_cputime, solver_walltime, solver_memory, checker_cputime, checker_walltime, checker_memory
@@ -131,7 +137,7 @@ def parsl_slurm_integration_test(
         method = TrivialBenchmarker(benchmarks, sid)
         method.register_consumer(LambdaConsumer(print))
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
-        method.run(runner, njobs=10)
+        method.run(runner, njobs=queue_max)
 
 
 if __name__ == "__main__":
