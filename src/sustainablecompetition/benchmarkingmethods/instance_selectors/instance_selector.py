@@ -1,9 +1,8 @@
 """Instance Selector Interfaces"""
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
-from sustainablecompetition.benchmarkatoms import Job, Result
+from sustainablecompetition.benchmarkatoms import Result
 
 __all__ = ["InstanceSelector"]
 
@@ -18,7 +17,7 @@ class InstanceSelector(ABC):
         self.solver_id = solver_id
 
     @abstractmethod
-    def next_job(self) -> Optional[Job]:
+    def next_benchmark_id(self) -> str:
         """Return the next job to submit (can be None if there is nothing left to do)."""
         raise NotImplementedError
 

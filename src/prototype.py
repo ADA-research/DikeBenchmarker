@@ -56,7 +56,7 @@ def virtual_integration_test(simulation_data_csv: str):
     runner = VirtualRunner(CompetitionDataAdaptor(df))
     benchmarks = df.select("hash").to_series().to_list()
     solver = df.columns[1]
-    method = TrivialBenchmarker(benchmarks, solver)
+    method = TrivialBenchmarker(benchmarks, solver, checker_id="dratbin", logroot="./logs")
     method.register_consumer(LambdaConsumer(print))
     method.run(runner, 1)
 
@@ -76,7 +76,6 @@ def create_parsl_runner(
     solver_wrapper = ExecutionWrapper(cputime=solver_cputime, walltime=solver_walltime, mem=solver_memory)
     checker_wrapper = ExecutionWrapper(cputime=checker_cputime, walltime=checker_walltime, mem=checker_memory)
     runner = ParslRunner(
-        rootdir=".",
         solver_adaptor=solver_adaptor,
         instance_adaptor=instance_adaptor,
         solver_wrapper=solver_wrapper,
@@ -94,7 +93,7 @@ def parsl_local_integration_test(benchmarks):
     config = make_local_processes(3)
     runner = create_parsl_runner(solver_adaptor, instance_adaptor, config)
     for sid in solver_adaptor.get_ids():
-        method = TrivialBenchmarker(benchmarks, sid)
+        method = TrivialBenchmarker(benchmarks, sid, checker_id=solver_adaptor.get_checker(sid), logroot="./logs")
         method.register_consumer(LambdaConsumer(print))
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
         method.run(runner, njobs=10)
@@ -134,7 +133,7 @@ def parsl_slurm_integration_test(
         solver_adaptor, instance_adaptor, config, solver_cputime, solver_walltime, solver_memory, checker_cputime, checker_walltime, checker_memory
     )
     for sid in solver_adaptor.get_ids():
-        method = TrivialBenchmarker(benchmarks, sid)
+        method = TrivialBenchmarker(benchmarks, sid, checker_id=solver_adaptor.get_checker(sid), logroot="./logs")
         method.register_consumer(LambdaConsumer(print))
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
         method.run(runner, njobs=queue_max)

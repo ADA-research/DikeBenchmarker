@@ -2,8 +2,7 @@
 Variance benchmarker implementation that submits each solver/instance pair.
 """
 
-from typing import Optional
-from sustainablecompetition.benchmarkatoms import Job, Result
+from sustainablecompetition.benchmarkatoms import Result
 from sustainablecompetition.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
 from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
@@ -28,11 +27,11 @@ class VarianceInstanceSelector(InstanceSelector):
         ordered.sort(key=lambda x: x[0])
         self.queue = [x[1] for x in ordered]
 
-    def next_job(self) -> Optional[Job]:
+    def next_benchmark_id(self) -> str:
         if self.queue:
             benchmark_id = self.queue.pop()
             self.jobs_submitted.add(benchmark_id)
-            return Job(benchmark_id=benchmark_id, solver_id=self.solver_id)
+            return benchmark_id
         return None
 
     def handle_result(self, result: Result) -> None:

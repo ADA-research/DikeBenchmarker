@@ -82,10 +82,6 @@ def runsolver(
     set -e
     set -x  # enable debug output to see which commands are executed
     
-    # for f in "{wrapper_out.filepath}" "{solver_out.filepath}" "{model_out.filepath}" "{trimmer_out.filepath}" "{checker_out.filepath}"; do
-    #     touch "$f"
-    # done
-    
     # log system information
     uname -a; echo; lscpu; echo; free -h; echo; df -h; echo
     echo "{wrapper_cmd}"
@@ -113,7 +109,6 @@ class ParslRunner(AbstractRunner):
 
     def __init__(
         self,
-        rootdir: str,
         solver_adaptor: SolverAdaptor,
         instance_adaptor: AbstractInstanceAdaptor,
         solver_wrapper: ExecutionWrapper,
@@ -126,9 +121,6 @@ class ParslRunner(AbstractRunner):
         self.checker_wrapper = checker_wrapper
         parsl.load(parsl_config)
         self.futures = []
-        self.rootdir = rootdir
-        self.logsdir = f"{self.rootdir}/logs"
-        os.makedirs(self.logsdir, exist_ok=True)
 
     def __del__(self):
         parsl.dfk().cleanup()
@@ -139,14 +131,14 @@ class ParslRunner(AbstractRunner):
         Submit a function to the process pool.
         Return an id for identification of the process future.
         """
-        output_root = f"{self.logsdir}/{job.solver_id}/{job.benchmark_id}"
+        output_root = job.get_log_prefix()
+        os.makedirs(os.path.dirname(output_root), exist_ok=True)
 
         if os.path.exists(f"{output_root}.done"):
             return
 
         super().submit(job)  # this marks the job as submitted
         job.mark_running()  # mark as running immediately (workaround) TODO: proper monitoring of PARSL jobs
-        os.makedirs(os.path.dirname(output_root), exist_ok=True)
 
         runsolver_future = runsolver(
             solver_wrapper_id="runsolver",
@@ -181,8 +173,7 @@ class ParslRunner(AbstractRunner):
             print(f"Job {job.solver_id} on {job.benchmark_id} failed with exception: {job_future.exception()}")
             raise job_future.exception()
 
-        output_root = f"{self.logsdir}/{job.solver_id}/{job.benchmark_id}"
-
+        output_root = job.get_log_prefix()
         with open(f"{output_root}.done", "w") as f:
             f.write("")
 

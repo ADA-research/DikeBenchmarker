@@ -22,9 +22,11 @@ class AbstractBenchmarker(ABC):
     Decides which jobs to submit next; can depend on past results/dependencies.
     """
 
-    def __init__(self, benchmark_ids: list[str], solver_id: str):
+    def __init__(self, benchmark_ids: list[str], solver_id: str, checker_id: str, logroot: str):
+        self.logroot = logroot
         self.benchmark_ids = benchmark_ids
         self.solver_id = solver_id
+        self.checker_id = checker_id
         self.consumers = []
         # safe concurrent access to results queue to be consumed by consumers in a separate thread:
         self.results_to_consume: Queue = Queue()

@@ -37,10 +37,11 @@ class Job:
       CREATED/SUBMITTED -> CANCELLED
     """
 
-    def __init__(self, benchmark_id: str, solver_id: str, checker_id: str) -> None:
+    def __init__(self, benchmark_id: str, solver_id: str, checker_id: str, logroot: str) -> None:
         self.benchmark_id: str = benchmark_id
         self.solver_id: str = solver_id
         self.checker_id: str = checker_id
+        self.logroot: str = logroot
 
         # timestamps
         self.created_at: datetime = datetime.now(timezone.utc)
@@ -55,6 +56,12 @@ class Job:
 
         # set by worker when submitted to external system
         self.external_id: Optional[str] = None
+
+    def get_log_prefix(self) -> str:
+        """
+        Get the logfile prefix for this job.
+        """
+        return f"{self.logroot}/{self.solver_id}/{self.benchmark_id}"
 
     def mark_submitted(self) -> None:
         """
