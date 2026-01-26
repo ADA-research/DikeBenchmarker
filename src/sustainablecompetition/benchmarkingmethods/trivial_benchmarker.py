@@ -22,7 +22,7 @@ class TrivialBenchmarker(AbstractBenchmarker):
         for bid in self.benchmark_ids:
             if bid not in self.jobs_submitted:
                 self.jobs_submitted.add(bid)
-                return Job(benchmark_id=bid, solver_id=self.solver_id, checker_id=self.checker_id, logroot=self.logroot)
+                return Job(job_producer=self, benchmark_id=bid, solver_id=self.solver_id, checker_id=self.checker_id, logroot=self.logroot)
         return None
 
     def handle_result(self, result: Result) -> None:

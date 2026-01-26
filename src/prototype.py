@@ -58,7 +58,7 @@ def virtual_integration_test(simulation_data_csv: str):
     solver = df.columns[1]
     method = TrivialBenchmarker(benchmarks, solver, checker_id="dratbin", logroot="./logs")
     method.register_consumer(LambdaConsumer(print))
-    method.run(runner, 1)
+    runner.run(method, 1)
 
 
 def create_parsl_runner(
@@ -96,7 +96,7 @@ def parsl_local_integration_test(benchmarks):
         method = TrivialBenchmarker(benchmarks, sid, checker_id=solver_adaptor.get_checker(sid), logroot="./logs")
         method.register_consumer(LambdaConsumer(print))
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
-        method.run(runner, njobs=10)
+        runner.run(method, njobs=10)
 
 
 def parsl_slurm_integration_test(
@@ -136,7 +136,7 @@ def parsl_slurm_integration_test(
         method = TrivialBenchmarker(benchmarks, sid, checker_id=solver_adaptor.get_checker(sid), logroot="./logs")
         method.register_consumer(LambdaConsumer(print))
         method.register_consumer(CSVConsumer("slurm_test_results.csv"))
-        method.run(runner, njobs=queue_max)
+        runner.run(method, njobs=queue_max)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,8 @@ from enum import Enum
 from datetime import datetime, timezone
 from typing import Optional
 
+from sustainablecompetition.benchmarkingmethods.abstract_benchmarker import AbstractBenchmarker
+
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +39,8 @@ class Job:
       CREATED/SUBMITTED -> CANCELLED
     """
 
-    def __init__(self, benchmark_id: str, solver_id: str, checker_id: str, logroot: str, retries: int = 3) -> None:
+    def __init__(self, job_producer: AbstractBenchmarker, benchmark_id: str, solver_id: str, checker_id: str, logroot: str, retries: int = 3) -> None:
+        self.job_producer: AbstractBenchmarker = job_producer
         self.benchmark_id: str = benchmark_id
         self.solver_id: str = solver_id
         self.checker_id: str = checker_id
@@ -64,7 +67,14 @@ class Job:
         The cloned job will have a new created_at timestamp and will be in the CREATED state.
         The retries count will be decremented by 1.
         """
-        return Job(benchmark_id=self.benchmark_id, solver_id=self.solver_id, checker_id=self.checker_id, logroot=self.logroot, retries=self.retries - 1)
+        return Job(
+            job_producer=self.job_producer,
+            benchmark_id=self.benchmark_id,
+            solver_id=self.solver_id,
+            checker_id=self.checker_id,
+            logroot=self.logroot,
+            retries=self.retries - 1,
+        )
 
     def get_log_prefix(self) -> str:
         """

@@ -50,34 +50,6 @@ class AbstractBenchmarker(ABC):
             for consumer in self.consumers:
                 consumer.consume_result(result)
 
-    def run(self, runner: AbstractRunner, njobs: int = 1):
-        """
-        Maintains the benchmarking process and blocks until benchmarking is finished (i.e., all jobs are completed).
-        Also blocks until all consumers are finished.
-        """
-        # submit njobs to the runner
-        for _ in range(njobs):
-            job = self.next_job()
-            if job is not None:
-                runner.submit(job)
-
-        # iterate over the results
-        for result in runner.completions():
-            if result.has_failed():
-                if result.get_job().retries > 0:
-                    runner.submit(result.get_job().clone_retry())  # resubmit failed job
-                continue
-            self.handle_result(result)
-            # submit the next job
-            job = self.next_job()
-            if job is not None:
-                runner.submit(job)
-            self.results_to_consume.put(result)
-
-        # signal the consumer thread to finish
-        self.results_to_consume.put(None)
-        self.result_consumer_thread.join()
-
     @abstractmethod
     def next_job(self) -> Optional[Job]:
         """Return the next job to submit (can be None if there is nothing left to do)."""

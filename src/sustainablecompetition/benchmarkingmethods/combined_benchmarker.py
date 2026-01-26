@@ -23,7 +23,7 @@ class CombinedBenchmarker(AbstractBenchmarker):
     def next_job(self) -> Job:
         benchmark_id = self.selector.next_benchmark_id()
         if benchmark_id is not None:
-            return Job(benchmark_id=benchmark_id, solver_id=self.solver_id, checker_id=self.checker_id, logroot=self.logroot)
+            return Job(job_producer=self, benchmark_id=benchmark_id, solver_id=self.solver_id, checker_id=self.checker_id, logroot=self.logroot)
         return None
 
     def should_stop(self) -> bool:
