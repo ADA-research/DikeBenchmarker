@@ -19,5 +19,5 @@ def test_run():
     consumer = LambdaConsumer(results.append)
     method.register_consumer(consumer)
     runner.run(method, NJOBS)
-    
+
     assert len(results) == NJOBS
