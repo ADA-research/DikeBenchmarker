@@ -58,7 +58,7 @@ def virtual_integration_test(simulation_data_csv: str):
     solver = df.columns[1]
     method = TrivialBenchmarker(benchmarks, solver, checker_id="dratbin", logroot="./logs")
     method.register_consumer(LambdaConsumer(print))
-    runner.run(method, 1)
+    runner.run([method], 1)
 
 
 def create_parsl_runner(
@@ -91,12 +91,14 @@ def parsl_local_integration_test(benchmarks):
     solver_adaptor.read_registry("./examples/solverAdaptors/sat/solvers1.csv")
     instance_adaptor = SATInstanceAdaptor("./instances/sat/", "./instances/cnf_data.db")
     config = make_local_processes(3)
-    runner = create_parsl_runner(solver_adaptor, instance_adaptor, config)
+    methods = []
     for sid in solver_adaptor.get_ids():
         method = TrivialBenchmarker(benchmarks, sid, checker_id=solver_adaptor.get_checker(sid), logroot="./logs")
         method.register_consumer(LambdaConsumer(print))
-        method.register_consumer(CSVConsumer("slurm_test_results.csv"))
-        runner.run(method, njobs=10)
+        method.register_consumer(CSVConsumer(f"local_test_results_{sid}.csv"))
+        methods.append(method)
+    runner = create_parsl_runner(solver_adaptor, instance_adaptor, config)
+    runner.run(methods, njobs=10)
 
 
 def parsl_slurm_integration_test(
@@ -129,14 +131,16 @@ def parsl_slurm_integration_test(
         walltime=f"{walltime_seconds // 3600:02d}:{(walltime_seconds % 3600) // 60:02d}:{walltime_seconds % 60:02d}",
         max_blocks=queue_max,
     )
-    runner = create_parsl_runner(
-        solver_adaptor, instance_adaptor, config, solver_cputime, solver_walltime, solver_memory, checker_cputime, checker_walltime, checker_memory
-    )
+    methods = []
     for sid in solver_adaptor.get_ids():
         method = TrivialBenchmarker(benchmarks, sid, checker_id=solver_adaptor.get_checker(sid), logroot="./logs")
         method.register_consumer(LambdaConsumer(print))
-        method.register_consumer(CSVConsumer("slurm_test_results.csv"))
-        runner.run(method, njobs=queue_max)
+        method.register_consumer(CSVConsumer(f"slurm_test_results_{sid}.csv"))
+        methods.append(method)
+    runner = create_parsl_runner(
+        solver_adaptor, instance_adaptor, config, solver_cputime, solver_walltime, solver_memory, checker_cputime, checker_walltime, checker_memory
+    )
+    runner.run(methods, njobs=queue_max)
 
 
 if __name__ == "__main__":

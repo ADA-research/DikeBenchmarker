@@ -59,7 +59,7 @@ def runsolver(
     satchecker_binaries_paths = [f.filepath for f in satchecker_binaries]
 
     out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = outputs
-    cnf = f"{benchmark_instance.filepath}.unpacked.cnf"
+    cnf = f"{solver_out.filepath}.unpacked.cnf"
     cert_out = f"{solver_out.filepath}.cert"
 
     solver_wrapper = ExecutionWrapper.from_dict(solver_wrapper_serialized)

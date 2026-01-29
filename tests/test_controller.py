@@ -18,6 +18,6 @@ def test_run():
     results: list[Result] = []
     consumer = LambdaConsumer(results.append)
     method.register_consumer(consumer)
-    runner.run(method, NJOBS)
+    runner.run([method], NJOBS)
 
     assert len(results) == NJOBS

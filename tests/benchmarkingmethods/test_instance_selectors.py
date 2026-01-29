@@ -30,13 +30,12 @@ def test_run_all_jobs(instance_selector_builder):
     jobs_left = len(benchmark_ids)
     solver_id = adaptor.get_competition_solver_hash("main2024")
     selector = instance_selector_builder(benchmark_ids, solver_id, adaptor)
-    jobs_done = set()
+    benchs_done = set()
     while jobs_left > 0:
-        job: Job = selector.next_job()
-        assert job is not None, f"returned no job while there are still {jobs_left} jobs left"
-        assert job.benchmark_id is not None, f"returned a job with a None benchmark hash while there are still {jobs_left} jobs left"
-        assert job.benchmark_id not in jobs_done, "produced the same job twice"
-        jobs_done.add(job.benchmark_id)
+        bench: Job = selector.next_benchmark_id()
+        assert bench is not None, f"returned a job with a None benchmark hash while there are still {jobs_left} jobs left"
+        assert bench not in benchs_done, "produced the same job twice"
+        benchs_done.add(bench)
         jobs_left -= 1
 
 
@@ -48,8 +47,6 @@ def test_valid_jobs(instance_selector_builder):
     solver_id = adaptor.get_competition_solver_hash("main2024")
     selector = instance_selector_builder(benchmark_ids, solver_id, adaptor)
     while jobs_left > 0:
-        job: Job = selector.next_job()
-        assert job is not None
-        assert job.benchmark_id in benchmark_ids, f'produced a job with invalid benchmark_id: "{job.benchmark_id}"'
-        assert job.solver_id == solver_id, f'produced a job with invalid solver_id: "{job.solver_id}"'
+        bench = selector.next_benchmark_id()
+        assert bench in benchmark_ids, f'produced a job with invalid benchmark_id: "{bench}"'
         jobs_left -= 1

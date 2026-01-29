@@ -7,7 +7,7 @@ from sustainablecompetition.benchmarkatoms import Job, JobState, JobStateError
 
 def test_mark_submitted_success():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.CREATED
 
     # Action
@@ -21,7 +21,7 @@ def test_mark_submitted_success():
 
 def test_mark_submitted_fails_if_not_created():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.RUNNING
 
     # Action & Assert
@@ -32,7 +32,7 @@ def test_mark_submitted_fails_if_not_created():
 # ---- Test job.mark_running() ----
 def test_mark_running_success():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.SUBMITTED
 
     # Action
@@ -46,7 +46,7 @@ def test_mark_running_success():
 
 def test_mark_running_fails_if_not_submitted():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.CREATED
 
     # Action & Assert
@@ -57,7 +57,7 @@ def test_mark_running_fails_if_not_submitted():
 # ---- test job.set_finished() ----
 def test_set_finished_success():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.RUNNING
 
     # Action
@@ -71,7 +71,7 @@ def test_set_finished_success():
 
 def test_set_finished_fails_if_not_running():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.SUBMITTED
 
     # Action & Assert
@@ -82,7 +82,7 @@ def test_set_finished_fails_if_not_running():
 # ---- test job.set_failed(error_msg) ----
 def test_set_failed_success():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.RUNNING
     error_msg = "Test error message"
 
@@ -98,7 +98,7 @@ def test_set_failed_success():
 
 def test_set_failed_fails_if_not_running():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.SUBMITTED
     error_msg = "Test error message"
 
@@ -110,7 +110,7 @@ def test_set_failed_fails_if_not_running():
 # ---- test job.cancel_local() ----
 def test_cancel_local_success_for_created():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.CREATED
 
     # Action
@@ -125,7 +125,7 @@ def test_cancel_local_success_for_created():
 
 def test_cancel_local_success_for_submitted():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.SUBMITTED
 
     # Action
@@ -140,7 +140,7 @@ def test_cancel_local_success_for_submitted():
 
 def test_cancel_local_fails_for_running():
     # Setup
-    job = Job("bench_id", "solver_id", "checker_id", "./logs")
+    job = Job(job_producer=None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.RUNNING
 
     # Action

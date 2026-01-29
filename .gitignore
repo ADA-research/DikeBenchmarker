@@ -431,6 +431,9 @@ build/*
 # unziped solvers
 solvers/main_*/*/*/
 
+# Results of integration tests
+local_test_results*
+
 # databases
 data/sustainablecompetition.db
 !data/dump.sql

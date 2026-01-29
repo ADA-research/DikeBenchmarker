@@ -88,7 +88,7 @@ class Job:
         """
         Get the logfile prefix for this job.
         """
-        return f"{self.logroot}/{self.solver_id}/{self.benchmark_id}"
+        return f"{self.logroot}/{self.solver_id}/{self.solver_id}.{self.benchmark_id}"
 
     def mark_submitted(self) -> None:
         """

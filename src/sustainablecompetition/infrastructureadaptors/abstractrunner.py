@@ -28,16 +28,20 @@ class AbstractRunner(ABC):
         self.instance_adaptor = instance_adaptor
         self.solver_adaptor = solver_adaptor
 
-    def run(self, benchmarker: "AbstractBenchmarker", njobs: int = 1):
+    def run(self, benchmarkers: list["AbstractBenchmarker"], njobs: int = 1):
         """
         Maintains the benchmarking process and blocks until benchmarking is finished (i.e., all jobs are completed).
         Also blocks until all consumers are finished.
         """
+        i = 0
         # submit njobs to the runner
         for _ in range(njobs):
-            job = benchmarker.next_job()
-            if job is not None:
-                self.submit(job)
+            if i < len(benchmarkers):
+                job = benchmarkers[i].next_job()
+                if job is not None:
+                    self.submit(job)
+                else:
+                    i = i + 1
 
         # iterate over the results
         for result in self.completions():
@@ -45,16 +49,22 @@ class AbstractRunner(ABC):
                 if result.get_job().retries > 0:
                     self.submit(result.get_job().clone_retry())  # resubmit failed job
                 continue
-            benchmarker.handle_result(result)
+            result.get_job().job_producer.handle_result(result)
+            result.get_job().job_producer.results_to_consume.put(result)
             # submit the next job
-            job = benchmarker.next_job()
-            if job is not None:
-                self.submit(job)
-            benchmarker.results_to_consume.put(result)
+            job = None
+            while job is None and i < len(benchmarkers):
+                job = benchmarkers[i].next_job()
+                if job is not None:
+                    self.submit(job)
+                else:
+                    i = i + 1
 
-        # signal the consumer thread to finish
-        benchmarker.results_to_consume.put(None)
-        benchmarker.result_consumer_thread.join()
+        # signal the consumer thread of each benchmarker to finish and wait for it
+        for benchmarker in benchmarkers:
+            benchmarker.results_to_consume.put(None)
+        for benchmarker in benchmarkers:
+            benchmarker.result_consumer_thread.join()
 
     @abstractmethod
     def submit(self, job: Job):
