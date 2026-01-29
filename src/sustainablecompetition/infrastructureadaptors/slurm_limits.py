@@ -95,6 +95,23 @@ def get_qos_limits(qos: str):
     return None, None
 
 
+def get_group_limits(user: str):
+    """
+    Return GrpJobs limits for all Slurm associations of the user.
+    """
+    out = _run(f"sacctmgr show assoc where user={user} format=GrpJobs -n -P")
+
+    if not out:
+        return None
+
+    limits = []
+    for line in out.splitlines():
+        value = line.split("|", 1)[0].strip()
+        limits.append(_parse_int(value))
+
+    return min(limits) if len(limits) else None
+
+
 def compute_max_blocks(safety_factor: float = 0.8, fallback: int = 100):
     """Determine safe maximum of submittable jobs as follows:
     max_blocks <= min(
@@ -114,6 +131,8 @@ def compute_max_blocks(safety_factor: float = 0.8, fallback: int = 100):
     qos_max_jobs, qos_max_submit = (None, None)
     if qos:
         qos_max_jobs, qos_max_submit = get_qos_limits(qos)
+        
+    group_max_jobs = get_group_limits(user)
 
     candidates = []
 
@@ -128,6 +147,9 @@ def compute_max_blocks(safety_factor: float = 0.8, fallback: int = 100):
 
     if qos_max_submit is not None:
         candidates.append(max(qos_max_submit - current_jobs, 0))
+    
+    if group_max_jobs is not None:
+        candidates.append(group_max_jobs)
 
     if not candidates:
         return max(fallback - current_jobs, 1)
