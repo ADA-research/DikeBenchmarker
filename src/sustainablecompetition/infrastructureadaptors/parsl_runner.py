@@ -194,7 +194,9 @@ class ParslRunner(AbstractRunner):
         with open(f"{output_root}.done", "w") as f:
             f.write("")
 
-        out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = [output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]]
+        out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = [
+            output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]
+        ]
 
         resource_usage = self.solver_wrapper.parse_result(wrapper_out)
         solver_result = self.solver_adaptor.parse_result(solver_out)

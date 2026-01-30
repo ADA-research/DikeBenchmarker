@@ -137,7 +137,9 @@ def parsl_slurm_integration_test(
         method.register_consumer(LambdaConsumer(print))
         method.register_consumer(CSVConsumer(f"slurm_test_results_{sid}.csv"))
         methods.append(method)
-    runner = create_parsl_runner(solver_adaptor, instance_adaptor, config, solver_cputime, solver_walltime, solver_memory, checker_cputime, checker_walltime, checker_memory)
+    runner = create_parsl_runner(
+        solver_adaptor, instance_adaptor, config, solver_cputime, solver_walltime, solver_memory, checker_cputime, checker_walltime, checker_memory
+    )
     runner.run(methods, njobs=queue_max * tasks_per_node)
 
 
