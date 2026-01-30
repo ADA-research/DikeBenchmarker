@@ -149,6 +149,7 @@ class ParslRunner(AbstractRunner):
         os.makedirs(os.path.dirname(output_root), exist_ok=True)
 
         if os.path.exists(f"{output_root}.done"):
+            print(f"Job {job.solver_id} on {job.benchmark_id} already completed in previous run, skipping submission.")
             return
 
         super().submit(job)  # this marks the job as submitted
@@ -192,9 +193,7 @@ class ParslRunner(AbstractRunner):
         with open(f"{output_root}.done", "w") as f:
             f.write("")
 
-        out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = [
-            output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]
-        ]
+        out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = [output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]]
 
         resource_usage = self.solver_wrapper.parse_result(wrapper_out)
         solver_result = self.solver_adaptor.parse_result(solver_out)

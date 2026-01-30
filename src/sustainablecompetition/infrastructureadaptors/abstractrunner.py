@@ -69,6 +69,7 @@ class AbstractRunner(ABC):
     @abstractmethod
     def submit(self, job: Job):
         """Submit a job to the external system."""
+        print(f"Submitting job: Solver {job.solver_id} on Benchmark {job.benchmark_id}")
         self.jobs.append(job)
         job.mark_submitted()
 
