@@ -51,6 +51,11 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
     def should_stop(self) -> bool:
         if len(self.selected_benchmark_ids) == 0:
             return False
+
+        # Stop if all benchmark instances have been run
+        if set(self.benchmark_ids).issubset(set(self.selected_benchmark_ids)):
+            return True
+
         total_pairs = len(self.solvers) * (len(self.solvers) - 1) // 2
 
         # Filter out benchmark instances where any solver has no performance data
@@ -66,7 +71,7 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
                 valid_benchmark_ids.append(benchmark_id)
 
         if len(valid_benchmark_ids) <= 0:
-            return False
+            return self.min_accuracy <= 0
 
         performances = [
             (
