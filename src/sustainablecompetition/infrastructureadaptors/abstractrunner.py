@@ -33,18 +33,22 @@ class AbstractRunner(ABC):
         Maintains the benchmarking process and blocks until benchmarking is finished (i.e., all jobs are completed).
         Also blocks until all consumers are finished.
         """
-        i = 0
+        i = j = 0
         # submit njobs to the runner
-        for _ in range(njobs):
-            if i < len(benchmarkers):
-                job = benchmarkers[i].next_job()
-                if job is not None:
-                    self.submit(job)
+        while j < njobs and i < len(benchmarkers):
+            print(f"Submitting job {j + 1}/{njobs} with benchmarker {i + 1}/{len(benchmarkers)}")
+            job = benchmarkers[i].next_job()
+            if job is not None:
+                if not self.submit(job):
+                    print(f"Job {job.solver_id} on {job.benchmark_id} was rejected by the runner.")
                 else:
-                    i = i + 1
+                    j = j + 1
+            else:
+                i = i + 1
 
         # iterate over the results
         for result in self.completions():
+            print(f"Received result for job: Solver {result.get_job().solver_id} on Benchmark {result.get_job().benchmark_id}")
             if result.has_failed():
                 if result.get_job().retries > 0:
                     self.submit(result.get_job().clone_retry())  # resubmit failed job
@@ -56,7 +60,9 @@ class AbstractRunner(ABC):
             while job is None and i < len(benchmarkers):
                 job = benchmarkers[i].next_job()
                 if job is not None:
-                    self.submit(job)
+                    if not self.submit(job):
+                        print(f"Job {job.solver_id} on {job.benchmark_id} was rejected by the runner.")
+                        job = None  # job rejected, try next job
                 else:
                     i = i + 1
 
@@ -67,11 +73,12 @@ class AbstractRunner(ABC):
             benchmarker.result_consumer_thread.join()
 
     @abstractmethod
-    def submit(self, job: Job):
+    def submit(self, job: Job) -> bool:
         """Submit a job to the external system."""
         print(f"Submitting job: Solver {job.solver_id} on Benchmark {job.benchmark_id}")
         self.jobs.append(job)
         job.mark_submitted()
+        return True
 
     @abstractmethod
     def completed(self, job: Job) -> Result:

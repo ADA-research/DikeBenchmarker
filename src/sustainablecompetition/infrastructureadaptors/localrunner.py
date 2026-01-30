@@ -43,6 +43,7 @@ class LocalRunner(AbstractRunner):
         self.futures.append(future)
         super().submit(job)
         job.external_id = len(self.futures) - 1
+        return True
 
     def completed(self, job: Job) -> Result:
         """

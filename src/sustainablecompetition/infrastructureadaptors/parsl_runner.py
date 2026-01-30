@@ -140,7 +140,7 @@ class ParslRunner(AbstractRunner):
         parsl.dfk().cleanup()
         parsl.clear()
 
-    def submit(self, job: Job):
+    def submit(self, job: Job) -> bool:
         """
         Submit a function to the process pool.
         Return an id for identification of the process future.
@@ -150,7 +150,7 @@ class ParslRunner(AbstractRunner):
 
         if os.path.exists(f"{output_root}.done"):
             print(f"Job {job.solver_id} on {job.benchmark_id} already completed in previous run, skipping submission.")
-            return
+            return False
 
         super().submit(job)  # this marks the job as submitted
         job.mark_running()  # mark as running immediately (workaround) TODO: proper monitoring of PARSL jobs
@@ -174,6 +174,7 @@ class ParslRunner(AbstractRunner):
         )
         self.futures.append(runsolver_future)
         job.external_id = len(self.futures) - 1
+        return True
 
     def completed(self, job: Job) -> Result:
         """
@@ -193,9 +194,7 @@ class ParslRunner(AbstractRunner):
         with open(f"{output_root}.done", "w") as f:
             f.write("")
 
-        out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = [
-            output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]
-        ]
+        out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = [output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]]
 
         resource_usage = self.solver_wrapper.parse_result(wrapper_out)
         solver_result = self.solver_adaptor.parse_result(solver_out)
