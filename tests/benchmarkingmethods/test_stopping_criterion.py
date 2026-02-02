@@ -14,7 +14,7 @@ def build_adaptor() -> SqlDataAdaptor:
 
 
 def make_result(benchmark_id: str, solver_id: str) -> Result:
-    job = Job(benchmark_id=benchmark_id, solver_id=solver_id, checker_id="", logroot="")
+    job = Job(job_producer=None, benchmark_id=benchmark_id, solver_id=solver_id, checker_id="", logroot="")
     return Result(job=job)
 
 
