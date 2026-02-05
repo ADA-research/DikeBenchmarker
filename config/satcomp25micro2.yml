@@ -1,0 +1,24 @@
+# SAT Competition 2025 Configuration, but with reduced resource limits
+
+# Solver resource limits
+solver_cputime: 500          # CPU time limit for solvers in seconds
+solver_walltime: 700         # Wall time limit for solvers in seconds
+solver_memory: 65536         # Memory limit for solvers in MB
+
+# Checker resource limits
+checker_cputime: 4500        # CPU time limit for checkers in seconds
+checker_walltime: 7000       # Wall time limit for checkers in seconds
+checker_memory: 65536        # Memory limit for checkers in MB
+
+# Job scheduler configuration
+scheduling:
+  scheduler: slurm
+  machine: liskov                  # machine/partition name for scheduler
+  account: iser # Account name for scheduler
+  tasks_per_node: 16                # Number of tasks per node
+  jobname: satcomp25micro2           # Job name for scheduler
+
+# Benchmark and solver files
+benchmarks: ./satcomp25.instances.csv # Path to CSV containing benchmark hashes
+solvers: ./satcomp25.solvers.csv      # Path to CSV containing solver paths
+results: ./satcomp25micro2.results          # Path to directory for storing results
