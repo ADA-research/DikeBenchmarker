@@ -3,6 +3,7 @@
 import csv
 
 from abc import ABC, abstractmethod
+import os
 
 
 class AbstractExecutable(ABC):
@@ -19,9 +20,12 @@ class AbstractExecutable(ABC):
 
     def read_registry(self, registry_path: str):
         """Read a CSV file containing id, command, and format to populate the registry."""
+        reg_dir = os.path.dirname(registry_path)
         with open(registry_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=["id", "bin", "fmt", "checker"], delimiter=";")
             for row in reader:
+                # Keep relative paths as-is, only make absolute paths relative to registry dir
+                row["bin"] = ",".join(bin_path if os.path.isabs(bin_path) else os.path.join(reg_dir, bin_path) for bin_path in row["bin"].split(","))
                 self.register(row["id"], row["bin"].split(","), row["fmt"], row["checker"] if "checker" in row else None)
 
     def get_ids(self) -> list[str]:
