@@ -43,16 +43,8 @@ def shutdown(signum, frame):
         timeout or termination signals during job execution.
     """
     print(f"Received signal {signum}, initiating graceful shutdown...")
-
-    dfk = parsl.dfk()
-
-    for executor in dfk.executors.values():
-        try:
-            executor.provider.cancel()
-        except Exception as e:
-            print(f"Failed to cancel provider jobs: {e}")
-
-    dfk.cleanup()  # shuts down executors + ZMQ
+    parsl.dfk().cleanup()
+    parsl.clear()
     sys.exit(0)
 
 
@@ -174,13 +166,6 @@ class ParslRunner(AbstractRunner):
 
     def __del__(self):
         dfk = parsl.dfk()
-
-        for executor in dfk.executors.values():
-            try:
-                executor.provider.cancel()
-            except Exception as e:
-                print(f"Failed to cancel provider jobs: {e}")
-
         dfk.cleanup()
         parsl.clear()
 
@@ -193,6 +178,10 @@ class ParslRunner(AbstractRunner):
         #
         # In SLURM jobs, use `#SBATCH --signal=B:USR1@300` to send SIGUSR1
         # 300 seconds before walltime limit, allowing graceful shutdown before timeout.
+        import inspect
+
+        print(signal, type(signal))
+        print(inspect.getsource(signal))
         for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGUSR1):
             signal.signal(sig, shutdown)
         # Now call the parent run method
