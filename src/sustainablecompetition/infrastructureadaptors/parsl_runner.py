@@ -15,6 +15,7 @@ from parsl.data_provider.files import File
 
 
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
+from sustainablecompetition.benchmarkingmethods.abstract_benchmarker import AbstractBenchmarker
 from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
 from sustainablecompetition.solveradaptors.checkeradaptor import CheckerAdaptor
@@ -53,18 +54,6 @@ def shutdown(signum, frame):
 
     dfk.cleanup()  # shuts down executors + ZMQ
     sys.exit(0)
-
-
-# Register signal handlers for graceful shutdown:
-# - SIGINT: Keyboard interrupt (Ctrl+C)
-# - SIGTERM: Termination request (e.g., kill command)
-# - SIGHUP: Terminal closed or parent process terminated
-# - SIGUSR1: User-defined signal 1 (custom timeout notification)
-#
-# In SLURM jobs, use `#SBATCH --signal=B:USR1@300` to send SIGUSR1
-# 300 seconds before walltime limit, allowing graceful shutdown before timeout.
-for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGUSR1):
-    signal.signal(sig, shutdown)
 
 
 @bash_app
@@ -194,6 +183,20 @@ class ParslRunner(AbstractRunner):
 
         dfk.cleanup()
         parsl.clear()
+
+    def run(self, benchmarkers: list["AbstractBenchmarker"], njobs: int = 1):
+        # Register signal handlers for graceful shutdown:
+        # - SIGINT: Keyboard interrupt (Ctrl+C)
+        # - SIGTERM: Termination request (e.g., kill command)
+        # - SIGHUP: Terminal closed or parent process terminated
+        # - SIGUSR1: User-defined signal 1 (custom timeout notification)
+        #
+        # In SLURM jobs, use `#SBATCH --signal=B:USR1@300` to send SIGUSR1
+        # 300 seconds before walltime limit, allowing graceful shutdown before timeout.
+        for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGUSR1):
+            signal.signal(sig, shutdown)
+        # Now call the parent run method
+        super().run(benchmarkers, njobs)
 
     def submit(self, job: Job) -> bool:
         """
