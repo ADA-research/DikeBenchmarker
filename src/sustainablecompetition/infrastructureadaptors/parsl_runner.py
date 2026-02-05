@@ -162,7 +162,7 @@ class ParslRunner(AbstractRunner):
         self.solver_wrapper = solver_wrapper
         self.checker_wrapper = checker_wrapper
         parsl.load(parsl_config)
-        parsl.set_stream_logger()
+        # parsl.set_stream_logger()
         self.futures = []
 
     def __del__(self):
@@ -179,10 +179,6 @@ class ParslRunner(AbstractRunner):
         #
         # In SLURM jobs, use `#SBATCH --signal=B:USR1@300` to send SIGUSR1
         # 300 seconds before walltime limit, allowing graceful shutdown before timeout.
-        import inspect
-
-        print(signal, type(signal))
-        print(inspect.getsource(signal))
         for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGUSR1):
             signal.signal(sig, shutdown)
         # Now call the parent run method
