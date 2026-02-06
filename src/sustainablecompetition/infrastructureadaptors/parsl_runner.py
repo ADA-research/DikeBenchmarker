@@ -2,8 +2,10 @@
 PARSL Runner Adaptor
 """
 
+from datetime import time
 import os
 import signal
+import subprocess
 import sys
 
 import parsl
@@ -21,6 +23,18 @@ from sustainablecompetition.benchmarkatoms import Job, Result
 from sustainablecompetition.solveradaptors.checkeradaptor import CheckerAdaptor
 from sustainablecompetition.solveradaptors.executionwrapper import ExecutionWrapper
 from sustainablecompetition.solveradaptors.solveradaptor import SolverAdaptor
+
+
+_SLURM_SCRIPT_PATH: str | None = None
+
+
+def set_slurm_script_path(path: str) -> None:
+    global _SLURM_SCRIPT_PATH
+    _SLURM_SCRIPT_PATH = path
+
+
+def get_slurm_script_path() -> str:
+    return _SLURM_SCRIPT_PATH
 
 
 def shutdown(signum, frame):
@@ -51,8 +65,16 @@ def shutdown(signum, frame):
         except AttributeError:
             pass
 
+    time.sleep(5)  # wait for cancellations to propagate
+
     parsl.dfk().cleanup()
     parsl.clear()
+
+    slurm_script_path = get_slurm_script_path()
+    if slurm_script_path:
+        subprocess.run(["sbatch", slurm_script_path], check=False)
+
+    sys.exit(0)
 
 
 @bash_app

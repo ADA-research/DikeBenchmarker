@@ -11,7 +11,9 @@
 #SBATCH --ntasks=1                      # single task (process)
 #SBATCH --cpus-per-task=1               # single core
 
+SLURM_SCRIPT="$(readlink -f "$0")"
+
 export PYTHONNOUSERSITE=1
 source ./venv/bin/activate
 
-./src/nemesis.py ./config/satcomp25micro2.yml
+./src/nemesis.py ./config/satcomp25micro2.yml --requeue "$SLURM_SCRIPT"

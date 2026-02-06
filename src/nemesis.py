@@ -10,9 +10,8 @@ import polars as pl
 from sustainablecompetition.infrastructureadaptors import slurm_limits
 
 from sustainablecompetition.infrastructureadaptors.parsl_configs import make_slurm_config
-from sustainablecompetition.infrastructureadaptors.parsl_runner import ParslRunner
+from sustainablecompetition.infrastructureadaptors.parsl_runner import ParslRunner, set_slurm_script_path
 from sustainablecompetition.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
-from sustainablecompetition.resultconsumers.csv_consumer import CSVConsumer
 from sustainablecompetition.resultconsumers.lambda_consumer import LambdaConsumer
 from sustainablecompetition.solveradaptors.executionwrapper import ExecutionWrapper
 from sustainablecompetition.solveradaptors.solveradaptor import SolverAdaptor
@@ -90,8 +89,12 @@ if __name__ == "__main__":
     # In Greek mythology, Nemesis restores balance by punishing excessive ambition and undeserved success. She exposes hubris, ensuring that those who indulge in it face retribution without mercy.
 
     parser.add_argument("config", type=str, help="Path to YAML configuration file")
+    parser.add_argument("--requeue", type=str, default=None, help="Path to slurm script for requeuing; if not provided then requeuing is disabled.")
 
     args = parser.parse_args()
+
+    if args.requeue:
+        set_slurm_script_path(args.requeue)
 
     # Load configuration from YAML file
     try:
