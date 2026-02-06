@@ -47,6 +47,7 @@ def run_slurm(
     checker_memory: int = 64 * 1024,
     logroot: str = "./logs",
     workerinit: str = "",
+    queuelimit: int = None,
 ):
     """Run trivial benchmarking method on slurm cluster."""
     print(f"Benchmarking solvers in {solvers} using {len(benchmarks)} benchmarks")
@@ -55,7 +56,7 @@ def run_slurm(
     solver_adaptor = get_solver_adaptor(solvers)
     instance_adaptor = get_instance_adaptor()
 
-    queue_max = slurm_limits.compute_max_blocks(safety_factor=0.8, fallback=100)
+    queue_max = queuelimit or slurm_limits.compute_max_blocks(safety_factor=0.8, fallback=100)
 
     config = make_slurm_config(
         partition=machine,
@@ -150,6 +151,7 @@ if __name__ == "__main__":
             checker_memory=checker_memory,
             logroot=results,
             workerinit=scheduling.get("workerinit", ""),
+            queuelimit=scheduling.get("queuelimit", None),
         )
     else:
         print(f"Error: Unsupported scheduler '{scheduler}'.")
