@@ -17,7 +17,7 @@ scheduling:
   account: iser # Account name for scheduler
   tasks_per_node: 16                # Number of tasks per node
   jobname: satcomp25micro2           # Job name for scheduler
-  workerinit: "source /nfs/home/iser/git/SustainableCompetition/venv/bin/activate; export PYTHONPATH=/nfs/home/iser/git/SustainableCompetition:$PYTHONPATH; cd /nfs/home/iser/git/SustainableCompetition"  # Initialization commands for each worker node
+  workerinit: "export PYTHONNOUSERSITE=1; unset PYTHONPATH; source /nfs/home/iser/git/SustainableCompetition/venv/bin/activate; cd /nfs/home/iser/git/SustainableCompetition"  # Initialization commands for each worker node
 
 # Benchmark and solver files
 benchmarks: ./satcomp25.instances.csv # Path to CSV containing benchmark hashes

@@ -11,6 +11,7 @@
 #SBATCH --ntasks=1                      # single task (process)
 #SBATCH --cpus-per-task=1               # single core
 
+export PYTHONNOUSERSITE=1
 source ./venv/bin/activate
 
 ./src/nemesis.py ./config/satcomp25micro2.yml
