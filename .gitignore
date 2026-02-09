@@ -432,7 +432,7 @@ FodyWeavers.xsd
 build/*
 
 # unziped solvers
-solvers/main_*/*/*/
+solvers/*/main_*/*/*
 
 # Results of integration tests
 local_test_results*
