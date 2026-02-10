@@ -6,7 +6,17 @@
 
    ```bash
    git clone --recurse-submodules https://github.com/ADA-research/SustainableCompetition.git
-   cd sustainablecompetition
+   cd SustainableCompetition
+   ```
+
+If you get an error that you can't clone with HTTP, replace the first step with the following step:
+
+   ```bash
+   cd .. && yes | rm -r SustainableCompetition
+   git clone https://github.com/ADA-research/SustainableCompetition.git
+   cd SustainableCompetition
+   sed -i 's|url = https://github.com/ADA-research/SustainableCompetition-db|url = git@github.com:ADA-research/SustainableCompetition-db.git|' .gitmodules
+   git submodule update --init --recursive
    ```
 
 2. Install ``sqlite3`` on your system, chances are it is already installed, you can check if it is installed with:
