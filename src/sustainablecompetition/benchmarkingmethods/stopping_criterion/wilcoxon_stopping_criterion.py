@@ -1,11 +1,10 @@
 """Stopping criterion that stops when a minimum ranking accuracy is reached with a Wilcoxon test."""
 
-import importlib
 import warnings
 
 from sustainablecompetition.benchmarkatoms import Result
 from sustainablecompetition.benchmarkingmethods.stopping_criterion.stopping_criteria import StoppingCriteria
-from sustainablecompetition.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
 from scipy.stats import wilcoxon
 
@@ -15,14 +14,15 @@ __all__ = ["WilcoxonStoppingCriterion"]
 class WilcoxonStoppingCriterion(StoppingCriteria):
     """Stopping criterion that stops when a minimum ranking accuracy is reached with a Wilcoxon test."""
 
-    def __init__(self, benchmark_ids: list[str], challenger_id: str, solvers_challenged: list[str], min_accuracy: float, min_instances: int = 5):
+    def __init__(
+        self, benchmark_ids: list[str], challenger_id: str, solvers_challenged: list[str], min_accuracy: float, db_adaptor: DataAdaptor, min_instances: int = 5
+    ):
         super().__init__()
         self.benchmark_ids = benchmark_ids
         self.min_accuracy = min_accuracy
         self.min_instances = min_instances
         self.selected_benchmark_ids = []
-        db_path = importlib.resources.files("sustainablecompetition.data.db").joinpath("sustainablecompetition.db")
-        self.db_adaptor = SqlDataAdaptor(db_path)
+        self.db_adaptor = db_adaptor
 
         self.challenger = challenger_id
 

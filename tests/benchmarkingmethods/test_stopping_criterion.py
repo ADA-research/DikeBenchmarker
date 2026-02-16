@@ -34,45 +34,45 @@ def solver_ids(adaptor):
 
 
 class TestMinimumAccuracyStoppingCriterion:
-    def test_does_not_stop_initially(self, benchmark_ids):
-        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, min_accuracy=0.5)
+    def test_does_not_stop_initially(self, adaptor, benchmark_ids, solver_ids):
+        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, solver_ids, min_accuracy=0.5, db_adaptor=adaptor)
         assert criterion.should_stop() is False
 
-    def test_stops_with_all_instances(self, benchmark_ids, solver_ids):
-        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, min_accuracy=1.0)
+    def test_stops_with_all_instances(self, adaptor, benchmark_ids, solver_ids):
+        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, solver_ids, min_accuracy=1.0, db_adaptor=adaptor)
         for bid in benchmark_ids:
             criterion.handle_result(make_result(bid, solver_ids[0]))
         assert criterion.should_stop() is True
 
-    def test_handle_result_adds_benchmark(self, benchmark_ids, solver_ids):
-        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, min_accuracy=0.5)
+    def test_handle_result_adds_benchmark(self, adaptor, benchmark_ids, solver_ids):
+        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, solver_ids, min_accuracy=0.5, db_adaptor=adaptor)
         criterion.handle_result(make_result(benchmark_ids[0], solver_ids[0]))
         assert benchmark_ids[0] in criterion.selected_benchmark_ids
 
-    def test_low_accuracy_threshold(self, benchmark_ids, solver_ids):
-        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, min_accuracy=0.0)
+    def test_low_accuracy_threshold(self, adaptor, benchmark_ids, solver_ids):
+        criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, solver_ids, min_accuracy=0.0, db_adaptor=adaptor)
         criterion.handle_result(make_result(benchmark_ids[0], solver_ids[0]))
         assert criterion.should_stop() is True
 
 
 class TestWilcoxonStoppingCriterion:
-    def test_does_not_stop_initially(self, benchmark_ids, solver_ids):
-        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.95)
+    def test_does_not_stop_initially(self, adaptor, benchmark_ids, solver_ids):
+        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.95, db_adaptor=adaptor)
         assert criterion.should_stop() is False
 
-    def test_does_not_stop_below_min_instances(self, benchmark_ids, solver_ids):
-        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.95, min_instances=5)
+    def test_does_not_stop_below_min_instances(self, adaptor, benchmark_ids, solver_ids):
+        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.95, db_adaptor=adaptor, min_instances=5)
         for bid in benchmark_ids[:4]:
             criterion.handle_result(make_result(bid, solver_ids[0]))
         assert criterion.should_stop() is False
 
-    def test_handle_result_adds_benchmark(self, benchmark_ids, solver_ids):
-        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.95)
+    def test_handle_result_adds_benchmark(self, adaptor, benchmark_ids, solver_ids):
+        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.95, db_adaptor=adaptor)
         criterion.handle_result(make_result(benchmark_ids[0], solver_ids[0]))
         assert benchmark_ids[0] in criterion.selected_benchmark_ids
 
-    def test_stops_with_enough_instances(self, benchmark_ids, solver_ids):
-        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.5, min_instances=5)
+    def test_stops_with_enough_instances(self, adaptor, benchmark_ids, solver_ids):
+        criterion = WilcoxonStoppingCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], min_accuracy=0.5, db_adaptor=adaptor, min_instances=5)
         for bid in benchmark_ids:
             criterion.handle_result(make_result(bid, solver_ids[0]))
             if criterion.should_stop():
@@ -80,8 +80,8 @@ class TestWilcoxonStoppingCriterion:
         # With all instances and a low threshold, it should eventually stop or exhaust instances
         assert criterion.should_stop() or len(criterion.selected_benchmark_ids) == len(benchmark_ids)
 
-    def test_sorted_solvers_initialized_correctly(self, benchmark_ids, solver_ids):
+    def test_sorted_solvers_initialized_correctly(self, adaptor, benchmark_ids, solver_ids):
         ids = solver_ids[:3]
-        criterion = WilcoxonStoppingCriterion(benchmark_ids, ids[0], ids[1:], min_accuracy=0.95)
+        criterion = WilcoxonStoppingCriterion(benchmark_ids, ids[0], ids[1:], min_accuracy=0.95, db_adaptor=adaptor)
         assert set(criterion.sorted_solver_ids) == set(ids[1:])
         assert criterion.challenger == ids[0]

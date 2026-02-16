@@ -1,10 +1,8 @@
 """Stopping criterion that stops when a minimum ranking accuracy is reached."""
 
-import importlib
-
 from sustainablecompetition.benchmarkatoms import Result
 from sustainablecompetition.benchmarkingmethods.stopping_criterion.stopping_criteria import StoppingCriteria
-from sustainablecompetition.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 
 __all__ = ["MinimumAccuracyStoppingCriterion"]
 
@@ -12,14 +10,13 @@ __all__ = ["MinimumAccuracyStoppingCriterion"]
 class MinimumAccuracyStoppingCriterion(StoppingCriteria):
     """Stopping criterion that stops when a minimum ranking accuracy is reached."""
 
-    def __init__(self, benchmark_ids: list[str], min_accuracy: float):
+    def __init__(self, benchmark_ids: list[str], solvers: list[str], min_accuracy: float, db_adaptor: DataAdaptor):
         super().__init__()
         self.benchmark_ids = benchmark_ids
         self.min_accuracy = min_accuracy
         self.selected_benchmark_ids = []
-        db_path = importlib.resources.files("sustainablecompetition.data.db").joinpath("sustainablecompetition.db")
-        self.db_adaptor = SqlDataAdaptor(db_path)
-        self.solvers = self.db_adaptor.get_all_solver_ids()
+        self.db_adaptor = db_adaptor
+        self.solvers = solvers
         self.instance_performances = {}
 
         # Filter out benchmark instances where any solver has no performance data
