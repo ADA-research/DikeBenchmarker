@@ -27,6 +27,8 @@ class CombinedBenchmarker(AbstractBenchmarker):
         self.stopping_criteria = stopping_criteria
 
     def next_job(self) -> Job:
+        if self.should_stop():
+            return None
         benchmark_id = self.selector.next_benchmark_id()
         if benchmark_id is not None:
             return Job(job_producer=self, benchmark_id=benchmark_id, solver_id=self.solver_id, checker_id=self.checker_id, logroot=self.logroot)

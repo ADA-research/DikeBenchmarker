@@ -17,13 +17,10 @@ class VirtualRunner(AbstractRunner):
         self.runtimes = runtimes
 
     def submit(self, job: Job):
-        """
-        Submit a function to the process pool.
-        Return an id for identification of the process future.
-        """
-        super().submit(job)
+        accepted = super().submit(job)
         job.external_id = len(self.jobs) - 1
         job.mark_running()
+        return accepted
 
     def completed(self, job: Job) -> Result:
         """

@@ -17,7 +17,7 @@ def adaptor(db_path):
     return SqlDataAdaptor(db_path)
 
 
-def test_get_performances(adaptor,db_path):
+def test_get_performances(adaptor, db_path):
     print(db_path)
     # Test with all optional arguments
     df = adaptor.get_performances(inst_hash="00d1fe07ab948b348bb3fb423b1ef40d", solver_id="AMSAT_main2024", env_id="starexec2024")
