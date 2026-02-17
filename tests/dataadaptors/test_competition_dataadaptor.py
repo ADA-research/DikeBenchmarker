@@ -7,7 +7,8 @@ INSTANCE_HASH = "b4f28bc5f78ead2bf150639790768df4"
 
 
 ALL_COLS = [
-    "env_hash",
+    "res_id",
+    "env_id",
     "nb_assigned_cores",
     "assigned_memory",
     "nb_available_core",
@@ -85,7 +86,7 @@ ALL_COLS = [
     "cg_degree_entropy",
     "bytes",
     "ccs",
-    "solver_hash",
+    "solver_id",
     "solver_name",
     "solver_base",
     "competition",
@@ -103,7 +104,7 @@ def build_adaptor() -> CompetitionDataAdaptor:
 
 @pytest.mark.dependency()
 def test_load():
-    adaptor = build_adaptor()
+    build_adaptor()
 
 
 @pytest.mark.dependency(depends=["test_load"])

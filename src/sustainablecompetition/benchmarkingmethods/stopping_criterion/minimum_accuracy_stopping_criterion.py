@@ -24,7 +24,7 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
         for benchmark_id in self.selected_benchmark_ids:
             all_have_perf = True
             for solver_id in self.solvers:
-                perf_col = self.db_adaptor.get_performances(solver_hash=solver_id, inst_hash=benchmark_id).get_column("perf")
+                perf_col = self.db_adaptor.get_performances(solver_id=solver_id, inst_hash=benchmark_id).get_column("perf")
                 if len(perf_col) == 0:
                     all_have_perf = False
                     break
@@ -35,7 +35,7 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
                 solver_id,
                 sum(
                     [
-                        self.db_adaptor.get_performances(solver_hash=solver_id, inst_hash=benchmark_id).get_column("perf")[0]
+                        self.db_adaptor.get_performances(solver_id=solver_id, inst_hash=benchmark_id).get_column("perf")[0]
                         for benchmark_id in valid_benchmark_ids
                     ]
                 ),
@@ -60,7 +60,7 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
         for benchmark_id in self.selected_benchmark_ids:
             all_have_perf = True
             for solver_id in self.solvers:
-                perf_col = self.db_adaptor.get_performances(solver_hash=solver_id, inst_hash=benchmark_id).get_column("perf")
+                perf_col = self.db_adaptor.get_performances(solver_id=solver_id, inst_hash=benchmark_id).get_column("perf")
                 if len(perf_col) == 0:
                     all_have_perf = False
                     break

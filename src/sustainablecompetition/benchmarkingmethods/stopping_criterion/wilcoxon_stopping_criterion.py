@@ -33,7 +33,7 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
         for benchmark_id in self.selected_benchmark_ids:
             all_have_perf = True
             for solver_id in solvers_challenged:
-                perf_col = self.db_adaptor.get_performances(solver_hash=solver_id, inst_hash=benchmark_id).get_column("perf")
+                perf_col = self.db_adaptor.get_performances(solver_id=solver_id, inst_hash=benchmark_id).get_column("perf")
                 if len(perf_col) == 0:
                     all_have_perf = False
                     break
@@ -44,7 +44,7 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
                 solver_id,
                 sum(
                     [
-                        self.db_adaptor.get_performances(solver_hash=solver_id, inst_hash=benchmark_id).get_column("perf")[0]
+                        self.db_adaptor.get_performances(solver_id=solver_id, inst_hash=benchmark_id).get_column("perf")[0]
                         for benchmark_id in valid_benchmark_ids
                     ]
                 ),
@@ -63,7 +63,7 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
         for benchmark_id in self.selected_benchmark_ids:
             all_have_perf = True
             for solver_id in self.sorted_solver_ids + [self.challenger]:
-                perf_col = self.db_adaptor.get_performances(solver_hash=solver_id, inst_hash=benchmark_id).get_column("perf")
+                perf_col = self.db_adaptor.get_performances(solver_id=solver_id, inst_hash=benchmark_id).get_column("perf")
                 if len(perf_col) == 0:
                     all_have_perf = False
                     break
@@ -74,7 +74,7 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
             return False
 
         my_challenger_perfs = [
-            self.db_adaptor.get_performances(solver_hash=self.challenger, inst_hash=benchmark_id).get_column("perf")[0] for benchmark_id in valid_benchmark_ids
+            self.db_adaptor.get_performances(solver_id=self.challenger, inst_hash=benchmark_id).get_column("perf")[0] for benchmark_id in valid_benchmark_ids
         ]
         has_progressed = True
         with warnings.catch_warnings():
@@ -85,8 +85,7 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
                 has_progressed = False
                 to_compare = self.sorted_solver_ids.pop()
                 perfs = [
-                    self.db_adaptor.get_performances(solver_hash=to_compare, inst_hash=benchmark_id).get_column("perf")[0]
-                    for benchmark_id in valid_benchmark_ids
+                    self.db_adaptor.get_performances(solver_id=to_compare, inst_hash=benchmark_id).get_column("perf")[0] for benchmark_id in valid_benchmark_ids
                 ]
                 _, p_stop = wilcoxon(my_challenger_perfs, perfs, alternative="two-sided")
                 if 1 - p_stop >= self.min_accuracy:

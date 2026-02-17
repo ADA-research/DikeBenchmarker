@@ -84,67 +84,77 @@ class CompetitionDataAdaptor(DataAdaptor):
         # Connect to database
         if database_path and source_name:
             db_adaptor = SqlDataAdaptor(database_path)
-            env_hash = db_adaptor.get_competition_env_hash(source_name)
+            env_id, res_id = db_adaptor.get_competition_env(source_name)
         else:
             db_adaptor = None
-            env_hash = None
+            env_id = None
+            res_id = None
 
-        # Map solver_name to solver_hash
+        # Map solver_name to solver_id
         if db_adaptor:
             df_long = df_long.with_columns(
                 pl.col("solver_name")
-                .map_elements(lambda name: db_adaptor.get_competition_solver_hash(source_name, name), return_dtype=pl.String)
-                .alias("solver_hash")
+                .map_elements(lambda name: db_adaptor.get_competition_solver_id(source_name, name), return_dtype=pl.String)
+                .alias("solver_id")
             )
         else:
-            df_long = df_long.with_columns(pl.col("solver_name").map_elements(lambda name: f"{name}", return_dtype=pl.String).alias("solver_hash"))
+            df_long = df_long.with_columns(pl.col("solver_name").map_elements(lambda name: f"{name}", return_dtype=pl.String).alias("solver_id"))
 
-        # Set env_hash
-        if env_hash is None:
-            env_hash = "unknown_env"
-        df_long = df_long.with_columns(env_hash=pl.lit(env_hash))
+        # Set env_id
+        if env_id is None:
+            env_id = "unknown_env"
+        df_long = df_long.with_columns(env_id=pl.lit(env_id))
+
+        # Set res_id
+        if res_id is None:
+            res_id = "unknown_res"
+        df_long = df_long.with_columns(res_id=pl.lit(res_id))
 
         # Determine status
         df_long = df_long.with_columns(pl.when(pl.col("perf") == 10000).then(pl.lit("TIMEOUT")).otherwise(pl.lit("COMPLETE")).alias("status"))
 
         # format and set perf dataframe
-        self.perfs = df_long.select(["status", "perf", "inst_hash", "env_hash", "solver_hash"])
+        self.perfs = df_long.select(["status", "perf", "inst_hash", "env_id", "res_id", "solver_id"])
 
         # Load features using db_adaptor
         if db_adaptor is not None:
-            self.environments = db_adaptor.get_environments(env_ids=[env_hash])
+            self.environments = db_adaptor.get_environments(env_ids=[env_id])
+            self.resources = db_adaptor.get_resources(res_ids=[res_id])
             self.instances = db_adaptor.get_instances(inst_ids=list(self.perfs["inst_hash"]))
-            self.solvers = db_adaptor.get_solvers(solver_hashs=list(self.perfs["solver_hash"]))
-            # Merge perf with environments on env_hash
-            self.data = self.perfs.join(self.environments, left_on="env_hash", right_on="env_hash", how="left")
+            self.solvers = db_adaptor.get_solvers(solver_ids=list(self.perfs["solver_id"]))
+            # Merge perf with environments on env_id
+            self.data = self.perfs.join(self.environments, left_on="env_id", right_on="env_id", how="left")
+
+            # Merge with resources on res_id
+            self.data = self.data.join(self.resources, left_on="res_id", right_on="res_id", how="left")
 
             # Merge with instances on inst_hash
             self.data = self.data.join(self.instances, left_on="inst_hash", right_on="inst_hash", how="left")
 
-            # Merge with solvers on solver_hash
-            self.data = self.data.join(self.solvers, left_on="solver_hash", right_on="solver_hash", how="left")
+            # Merge with solvers on solver_id
+            self.data = self.data.join(self.solvers, left_on="solver_id", right_on="solver_id", how="left")
         else:
             self.data = self.perfs
 
     def get_performances(
-        self, inst_hash: Optional[str] = None, solver_hash: Optional[str] = None, env_hash: Optional[str] = None, filter: Optional[str] = None
+        self, inst_hash: Optional[str] = None, solver_id: Optional[str] = None, env_id: Optional[str] = None, filter: Optional[str] = None
     ) -> pl.DataFrame:
         """
         Get the performance of a specific benchmark instance.
         Hardware id is ignored as this data adaptor is for a single hardware configuration. (TODO: find a better way to handle this)
         Args:
             inst_hash (str): the id of the instance to get the performances about
-            solver_hash (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
+            solver_id (Optional[str], optional): If set, only gives the performance with the specified id. Defaults to None.
         """
         result = self.data
 
         if inst_hash:
             result = result.filter(pl.col("inst_hash") == inst_hash)
 
-        if solver_hash:
-            result = result.filter(pl.col("solver_hash") == solver_hash)
+        if solver_id:
+            result = result.filter(pl.col("solver_id") == solver_id)
 
-        if env_hash:
-            result = result.filter(pl.col("env_hash") == env_hash)
+        if env_id:
+            result = result.filter(pl.col("env_id") == env_id)
 
         return result

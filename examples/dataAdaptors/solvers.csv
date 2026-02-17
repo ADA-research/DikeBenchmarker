@@ -1,4 +1,4 @@
-solver_hash,solver_name,solver_base,competition
+solver_id,solver_name,solver_base,competition
 adf32f950ddeaf523c254c5a787ba7ca,AMSAT,minisat,main2024
 5dd432077aa812edf911be6a2f093ad4,AMSAT_RGC,minisat,main2024
 39cd9b0d44af155a2e407ab3505b3055,CaDiCaL,cadical,main2024

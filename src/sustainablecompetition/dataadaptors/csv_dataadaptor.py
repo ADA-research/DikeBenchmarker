@@ -31,26 +31,26 @@ class CsvDataAdaptor(DataAdaptor):
         self.solvers = pl.read_csv(solvers_path)
         # Load performances
         self.perfs = pl.read_csv(performances_path)
-        # Merge perf with environments on env_hash
-        self.data = self.perfs.join(self.environments, left_on="env_hash", right_on="env_hash", how="left")
+        # Merge perf with environments on env_id
+        self.data = self.perfs.join(self.environments, left_on="env_id", right_on="env_id", how="left")
 
         # Merge with instances on inst_hash
         self.data = self.data.join(self.instances, left_on="inst_hash", right_on="inst_hash", how="left")
 
-        # Merge with solvers on solver_hash
-        self.data = self.data.join(self.solvers, left_on="solver_hash", right_on="solver_hash", how="left")
+        # Merge with solvers on solver_id
+        self.data = self.data.join(self.solvers, left_on="solver_id", right_on="solver_id", how="left")
 
     def get_performances(
-        self, inst_hash: Optional[str] = None, solver_hash: Optional[str] = None, env_hash: Optional[str] = None, filter: Optional[str] = None
+        self, inst_hash: Optional[str] = None, solver_id: Optional[str] = None, env_id: Optional[str] = None, filter: Optional[str] = None
     ) -> pl.DataFrame:
-        """Get as a data frame all performances for the specified inst_hash, solver_hash and env_hash.
+        """Get as a data frame all performances for the specified inst_hash, solver_id and env_id.
         If none are specified, returns all the data
 
 
         Args:
             inst_hash (str, optional): the id of the instance to get the performances about
-            solver_hash (str, optional): If set, only gives the performance with the specified id. Defaults to None.
-            env_hash (str, optional): If set, only gives the performance with the specified id. Defaults to None.
+            solver_id (str, optional): If set, only gives the performance with the specified id. Defaults to None.
+            env_id (str, optional): If set, only gives the performance with the specified id. Defaults to None.
 
         Returns:
             pl.DataFrame: _description_
@@ -60,10 +60,10 @@ class CsvDataAdaptor(DataAdaptor):
         if inst_hash:
             result = result.filter(pl.col("inst_hash") == inst_hash)
 
-        if solver_hash:
-            result = result.filter(pl.col("solver_hash") == solver_hash)
+        if solver_id:
+            result = result.filter(pl.col("solver_id") == solver_id)
 
-        if env_hash:
-            result = result.filter(pl.col("hardware_hash") == env_hash)
+        if env_id:
+            result = result.filter(pl.col("hardware_hash") == env_id)
 
         return result

@@ -2,8 +2,7 @@
 Discrimination benchmarker implementation that submits each solver/instance pair.
 """
 
-from typing import Optional
-from sustainablecompetition.benchmarkatoms import Job, Result
+from sustainablecompetition.benchmarkatoms import Result
 from sustainablecompetition.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
 from sustainablecompetition.dataadaptors.dataadaptor import DataAdaptor
 

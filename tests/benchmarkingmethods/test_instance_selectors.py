@@ -28,7 +28,7 @@ def test_run_all_jobs(instance_selector_builder):
     adaptor = build_adaptor()
     benchmark_ids = list(set(adaptor.get_performances().get_column("inst_hash").to_list()))
     jobs_left = len(benchmark_ids)
-    solver_id = adaptor.get_competition_solver_hash("main2024")
+    solver_id = adaptor.get_competition_solver_id("main2024")
     selector = instance_selector_builder(benchmark_ids, solver_id, adaptor)
     benchs_done = set()
     while jobs_left > 0:
@@ -44,7 +44,7 @@ def test_valid_jobs(instance_selector_builder):
     adaptor = build_adaptor()
     benchmark_ids = list(set(adaptor.get_performances().get_column("inst_hash").to_list()))
     jobs_left = len(benchmark_ids)
-    solver_id = adaptor.get_competition_solver_hash("main2024")
+    solver_id = adaptor.get_competition_solver_id("main2024")
     selector = instance_selector_builder(benchmark_ids, solver_id, adaptor)
     while jobs_left > 0:
         bench = selector.next_benchmark_id()

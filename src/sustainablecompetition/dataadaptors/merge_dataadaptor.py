@@ -20,8 +20,8 @@ class MergeDataAdaptor(DataAdaptor):
         super().__init__()
         self.data_adaptors = data_adaptors
 
-    def get_performances(self, inst_hash: str, solver_hash: Optional[str] = None, env_hash: Optional[str] = None, filter: Optional[str] = None) -> pl.DataFrame:
-        dfs = [d.get_performances(inst_hash, solver_hash, env_hash, filter).j for d in self.data_adaptors]
+    def get_performances(self, inst_hash: str, solver_id: Optional[str] = None, env_id: Optional[str] = None, filter: Optional[str] = None) -> pl.DataFrame:
+        dfs = [d.get_performances(inst_hash, solver_id, env_id, filter).j for d in self.data_adaptors]
         df: pl.DataFrame = dfs.pop()
         for el in dfs:
             # df = df.join(el, how="full", coalesce=True)
