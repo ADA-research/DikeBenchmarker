@@ -1,4 +1,4 @@
-env_hash,solver_hash,status,perf,inst_hash
+env_id,solver_id,status,perf,inst_hash
 597c479a9bc71e9bdc080f1d491b0ac4,ddf89f00900b00844bcbd2f3cb8db25b,SAT,7.09,f1afd5e8d4b842c15c6a2c420b2b2dba
 597c479a9bc71e9bdc080f1d491b0ac4,ddf89f00900b00844bcbd2f3cb8db25b,UNSAT,335.851,0412f6f3174dfc4c27ad0b61280cd739
 597c479a9bc71e9bdc080f1d491b0ac4,ddf89f00900b00844bcbd2f3cb8db25b,UNSAT,399.918,a2609893b71f219f4635d33ef1ff6eca

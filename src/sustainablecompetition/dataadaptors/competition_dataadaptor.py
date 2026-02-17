@@ -84,10 +84,11 @@ class CompetitionDataAdaptor(DataAdaptor):
         # Connect to database
         if database_path and source_name:
             db_adaptor = SqlDataAdaptor(database_path)
-            env_id = db_adaptor.get_competition_env_id(source_name)
+            env_id, res_id = db_adaptor.get_competition_env(source_name)
         else:
             db_adaptor = None
             env_id = None
+            res_id = None
 
         # Map solver_name to solver_id
         if db_adaptor:
@@ -104,19 +105,28 @@ class CompetitionDataAdaptor(DataAdaptor):
             env_id = "unknown_env"
         df_long = df_long.with_columns(env_id=pl.lit(env_id))
 
+        # Set res_id
+        if res_id is None:
+            res_id = "unknown_res"
+        df_long = df_long.with_columns(res_id=pl.lit(res_id))
+
         # Determine status
         df_long = df_long.with_columns(pl.when(pl.col("perf") == 10000).then(pl.lit("TIMEOUT")).otherwise(pl.lit("COMPLETE")).alias("status"))
 
         # format and set perf dataframe
-        self.perfs = df_long.select(["status", "perf", "inst_hash", "env_id", "solver_id"])
+        self.perfs = df_long.select(["status", "perf", "inst_hash", "env_id", "res_id", "solver_id"])
 
         # Load features using db_adaptor
         if db_adaptor is not None:
             self.environments = db_adaptor.get_environments(env_ids=[env_id])
+            self.resources = db_adaptor.get_resources(res_ids=[res_id])
             self.instances = db_adaptor.get_instances(inst_ids=list(self.perfs["inst_hash"]))
             self.solvers = db_adaptor.get_solvers(solver_ids=list(self.perfs["solver_id"]))
             # Merge perf with environments on env_id
             self.data = self.perfs.join(self.environments, left_on="env_id", right_on="env_id", how="left")
+            
+            # Merge with resources on res_id
+            self.data = self.data.join(self.resources, left_on="res_id", right_on="res_id", how="left")
 
             # Merge with instances on inst_hash
             self.data = self.data.join(self.instances, left_on="inst_hash", right_on="inst_hash", how="left")

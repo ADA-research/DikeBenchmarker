@@ -107,7 +107,7 @@ class SqlDataAdaptor(DataAdaptor):
             query = "SELECT env_id, res_id FROM competition_compatibility WHERE competition = ?"
             cursor.execute(query, (comp_name,))
             result = cursor.fetchone()
-            return result[0] if result else None
+            return (result[0], result[1]) if result else (None, None)
         finally:
             conn.close()
 

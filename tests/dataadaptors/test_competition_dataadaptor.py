@@ -7,6 +7,7 @@ INSTANCE_HASH = "b4f28bc5f78ead2bf150639790768df4"
 
 
 ALL_COLS = [
+    "res_id",
     "env_id",
     "nb_assigned_cores",
     "assigned_memory",
