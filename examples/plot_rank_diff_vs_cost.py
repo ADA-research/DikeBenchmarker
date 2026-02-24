@@ -71,9 +71,7 @@ CRITERION_MARKER = {
 
 
 def main(csv_path: str, output: str | None, ci: float = 0.95) -> None:
-    df = pl.read_csv(csv_path).with_columns(
-        (pl.col("subset_rank") - pl.col("original_rank")).abs().alias("rank_diff")
-    )
+    df = pl.read_csv(csv_path).with_columns((pl.col("subset_rank") - pl.col("original_rank")).abs().alias("rank_diff"))
 
     stats = (
         df.group_by("method_idx")
@@ -129,13 +127,9 @@ def main(csv_path: str, output: str | None, ci: float = 0.95) -> None:
         # )
 
     # Legend for selectors (color) and stopping criteria (marker shape)
-    selector_handles = [
-        Patch(facecolor=c, edgecolor="black", label=sel)
-        for sel, c in SELECTOR_COLOR.items()
-    ]
+    selector_handles = [Patch(facecolor=c, edgecolor="black", label=sel) for sel, c in SELECTOR_COLOR.items()]
     criterion_handles = [
-        Line2D([0], [0], marker=mk, color="gray", linestyle="None",
-               markersize=8, markeredgecolor="black", markeredgewidth=0.8, label=crit)
+        Line2D([0], [0], marker=mk, color="gray", linestyle="None", markersize=8, markeredgecolor="black", markeredgewidth=0.8, label=crit)
         for crit, mk in CRITERION_MARKER.items()
     ]
     sel_legend = ax.legend(handles=selector_handles, title="Instance Selector", loc="upper left")
@@ -146,8 +140,7 @@ def main(csv_path: str, output: str | None, ci: float = 0.95) -> None:
     ax.set_ylabel("Average |Rank Difference|", fontsize=11)
     competition = Path(csv_path).stem.replace("experiment_results_", "")
     ax.set_title(
-        f"Rank Accuracy vs. Cost Trade-off — {competition}\n"
-        f"(error bars = {int(ci * 100)} % CI; bottom-left is ideal)",
+        f"Rank Accuracy vs. Cost Trade-off — {competition}\n(error bars = {int(ci * 100)} % CI; bottom-left is ideal)",
         fontsize=12,
     )
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
