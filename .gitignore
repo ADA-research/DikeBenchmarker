@@ -439,6 +439,7 @@ build/*
 # sphinx auto-generated files
 docs/build/
 docs/source/*.rst
+!docs/source/index.rst
 
 # unziped solvers
 solvers/*/main_*/*/*
