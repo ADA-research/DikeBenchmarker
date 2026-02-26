@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration File Format &mdash; DIKE 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=29a6c3e3"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="DIKE documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DIKE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration File Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-configuration">Example Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-keys">Configuration Keys</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scheduling">scheduling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#slurm-scheduler-options">SLURM Scheduler Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#local-scheduler-options">Local Scheduler Options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DIKE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Configuration File Format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="configuration-file-format">
+<h1>Configuration File Format<a class="headerlink" href="#configuration-file-format" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The tool expects a YAML configuration file with the following structure:</p>
+</section>
+<section id="example-configuration">
+<h2>Example Configuration<a class="headerlink" href="#example-configuration" title="Link to this heading"></a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">benchmarks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/benchmarks.csv</span>
+<span class="nt">solvers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/solvers.csv</span>
+<span class="nt">results</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/results/</span>
+
+<span class="nt">solver_cputime</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span>
+<span class="nt">solver_walltime</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7000</span>
+<span class="nt">solver_memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65536</span>
+
+<span class="nt">checker_cputime</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">45000</span>
+<span class="nt">checker_walltime</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">70000</span>
+<span class="nt">checker_memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65536</span>
+
+<span class="nt">scheduling</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">scheduler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slurm</span>
+<span class="w">  </span><span class="nt">machine</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cpu-partition</span>
+<span class="w">  </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myaccount</span>
+<span class="w">  </span><span class="nt">tasks_per_node</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">  </span><span class="nt">jobname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">benchmark</span>
+<span class="w">  </span><span class="nt">workerinit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;module</span><span class="nv"> </span><span class="s">load</span><span class="nv"> </span><span class="s">gcc&quot;</span>
+<span class="w">  </span><span class="nt">queuelimit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+</pre></div>
+</div>
+</section>
+<section id="configuration-keys">
+<h2>Configuration Keys<a class="headerlink" href="#configuration-keys" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>benchmarks<span class="classifier">str</span></dt><dd><p>Path to CSV file containing benchmark instances (relative to config file directory).</p>
+</dd>
+<dt>solvers<span class="classifier">str</span></dt><dd><p>Path to CSV file containing solver registry (relative to config file directory).</p>
+</dd>
+<dt>results<span class="classifier">str</span></dt><dd><p>Path to output directory for logs and results (relative to config file directory).</p>
+</dd>
+<dt>solver_cputime<span class="classifier">int</span></dt><dd><p>CPU time limit for solver in seconds (default: 5000).</p>
+</dd>
+<dt>solver_walltime<span class="classifier">int</span></dt><dd><p>Wall time limit for solver in seconds (default: 7000).</p>
+</dd>
+<dt>solver_memory<span class="classifier">int</span></dt><dd><p>Memory limit for solver in KB (default: 65536).</p>
+</dd>
+<dt>checker_cputime<span class="classifier">int</span></dt><dd><p>CPU time limit for checker in seconds (default: 45000).</p>
+</dd>
+<dt>checker_walltime<span class="classifier">int</span></dt><dd><p>Wall time limit for checker in seconds (default: 70000).</p>
+</dd>
+<dt>checker_memory<span class="classifier">int</span></dt><dd><p>Memory limit for checker in KB (default: 65536).</p>
+</dd>
+</dl>
+<section id="scheduling">
+<h3>scheduling<a class="headerlink" href="#scheduling" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>scheduler<span class="classifier">str</span></dt><dd><p>Execution backend: <code class="docutils literal notranslate"><span class="pre">slurm</span></code> or <code class="docutils literal notranslate"><span class="pre">local</span></code> (default: <code class="docutils literal notranslate"><span class="pre">slurm</span></code>).</p>
+</dd>
+</dl>
+<section id="slurm-scheduler-options">
+<h4>SLURM Scheduler Options<a class="headerlink" href="#slurm-scheduler-options" title="Link to this heading"></a></h4>
+<p>Required when <code class="docutils literal notranslate"><span class="pre">scheduler:</span> <span class="pre">slurm</span></code>.</p>
+<dl class="simple">
+<dt>machine<span class="classifier">str</span></dt><dd><p>SLURM partition name.</p>
+</dd>
+<dt>account<span class="classifier">str</span></dt><dd><p>SLURM account for job submission (optional).</p>
+</dd>
+<dt>tasks_per_node<span class="classifier">int</span></dt><dd><p>Number of parallel tasks per node (default: 32).</p>
+</dd>
+<dt>jobname<span class="classifier">str</span></dt><dd><p>Name for the benchmark job (default: <code class="docutils literal notranslate"><span class="pre">benchmark</span></code>).</p>
+</dd>
+<dt>workerinit<span class="classifier">str</span></dt><dd><p>Shell commands to run before worker execution (default: empty).</p>
+</dd>
+<dt>queuelimit<span class="classifier">int</span></dt><dd><p>Maximum queue depth (default: computed automatically).</p>
+</dd>
+</dl>
+</section>
+<section id="local-scheduler-options">
+<h4>Local Scheduler Options<a class="headerlink" href="#local-scheduler-options" title="Link to this heading"></a></h4>
+<p>Used when <code class="docutils literal notranslate"><span class="pre">scheduler:</span> <span class="pre">local</span></code>.</p>
+<dl class="simple">
+<dt>jobname<span class="classifier">str</span></dt><dd><p>Name for the benchmark job (default: <code class="docutils literal notranslate"><span class="pre">benchmark</span></code>).</p>
+</dd>
+<dt>parallel<span class="classifier">int</span></dt><dd><p>Number of parallel workers (default: 3).</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="DIKE documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Ashlin Iser, Marie Anastacio, Théo Matricon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
