@@ -70,8 +70,48 @@ Configuration Keys
 benchmarks : str
     Path to CSV file containing benchmark instances (relative to config file directory).
 
+    **CSV File Format**
+
+    The CSV file specified by this configuration parameter should contain a list of benchmark instances to be used in the competition. The CSV file must follow this format:
+
+    - **Header**: The first row must contain column names. At minimum, it should include a ``hash`` column.
+    - **Data Rows**: Each subsequent row represents a single benchmark instance.
+    - **Column**: ``hash`` - A unique identifier (typically an MD5 hash) for each benchmark instance.
+
+    **Example**
+
+    ::
+
+        hash
+        00d5a43a481477fa4d56a2ce152a6cfb
+        00fd8ac9acd186a7a78a2c4d92f90de1
+        0205e2dffaef93a90c239df31755f2e1
+        032941f5f28c9ac53fa1c80d35f3206f
+        ...
+
 solvers : str
     Path to CSV file containing solver registry (relative to config file directory).
+
+    **CSV File Format**
+
+    The registry file is a semicolon-delimited CSV file with the following columns:
+
+    - **id**: Executable identifier (e.g., solver name, wrapper name)
+    - **bin**: Path(s) to binary executable(s), comma-separated. Relative paths are resolved relative to the registry file's directory.
+    - **fmt**: Command format string with placeholders:
+
+      - ``$BIN0``, ``$BIN1``, ... for binary paths (in order)
+      - Custom placeholders (e.g., ``$INST``, ``$CERT``) replaced by subclass implementations
+
+    - **checker**: Optional checker command ID for validating executable output
+
+    **Example**
+
+    ::
+
+        id;bin;fmt;checker
+        kissat-sc2025;./satcomp25.solvers/biere/kissat-sc2025/kissat;$BIN0 "$INST" "$CERT";gratbin
+        cadical-sc2025;./satcomp25.solvers/biere/cadical-sc2025/cadical;$BIN0 "$INST" "$CERT";gratbin
 
 results : str
     Path to output directory for logs and results (relative to config file directory).
@@ -121,7 +161,7 @@ workerinit : str
     Shell commands to run before worker execution (default: empty).
 
 queuelimit : int
-    Maximum queue depth (default: computed automatically).
+    Maximum number of jobs to submit to the scheduler in one batch (default: computed automatically).
 
 Local Scheduler Options
 ^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,6 +1,4 @@
-"""
-This module provides an adaptor for executing checkers of sat or unsat certificates.
-"""
+"""This module provides an adaptor for executing checkers of sat or unsat certificates."""
 
 from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
 
@@ -8,9 +6,7 @@ __all__ = ["CheckerAdaptor"]
 
 
 class CheckerAdaptor(AbstractExecutable):
-    """
-    A class for executing checkers of sat or unsat certificates.
-    """
+    """A class for executing checkers of sat or unsat certificates."""
 
     def __init__(self, serialized: dict = None):
         """Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided."""

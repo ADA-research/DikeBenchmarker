@@ -1,14 +1,13 @@
-"""
-SAT Solver Adaptor
-"""
+"""SAT Solver Adaptor."""
 
 from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
 
 
 class SolverAdaptor(AbstractExecutable):
-    """Maintain paths to solvers and make them accessible by their IDs"""
+    """Maintain paths to solvers and make them accessible by their IDs."""
 
     def __init__(self, serialized: dict = None):
+        """Initialize the SolverAdaptor with a registry, or from a serialized dictionary if provided."""
         super().__init__(serialized)
 
     def format_command(self, xid: str, binaries: list[str], instance: str, certificate: str) -> str:

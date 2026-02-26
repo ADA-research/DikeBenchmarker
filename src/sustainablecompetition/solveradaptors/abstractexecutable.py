@@ -1,4 +1,8 @@
-"""Abstract Executable"""
+"""Abstract Executable.
+
+Defines the AbstractExecutable class, which serves as a base for managing executables such as solvers, execution wrappers, or proof checkers.
+It provides methods for registering executables, reading them from a registry file, formatting command lines, and parsing results.
+"""
 
 import csv
 
@@ -12,6 +16,7 @@ class AbstractExecutable(ABC):
     registry = {}
 
     def __init__(self, serialized: dict = None):
+        """Initialize the AbstractExecutable with a registry, or from a serialized dictionary if provided."""
         self.registry = serialized.get("registry", {}) if serialized else {}
 
     def register(self, xid: str, sbin: list[str], sfmt: str, checker: str = None):
@@ -19,7 +24,19 @@ class AbstractExecutable(ABC):
         self.registry[xid] = (sbin, sfmt, checker)
 
     def read_registry(self, registry_path: str):
-        """Read a CSV file containing id, command, and format to populate the registry."""
+        """Read a CSV registry file to populate executable configurations.
+
+        The CSV file format is: id;bin;fmt;checker
+
+        Parameters:
+            - id: Executable identifier (e.g., solver name, wrapper name)
+            - bin: Path(s) to binary executable(s), comma-separated. Relative paths are
+              resolved relative to the registry file's directory.
+            - fmt: Command format string with placeholders:
+              - $BIN0, $BIN1, ... for binary paths (in order)
+              - Custom placeholders (e.g., $INST, $CERT) replaced by _format_extra()
+            - checker: Optional checker command ID for validating executable output
+        """
         reg_dir = os.path.dirname(registry_path)
         with open(registry_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f, fieldnames=["id", "bin", "fmt", "checker"], delimiter=";")

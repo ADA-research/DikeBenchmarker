@@ -1,6 +1,4 @@
-"""
-PARSL Runner Adaptor
-"""
+"""PARSL Runner Adaptor."""
 
 import logging
 import os
@@ -14,7 +12,6 @@ from parsl.data_provider.files import File
 
 
 from sustainablecompetition.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
-from sustainablecompetition.benchmarkingmethods.abstract_benchmarker import AbstractBenchmarker
 from sustainablecompetition.infrastructureadaptors.abstractrunner import AbstractRunner
 from sustainablecompetition.benchmarkatoms import Job, Result
 from sustainablecompetition.solveradaptors.checkeradaptor import CheckerAdaptor
@@ -40,13 +37,12 @@ def runsolver(
     benchmark_instance: File,
     outputs: list[File],
 ):
-    """
-    Run the solver with the given input and output files.
+    """Run the solver with the given input and output files.
+
     All File objects are automatically copied to the remote execution location by parsl.
     The File objects in outputs are created at the remote location and copied back to the local machine after execution.
     The dictionaries are serialized versions of the respective adaptor and wrapper objects which are re-created at the remote location.
     """
-
     # ensure executable flags are set, since files may be fetched via HTTP etc.:
     for f in solver_wrapper_binaries + solver_binaries + checker_binaries + checker_wrapper_binaries + satchecker_binaries:
         os.chmod(f.filepath, 0o755)
@@ -142,8 +138,8 @@ class ParslRunner(AbstractRunner):
         self.futures_map = {}  # maps job uid to future for easy lookup
 
     def submit(self, job: Job) -> bool:
-        """
-        Submit a function to the process pool.
+        """Submit a function to the process pool.
+
         Return an id for identification of the process future.
         """
         output_root = job.get_log_prefix()
@@ -177,9 +173,7 @@ class ParslRunner(AbstractRunner):
         return True
 
     def completed(self, job: Job) -> Result:
-        """
-        Return the runtime result for the solver/instance pair.
-        """
+        """Return the runtime result for the solver/instance pair."""
         job_future = self.futures_map[job.uid]
         if not job_future.done():
             return None

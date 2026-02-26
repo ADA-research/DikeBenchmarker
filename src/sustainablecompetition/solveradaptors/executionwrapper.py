@@ -1,6 +1,6 @@
-"""
-This module provides Wrapper classes to manage execution wrappers like runexec, runlim, and benchexec.
-It resolves the paths to these binaries and constructs command-line arguments based on specified resource limits.
+"""Provides access to execution wrappers like runexec, runlim, or benchexec.
+
+Resolves the paths to the wrapper binaries and constructs command-line arguments using the specified resource limits.
 """
 
 from sustainablecompetition.solveradaptors.abstractexecutable import AbstractExecutable
@@ -10,9 +10,7 @@ __all__ = ["ExecutionWrapper"]
 
 
 class ExecutionWrapper(AbstractExecutable):
-    """
-    A class to manage execution wrappers.
-    """
+    """A class to manage execution wrappers."""
 
     def __init__(self, mem=64 * 1024, cputime=3600, walltime=7200, serialized: dict = None):
         """Initialize the ExecutionWrapper with resource limits and registry, or from a serialized dictionary if provided."""
@@ -68,12 +66,13 @@ class ExecutionWrapper(AbstractExecutable):
         )
 
     def parse_result(self, outfile: str):
-        """
-        Parse the runsolver log output to extract runtime statistics.
+        """Parse the runsolver log output to extract runtime statistics.
+
         Parameters:
         - tool_output: Path to the runsolver log output file.
+
         Returns:
-        A dictionary with keys 'walltime', 'cputime', 'memory', 'timeout', 'memout', and 'exitstatus'.
+        - dictionary with keys 'walltime', 'cputime', 'memory', 'timeout', 'memout', and 'exitstatus'.
         """
         result = {
             "walltime": None,
