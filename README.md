@@ -2,6 +2,8 @@
 
 ## Project Setup
 
+### With the sqlite databse
+
 1. Clone the repository and its submodules:
 
    ```bash
@@ -24,6 +26,19 @@
    ```
 
 4. The database will be automatically restored from the dump.
+
+
+### Without the database
+
+If you prefer to work from your own files or from the data originating from GBD, you do not need to load the submodules.
+
+You can simply clone the repository and its submodules:
+
+   ```bash
+   git clone https://github.com/ADA-research/SustainableCompetition.git
+   cd SustainableCompetition
+   ```
+
 
 ## random remarks
 
