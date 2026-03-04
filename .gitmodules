@@ -1,3 +1,4 @@
-[submodule "SustainableCompetition-db"]
+
+[submodule "src/DIKEBenchmarker/data/SustainableCompetition-db"]
 	path = src/DIKEBenchmarker/data/db
 	url = git@github.com:ADA-research/SustainableCompetition-db.git
