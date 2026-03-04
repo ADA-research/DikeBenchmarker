@@ -45,7 +45,7 @@ def get_instance_adaptor() -> SATInstanceAdaptor:
 
 
 def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, logroot) -> AbstractBenchmarker:
-    """Create a benchmarker based on the benchmarking method specified in the configuration."""    
+    """Create a benchmarker based on the benchmarking method specified in the configuration."""
     # Base case: if selection method is allpairs, we can use the trivial benchmarker which evaluates all pairs of solvers and instances without any stopping criterion
     if benchmarking_method["selection_method"] == "allpairs":
         return TrivialBenchmarker(
@@ -54,7 +54,7 @@ def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, 
             checker_id=checker_id,
             logroot=logroot,
         )
-    
+
     # For other selection methods, we need to create the appropriate instance selector and stopping criterion based on the configuration
     if benchmarking_method["stopping_criterion"] == "minimum-accuracy":
         stopping_criterion = MinimumAccuracyStoppingCriterion(threshold=benchmarking_method["stopping_threshold"])
@@ -64,21 +64,20 @@ def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, 
         stopping_criterion = WilcoxonStoppingCriterion(p_value_threshold=benchmarking_method["stopping_threshold"])
     else:
         stopping_criterion = PercentageStoppingCriterion(percentage=1.0)  # No stopping, evaluate all selected instances
-    
-    
+
     if benchmarking_method["selection_method"] == "random":
         selector = RandomInstanceSelector(benchmarking_method["benchmarks"], solver_id)  # TODO: add seed to config
     elif benchmarking_method["selection_method"] == "discrimination-based":
         raise NotImplementedError("Discrimination-based selection method is not implemented yet.")
-        #selector = DiscriminationInstanceSelector(benchmarking_method["benchmarks"], solver_id, data_adaptor)  # TODO: add rho to config
+        # selector = DiscriminationInstanceSelector(benchmarking_method["benchmarks"], solver_id, data_adaptor)  # TODO: add rho to config
     elif benchmarking_method["selection_method"] == "variance-based":
         raise NotImplementedError("Variance-based selection method is not implemented yet.")
-        #selector = VarianceBasedInstanceSelector(benchmarking_method["benchmarks"], solver_id, data_adaptor)  # TODO: add parameters to config
+        # selector = VarianceBasedInstanceSelector(benchmarking_method["benchmarks"], solver_id, data_adaptor)  # TODO: add parameters to config
     else:
         raise ValueError(f"Unsupported selection method: {benchmarking_method['selection_method']}")
-    
+
     return CombinedBenchmarker(
-        selector=selector, 
+        selector=selector,
         stopping_criterion=stopping_criterion,
         benchmark_ids=benchmarking_method["benchmarks"],
         solver_id=solver_id,
@@ -216,18 +215,18 @@ if __name__ == "__main__":
     # Load benchmarks from CSV
     benchmarking = config.get("benchmarks", {})
     benchmarks_file = benchmarking.get("file", "")
-    
+
     if not benchmarks_file or not os.path.isfile(benchmarks_file):
         print(f"Error: Benchmarks file '{benchmarks_file}' not found.")
         sys.exit(1)
-    
+
     benchmarking_method = {
         "benchmarks": pl.read_csv(benchmarks_file).select("hash").to_series().to_list(),
         "selection_method": benchmarking.get("selection_method", "allpairs"),
         "stopping_criterion": benchmarking.get("stopping_criterion", "none"),
         "stopping_threshold": benchmarking.get("stopping_threshold", 0.0),
     }
-    
+
     # Load solvers file
     solvers_file = os.path.join(config_dir, config.get("solvers"))
     if not solvers_file or not os.path.isfile(solvers_file):

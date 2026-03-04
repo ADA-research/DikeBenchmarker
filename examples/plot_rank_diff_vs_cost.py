@@ -132,21 +132,20 @@ def main(csv_path: str, output: str | None, ci: float = 0.95) -> None:
         Line2D([0], [0], marker=mk, color="gray", linestyle="None", markersize=8, markeredgecolor="black", markeredgewidth=0.8, label=crit)
         for crit, mk in CRITERION_MARKER.items()
     ]
-    sel_legend = ax.legend(handles=selector_handles, title="Instance Selector", loc="center right", bbox_to_anchor=(1,0.6))
+    sel_legend = ax.legend(handles=selector_handles, title="Instance Selector", loc="center right", bbox_to_anchor=(1, 0.6))
     ax.add_artist(sel_legend)
     ax.legend(handles=criterion_handles, title="Stopping Criterion", loc="upper right")
-    
 
     ax.set_xlabel("Average Cost Ratio  (actual / total cost)", fontsize=20)
     ax.set_ylabel("Average |Rank Difference|", fontsize=20)
     ax.tick_params(axis="both", which="major", labelsize=14)
-    ax.set_xlim((0,1))
-    ax.set_ylim((0,15))
+    ax.set_xlim((0, 1))
+    ax.set_ylim((0, 15))
     competition = Path(csv_path).stem.replace("experiment_results_", "")
-    #ax.set_title(
+    # ax.set_title(
     #    f"Rank Accuracy vs. Cost Trade-off — {competition}\n(error bars = {int(ci * 100)} % CI; bottom-left is ideal)",
     #    fontsize=30,
-    #)
+    # )
     ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
     ax.grid(linestyle="--", alpha=0.4)
 
