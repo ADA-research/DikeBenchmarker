@@ -10,15 +10,10 @@ __all__ = ["SqlDataAdaptor"]
 
 
 class SqlDataAdaptor(DataAdaptor):
-    """
-    Implement the data adaptor for sqlite data.
-    """
+    """Implement the data adaptor for sqlite data."""
 
     def __init__(self, database_path: str):
-        """
-        Reads the database from DIKEBenchmarker package
-        """
-
+        """Reads the database from DIKEBenchmarker package."""
         self.database_path = database_path
 
     def get_performances(
@@ -29,8 +24,8 @@ class SqlDataAdaptor(DataAdaptor):
         res_id: Optional[int] = None,
         filter: Optional[str] = None,
     ) -> pl.DataFrame:
-        """
-        Get as a DataFrame all performances for the specified inst_hash, solver_id, env_id, and res_id.
+        """Get as a DataFrame all performances for the specified inst_hash, solver_id, env_id, and res_id.
+
         If none are specified, returns all the data (not recommended).
 
         Args:
@@ -92,8 +87,7 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_competition_env(self, comp_name: str):
-        """
-        Returns the hash of the environment used during the given competition.
+        """Returns the hash of the environment used during the given competition.
 
         Args:
             comp_name (str): Name of the competition track.
@@ -113,8 +107,8 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_competition_solver_id(self, comp_name: str, solver_name: Optional[str] = None):
-        """
-        Get the solver id corresponding to the given solver name during the given competition.
+        """Get the solver id corresponding to the given solver name during the given competition.
+
         If no solver name is given, returns a list of all solver ids from the competition.
 
         Args:
@@ -124,7 +118,6 @@ class SqlDataAdaptor(DataAdaptor):
         Returns:
             Union[str, List[str], None]: Solver id, list of solver ids, or None if not found.
         """
-
         conn = sqlite3.connect(self.database_path)
         try:
             cursor = conn.cursor()
@@ -152,8 +145,7 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_environments(self, env_ids: list) -> pl.DataFrame:
-        """
-        Returns the full environment rows for the given environment IDs.
+        """Returns the full environment rows for the given environment IDs.
 
         Args:
             env_ids: List of environment hashes.
@@ -173,8 +165,7 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_resources(self, res_ids: list) -> pl.DataFrame:
-        """
-        Returns the full resource rows for the given resource IDs.
+        """Returns the full resource rows for the given resource IDs.
 
         Args:
             res_ids: List of resource hashes.
@@ -194,8 +185,7 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_instances(self, inst_ids: list) -> pl.DataFrame:
-        """
-        Returns the full instance rows for the given instance IDs.
+        """Returns the full instance rows for the given instance IDs.
 
         Args:
             inst_ids: List of instance hashes.
@@ -215,8 +205,7 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_solvers(self, solver_ids: list) -> pl.DataFrame:
-        """
-        Returns the full solver rows for the given solver IDs.
+        """Returns the full solver rows for the given solver IDs.
 
         Args:
             solver_ids: List of solver hashes.
@@ -236,8 +225,7 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_all_instance_ids(self) -> list[str]:
-        """
-        Returns a list of all instance IDs in the database.
+        """Returns a list of all instance IDs in the database.
 
         Returns:
             list[str]: List of all instance hashes.
@@ -253,8 +241,7 @@ class SqlDataAdaptor(DataAdaptor):
             conn.close()
 
     def get_all_solver_ids(self) -> list[str]:
-        """
-        Returns a list of all solver IDs in the database.
+        """Returns a list of all solver IDs in the database.
 
         Returns:
             list[str]: List of all solver hashes.
@@ -289,5 +276,30 @@ class SqlDataAdaptor(DataAdaptor):
             cursor = conn.cursor()
             cursor.execute(query, inst_ids + solver_ids)
             return {(row[0], row[1]): row[2] for row in cursor.fetchall()}
+        finally:
+            conn.close()
+            
+    def get_solvers_covering_instances(self, inst_hashes: list[str]) -> list[str]:
+        """Returns a list of solver IDs that have performance data for all the given instance hashes."""
+        if not inst_hashes:
+            return []
+
+        conn = sqlite3.connect(self.database_path)
+        try:
+            cursor = conn.cursor()
+
+            inst_hashes = list(set(inst_hashes))
+            inst_str = ",".join("?" for _ in inst_hashes)
+
+            query = f"""
+                SELECT p.solver_id
+                FROM performances p
+                WHERE p.inst_hash IN ({inst_str})
+                GROUP BY p.solver_id
+                HAVING COUNT(DISTINCT p.inst_hash) = ?
+            """
+
+            cursor.execute(query, (*inst_hashes, len(inst_hashes)))
+            return [row[0] for row in cursor.fetchall()]
         finally:
             conn.close()

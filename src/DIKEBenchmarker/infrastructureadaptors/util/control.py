@@ -1,3 +1,4 @@
+"""Control module for graceful shutdown and SLURM job requeuing."""
 import signal
 import os
 import subprocess
@@ -22,7 +23,6 @@ def is_shutting_down() -> bool:
 
 def shutdown(signum, frame):
     """Signal handler for graceful shutdown when walltime is approaching."""
-
     print(f"Received signal {signum}, initiating graceful shutdown...")
 
     if is_shutting_down():
@@ -39,6 +39,7 @@ def shutdown(signum, frame):
 
 def register_shutdown_handler():
     """Register signal handlers for graceful shutdown.
+
     - SIGINT: Keyboard interrupt (Ctrl+C)
     - SIGTERM: Termination request (e.g., kill command)
     - SIGHUP: Terminal closed or parent process terminated

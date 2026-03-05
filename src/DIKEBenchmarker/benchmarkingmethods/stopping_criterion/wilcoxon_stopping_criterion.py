@@ -2,7 +2,6 @@
 
 import warnings
 
-from DIKEBenchmarker.benchmarkatoms import Result
 from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criteria import StoppingCriteria
 from DIKEBenchmarker.dataadaptors.dataadaptor import DataAdaptor
 
@@ -17,11 +16,11 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
     def __init__(
         self, benchmark_ids: list[str], challenger_id: str, solvers_challenged: list[str], min_accuracy: float, db_adaptor: DataAdaptor, min_instances: int = 5
     ):
+        """Initialize with benchmark ids, challenger, compared solvers, and Wilcoxon settings."""
         super().__init__()
         self.benchmark_ids = benchmark_ids
         self.min_accuracy = min_accuracy
         self.min_instances = min_instances
-        self.selected_benchmark_ids = []
         self.db_adaptor = db_adaptor
 
         self.challenger = challenger_id
@@ -55,6 +54,7 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
         self.sorted_solver_ids = [solver_id for solver_id, _ in sorted_solvers]
 
     def should_stop(self) -> bool:
+        """Return True when Wilcoxon evidence supports a confident stopping decision."""
         if len(self.selected_benchmark_ids) == 0 or len(self.selected_benchmark_ids) < self.min_instances:
             return False
 
@@ -103,5 +103,3 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
 
         return False
 
-    def handle_result(self, result: Result) -> None:
-        self.selected_benchmark_ids.append(result.job.benchmark_id)

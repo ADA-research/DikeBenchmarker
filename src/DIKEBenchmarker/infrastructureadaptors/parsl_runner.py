@@ -12,7 +12,7 @@ from parsl.data_provider.files import File
 
 
 from DIKEBenchmarker.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
-from DIKEBenchmarker.infrastructureadaptors.abstractrunner import AbstractRunner
+from DIKEBenchmarker.infrastructureadaptors.abstract_runner import AbstractRunner
 from DIKEBenchmarker.benchmarkatoms import Job, Result
 from DIKEBenchmarker.solveradaptors.checkeradaptor import CheckerAdaptor
 from DIKEBenchmarker.solveradaptors.executionwrapper import ExecutionWrapper
@@ -127,6 +127,7 @@ class ParslRunner(AbstractRunner):
         checker_wrapper: ExecutionWrapper,
         parsl_config: Config = default_config,
     ):
+        """Initialize the ParslRunner."""
         super().__init__(solver_adaptor, instance_adaptor)
         self.checker_adaptor = CheckerAdaptor()
         self.solver_wrapper = solver_wrapper
@@ -140,17 +141,12 @@ class ParslRunner(AbstractRunner):
     def submit(self, job: Job) -> bool:
         """Submit a function to the process pool.
 
-        Return an id for identification of the process future.
+        Return False if the result files already exist (i.e., job already completed in a previous run), otherwise return True.
         """
-        output_root = job.get_log_prefix()
-        os.makedirs(os.path.dirname(output_root), exist_ok=True)
-
-        if os.path.exists(f"{output_root}.done"):
-            print(f"Job {job.solver_id} on {job.benchmark_id} already completed in previous run, skipping submission.")
+        if not super().submit(job):
             return False
-
-        super().submit(job)  # this marks the job as submitted
-        job.mark_running()  # mark as running immediately (workaround) TODO: proper monitoring of PARSL jobs
+        
+        job.mark_running()
 
         runsolver_future = runsolver(
             solver_wrapper_id="runsolver",
@@ -167,9 +163,11 @@ class ParslRunner(AbstractRunner):
             checker_binaries=[File(f) for f in self.checker_adaptor.get_binaries(job.checker_id)],
             satchecker_binaries=[File(f) for f in self.checker_adaptor.get_binaries("satchecker")],
             benchmark_instance=File(self.instance_adaptor.get_path(job.benchmark_id)),
-            outputs=[File(output_root + ext) for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]],
+            outputs=[File(job.get_log_prefix() + ext) for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]],
         )
+        
         self.futures_map[job.uid] = runsolver_future
+        
         return True
 
     def completed(self, job: Job) -> Result:
@@ -211,6 +209,7 @@ class ParslRunner(AbstractRunner):
         return Result(job, resource_usage["cputime"], resource_usage["memory"])
 
     def cancel(self, job):
+        """Cancel a running job."""
         job_future = self.futures_map[job.uid]
         job_future.cancel()
         return super().cancel(job)

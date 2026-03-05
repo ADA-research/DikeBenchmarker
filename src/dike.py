@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+"""DIKE Benchmarker - Main entry point for running benchmarking experiments."""
 
 import argparse
+import importlib
 import os
 import sys
 import yaml
@@ -15,20 +17,21 @@ from DIKEBenchmarker.benchmarkingmethods.abstract_benchmarker import AbstractBen
 from DIKEBenchmarker.benchmarkingmethods.combined_benchmarker import CombinedBenchmarker
 from DIKEBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
 from DIKEBenchmarker.benchmarkingmethods.instance_selectors.random_instance_selector import RandomInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.variance_based_instance_selector import VarianceBasedInstanceSelector
+from DIKEBenchmarker.benchmarkingmethods.instance_selectors.variance_instance_selector import VarianceInstanceSelector
 from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
 from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
 from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
-from DIKEBenchmarker.infrastructureadaptors import slurm_limits
+from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from DIKEBenchmarker.infrastructureadaptors.util import slurm_limits
 
-from DIKEBenchmarker.infrastructureadaptors.parsl_configs import make_slurm_config
+from DIKEBenchmarker.infrastructureadaptors.util.parsl_configs import make_slurm_config
 from DIKEBenchmarker.infrastructureadaptors.parsl_runner import ParslRunner
 from DIKEBenchmarker.benchmarkingmethods.trivial_benchmarker import TrivialBenchmarker
 from DIKEBenchmarker.resultconsumers.lambda_consumer import LambdaConsumer
 from DIKEBenchmarker.solveradaptors.executionwrapper import ExecutionWrapper
 from DIKEBenchmarker.solveradaptors.solveradaptor import SolverAdaptor
 from DIKEBenchmarker.benchmarkadaptors.satinstance import SATInstanceAdaptor
-from DIKEBenchmarker.infrastructureadaptors import control
+from DIKEBenchmarker.infrastructureadaptors.util import control
 
 
 def get_solver_adaptor(solvers_csv: str) -> SolverAdaptor:
@@ -46,7 +49,8 @@ def get_instance_adaptor() -> SATInstanceAdaptor:
 
 def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, logroot) -> AbstractBenchmarker:
     """Create a benchmarker based on the benchmarking method specified in the configuration."""
-    # Base case: if selection method is allpairs, we can use the trivial benchmarker which evaluates all pairs of solvers and instances without any stopping criterion
+    # Base case: if selection method is allpairs, we can use the trivial benchmarker which evaluates
+    # all pairs of solvers and instances without any stopping criterion
     if benchmarking_method["selection_method"] == "allpairs":
         return TrivialBenchmarker(
             benchmarks=benchmarking_method["benchmarks"],
@@ -54,32 +58,49 @@ def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, 
             checker_id=checker_id,
             logroot=logroot,
         )
+        
+    # Init data adaptor for selection methods that require performance data (discrimination-based and variance-based) and instance ordering based on that data
+    db_path = importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
+    data_adaptor = SqlDataAdaptor(db_path)
+    
+    benchmark_ids = benchmarking_method["benchmarks"]
+    solvers = data_adaptor.get_solvers_covering_instances(benchmark_ids)
 
     # For other selection methods, we need to create the appropriate instance selector and stopping criterion based on the configuration
     if benchmarking_method["stopping_criterion"] == "minimum-accuracy":
-        stopping_criterion = MinimumAccuracyStoppingCriterion(threshold=benchmarking_method["stopping_threshold"])
+        stopping_criterion = MinimumAccuracyStoppingCriterion(
+            benchmark_ids, 
+            solvers, 
+            min_accuracy=benchmarking_method["stopping_threshold"], 
+            data=data_adaptor
+        )
     elif benchmarking_method["stopping_criterion"] == "percentage":
-        stopping_criterion = PercentageStoppingCriterion(percentage=benchmarking_method["stopping_threshold"])
+        stopping_criterion = PercentageStoppingCriterion(benchmark_ids, percentage=benchmarking_method["stopping_threshold"])
     elif benchmarking_method["stopping_criterion"] == "wilcoxon":
-        stopping_criterion = WilcoxonStoppingCriterion(p_value_threshold=benchmarking_method["stopping_threshold"])
+        stopping_criterion = WilcoxonStoppingCriterion(
+            benchmark_ids,
+            solver_id,
+            solvers,
+            min_accuracy=benchmarking_method["stopping_threshold"],
+            db_adaptor=data_adaptor,
+            min_instances=5,
+        )
     else:
-        stopping_criterion = PercentageStoppingCriterion(percentage=1.0)  # No stopping, evaluate all selected instances
+        stopping_criterion = PercentageStoppingCriterion(benchmark_ids, percentage=1.0)  # No stopping, evaluate all selected instances
 
     if benchmarking_method["selection_method"] == "random":
-        selector = RandomInstanceSelector(benchmarking_method["benchmarks"], solver_id)  # TODO: add seed to config
+        selector = RandomInstanceSelector(benchmark_ids, solver_id)  # TODO: add seed to config
     elif benchmarking_method["selection_method"] == "discrimination-based":
-        raise NotImplementedError("Discrimination-based selection method is not implemented yet.")
-        # selector = DiscriminationInstanceSelector(benchmarking_method["benchmarks"], solver_id, data_adaptor)  # TODO: add rho to config
+        selector = DiscriminationInstanceSelector(benchmark_ids, solver_id, data_adaptor)  # TODO: add rho to config
     elif benchmarking_method["selection_method"] == "variance-based":
-        raise NotImplementedError("Variance-based selection method is not implemented yet.")
-        # selector = VarianceBasedInstanceSelector(benchmarking_method["benchmarks"], solver_id, data_adaptor)  # TODO: add parameters to config
+        selector = VarianceInstanceSelector(benchmark_ids, solver_id, data_adaptor)  # TODO: add parameters to config
     else:
         raise ValueError(f"Unsupported selection method: {benchmarking_method['selection_method']}")
 
     return CombinedBenchmarker(
         selector=selector,
-        stopping_criterion=stopping_criterion,
-        benchmark_ids=benchmarking_method["benchmarks"],
+        stopping_criteria=stopping_criterion,
+        benchmark_ids=benchmark_ids,
         solver_id=solver_id,
         checker_id=checker_id,
         logroot=logroot,
@@ -160,6 +181,7 @@ def run_local(
         f"stopping criterion {benchmarking_method['stopping_criterion']} "
         f"with threshold {benchmarking_method['stopping_threshold']}"
     )
+    print(f"Using local execution with {parallel} parallel workers.")
 
     solver_adaptor = get_solver_adaptor(solvers_file)
     instance_adaptor = get_instance_adaptor()
@@ -214,7 +236,7 @@ if __name__ == "__main__":
 
     # Load benchmarks from CSV
     benchmarking = config.get("benchmarks", {})
-    benchmarks_file = benchmarking.get("file", "")
+    benchmarks_file = os.path.join(config_dir, benchmarking.get("file", ""))
 
     if not benchmarks_file or not os.path.isfile(benchmarks_file):
         print(f"Error: Benchmarks file '{benchmarks_file}' not found.")

@@ -1,8 +1,8 @@
-"""
-Benchmarker Interface
+"""Benchmarker interface.
 
 Defines the interface for benchmarkers.
-Implements basic functionality for registering result consumers and consuming results in a separate thread.
+Implements basic functionality for registering result consumers and consuming
+results in a separate thread.
 """
 
 from threading import Thread
@@ -18,11 +18,10 @@ __all__ = ["AbstractBenchmarker"]
 
 
 class AbstractBenchmarker(ABC):
-    """
-    Decides which jobs to submit next; can depend on past results/dependencies.
-    """
+    """Decides which jobs to submit next; can depend on past results/dependencies."""
 
     def __init__(self, benchmark_ids: list[str], solver_id: str, checker_id: str = "none", logroot: str = "./logs"):
+        """Initialize benchmark metadata and start the result-consumer thread."""
         self.logroot = logroot
         self.benchmark_ids = benchmark_ids
         self.solver_id = solver_id
@@ -34,15 +33,11 @@ class AbstractBenchmarker(ABC):
         self.result_consumer_thread.start()
 
     def register_consumer(self, consumer):
-        """
-        Register a result consumer to process results when they are available.
-        """
+        """Register a result consumer to process results when they are available."""
         self.consumers.append(consumer)
 
     def _consume_results(self, results):
-        """
-        Consumes results in a separate thread.
-        """
+        """Consume results in a separate thread."""
         while True:
             result = results.get()  # blocks until an item is available
             if result is None:
@@ -57,9 +52,7 @@ class AbstractBenchmarker(ABC):
 
     @abstractmethod
     def should_stop(self) -> bool:
-        """
-        Return true if and only if the benchmarker has enough data to conclude
-        """
+        """Return true if and only if the benchmarker has enough data to conclude."""
         raise NotImplementedError
 
     @abstractmethod

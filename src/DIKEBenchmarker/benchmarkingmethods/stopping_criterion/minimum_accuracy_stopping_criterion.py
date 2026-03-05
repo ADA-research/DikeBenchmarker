@@ -1,6 +1,5 @@
 """Stopping criterion that stops when a minimum ranking accuracy is reached."""
 
-from DIKEBenchmarker.benchmarkatoms import Result
 from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criteria import StoppingCriteria
 from DIKEBenchmarker.dataadaptors.dataadaptor import DataAdaptor
 
@@ -11,10 +10,10 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
     """Stopping criterion that stops when a minimum ranking accuracy is reached."""
 
     def __init__(self, benchmark_ids: list[str], solvers: list[str], min_accuracy: float, db_adaptor: DataAdaptor):
+        """Initialize the minimum accuracy stopping criterion."""
         super().__init__()
         self.benchmark_ids = benchmark_ids
         self.min_accuracy = min_accuracy
-        self.selected_benchmark_ids = []
         self.db_adaptor = db_adaptor
         self.solvers = solvers
         self.instance_performances = {}
@@ -46,6 +45,7 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
         self.sorted_solver_ids = [solver_id for solver_id, _ in sorted_solvers]
 
     def should_stop(self) -> bool:
+        """Return True if minimum accuracy is reached or all benchmarks are exhausted."""
         if len(self.selected_benchmark_ids) == 0:
             return False
 
@@ -98,5 +98,3 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
         accuracy = correct_pairs / total_pairs
         return accuracy >= self.min_accuracy
 
-    def handle_result(self, result: Result) -> None:
-        self.selected_benchmark_ids.append(result.job.benchmark_id)

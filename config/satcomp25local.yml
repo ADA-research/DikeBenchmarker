@@ -16,7 +16,12 @@ scheduling:
   parallel: 3                # Number of jobs run in parallel
   jobname: satcomp25local    # Job name for scheduler
 
+benchmarks:
+  file: ./satcomp25.instances.csv # Path to CSV containing benchmark hashes
+  selection_method: random        # Methods: allpairs, random, discrimination-based, or variance-based
+  stopping_criterion: percentage  # Stopping critieria: accuracy, percentage, wilcoxon
+  stopping_threshold: 0.01        # Threshold for stopping criterion (e.g., accuracy percentage or p-value for Wilcoxon)
+
 # Benchmark and solver files
-benchmarks: ./satcomp25.instances.csv # Path to CSV containing benchmark hashes
 solvers: ./satcomp25.solvers.csv      # Path to CSV containing solver paths
 results: ./satcomp25local.results     # Path to directory for storing results

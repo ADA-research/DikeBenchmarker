@@ -1,9 +1,8 @@
-"""
-Adaptor to execution environment (cluster, SLURM, K8s, cloud API, vendor queue).
-"""
+"""Adaptor to execution environment (cluster, SLURM, K8s, cloud API, vendor queue)."""
 
 from abc import ABC, abstractmethod
 import logging
+import os
 import time
 
 from typing import TYPE_CHECKING
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
 from DIKEBenchmarker.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 from DIKEBenchmarker.solveradaptors.abstractexecutable import AbstractExecutable
 from DIKEBenchmarker.benchmarkatoms import Job, JobState, Result
-from DIKEBenchmarker.infrastructureadaptors import control
+from DIKEBenchmarker.infrastructureadaptors.util import control
 
 
 logger = logging.getLogger(__name__)
@@ -25,16 +24,17 @@ FINISHED_STATES = {JobState.CANCELLED, JobState.FAILED, JobState.FINISHED}
 
 
 class AbstractRunner(ABC):
-    """Interface for Runners"""
+    """Interface for Runners."""
 
     def __init__(self, solver_adaptor: AbstractExecutable = None, instance_adaptor: AbstractInstanceAdaptor = None):
+        """Initialize the runner with the given adaptors."""
         self.jobs = list[Job]()
         self.instance_adaptor = instance_adaptor
         self.solver_adaptor = solver_adaptor
 
     def run(self, benchmarkers: list["AbstractBenchmarker"], njobs: int = 1):
-        """
-        Maintains the benchmarking process and blocks until benchmarking is finished (i.e., all jobs are completed).
+        """Maintains the benchmarking process and blocks until benchmarking is finished (i.e., all jobs are completed).
+
         Also blocks until all consumers are finished.
         """
         logger.debug(f"Starting runner with {len(benchmarkers)} benchmarkers and a total of {njobs} jobs to submit.")
@@ -42,15 +42,11 @@ class AbstractRunner(ABC):
         i = j = 0
         # submit njobs to the runner
         while j < njobs and i < len(benchmarkers):
-            logger.debug(f"Submitting job {j + 1}/{njobs} with benchmarker {i + 1}/{len(benchmarkers)}")
             job = benchmarkers[i].next_job()
-            if job is not None:
-                if not self.submit(job):
-                    logger.debug(f"Job {job.solver_id} on {job.benchmark_id} was rejected by the runner.")
-                else:
-                    j = j + 1
-            else:
+            if job is None:
                 i = i + 1
+            elif self.submit(job):
+                j = j + 1
 
         # iterate over the results
         for result in self.completions():
@@ -66,18 +62,18 @@ class AbstractRunner(ABC):
                     # resubmit failed job
                     self.submit(result.get_job().clone_retry(decrement=dec_retries))
                 continue
+            
             result.get_job().job_producer.handle_result(result)
             result.get_job().job_producer.results_to_consume.put(result)
+            
             # submit the next job
             job = None
             while job is None and i < len(benchmarkers):
                 job = benchmarkers[i].next_job()
-                if job is not None:
-                    if not self.submit(job):
-                        logger.debug(f"Job {job.solver_id} on {job.benchmark_id} was rejected by the runner.")
-                        job = None  # job rejected, try next job
-                else:
+                if job is None:
                     i = i + 1
+                elif not self.submit(job):
+                    job = None  # job rejected, try next job
 
         # signal the consumer thread of each benchmarker to finish and wait for it
         for benchmarker in benchmarkers:
@@ -89,22 +85,31 @@ class AbstractRunner(ABC):
     def submit(self, job: Job) -> bool:
         """Submit a job to the external system."""
         logger.debug(f"Submitting job: Solver {job.solver_id} on Benchmark {job.benchmark_id}")
+        
         self.jobs.append(job)
         job.mark_submitted()
+        
+        output_root = job.get_log_prefix()
+        os.makedirs(os.path.dirname(output_root), exist_ok=True)
+        if os.path.exists(f"{output_root}.done"):
+            # if the .done file exists, we can assume that the job was completed in a previous run and skip submission
+            print(f"Job {job.solver_id} on {job.benchmark_id} already completed in previous run, skipping submission.")
+            return False
+        
         return True
 
     @abstractmethod
     def completed(self, job: Job) -> Result:
-        """
-        If the job has completed:
+        """If the job has completed.
+
         - update the job's state to either FINISHED or FAILED.
         - return a Result object
         Otherwise, return None.
         """
 
     def completions(self, sleep_duration: float = 1):
-        """
-        Yield whenever the external system reports a job as done/failed.
+        """Yield whenever the external system reports a job as done/failed.
+
         Stops when all jobs are either CANCELLED, FAILED or FINISHED.
 
         Args:

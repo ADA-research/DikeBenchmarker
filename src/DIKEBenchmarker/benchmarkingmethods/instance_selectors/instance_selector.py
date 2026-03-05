@@ -1,4 +1,4 @@
-"""Instance Selector Interfaces"""
+"""Instance Selector Interfaces."""
 
 from abc import ABC, abstractmethod
 
@@ -8,11 +8,10 @@ __all__ = ["InstanceSelector"]
 
 
 class InstanceSelector(ABC):
-    """
-    Decides which jobs to submit next; can depend on past results/dependencies.
-    """
+    """Decides which jobs to submit next; can depend on past results/dependencies."""
 
     def __init__(self, benchmark_ids: list[str], solver_id: str):
+        """Initialize the instance selector with benchmark ids and solver id."""
         self.benchmark_ids = benchmark_ids
         self.solver_id = solver_id
 
