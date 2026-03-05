@@ -1,11 +1,11 @@
 DIKEBenchmarker.resultconsumers package
-==============================================
+=======================================
 
 Submodules
 ----------
 
 DIKEBenchmarker.resultconsumers.abstract\_consumer module
-----------------------------------------------------------------
+---------------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.resultconsumers.abstract_consumer
    :members:
@@ -13,7 +13,7 @@ DIKEBenchmarker.resultconsumers.abstract\_consumer module
    :undoc-members:
 
 DIKEBenchmarker.resultconsumers.csv\_consumer module
------------------------------------------------------------
+----------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.resultconsumers.csv_consumer
    :members:
@@ -21,7 +21,7 @@ DIKEBenchmarker.resultconsumers.csv\_consumer module
    :undoc-members:
 
 DIKEBenchmarker.resultconsumers.lambda\_consumer module
---------------------------------------------------------------
+-------------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.resultconsumers.lambda_consumer
    :members:
@@ -29,7 +29,7 @@ DIKEBenchmarker.resultconsumers.lambda\_consumer module
    :undoc-members:
 
 DIKEBenchmarker.resultconsumers.then\_result\_consumer module
---------------------------------------------------------------------
+-------------------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.resultconsumers.then_result_consumer
    :members:

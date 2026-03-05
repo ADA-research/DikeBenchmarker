@@ -1,11 +1,11 @@
 DIKEBenchmarker.performancemodels package
-================================================
+=========================================
 
 Submodules
 ----------
 
 DIKEBenchmarker.performancemodels.abstractperformancemodel module
-------------------------------------------------------------------------
+-----------------------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.performancemodels.abstractperformancemodel
    :members:
@@ -13,7 +13,7 @@ DIKEBenchmarker.performancemodels.abstractperformancemodel module
    :undoc-members:
 
 DIKEBenchmarker.performancemodels.randomforestmodel module
------------------------------------------------------------------
+----------------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.performancemodels.randomforestmodel
    :members:

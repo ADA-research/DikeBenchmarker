@@ -103,8 +103,7 @@ class AbstractRunner(ABC):
         """If the job has completed.
 
         - update the job's state to either FINISHED or FAILED.
-        - return a Result object
-        Otherwise, return None.
+        - return a Result object or None.
         """
 
     def completions(self, sleep_duration: float = 1):

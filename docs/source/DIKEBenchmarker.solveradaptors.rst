@@ -1,11 +1,11 @@
 DIKEBenchmarker.solveradaptors package
-=============================================
+======================================
 
 Submodules
 ----------
 
 DIKEBenchmarker.solveradaptors.abstractexecutable module
----------------------------------------------------------------
+--------------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.solveradaptors.abstractexecutable
    :members:
@@ -13,7 +13,7 @@ DIKEBenchmarker.solveradaptors.abstractexecutable module
    :undoc-members:
 
 DIKEBenchmarker.solveradaptors.checkeradaptor module
------------------------------------------------------------
+----------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.solveradaptors.checkeradaptor
    :members:
@@ -21,7 +21,7 @@ DIKEBenchmarker.solveradaptors.checkeradaptor module
    :undoc-members:
 
 DIKEBenchmarker.solveradaptors.executionwrapper module
--------------------------------------------------------------
+------------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.solveradaptors.executionwrapper
    :members:
@@ -29,7 +29,7 @@ DIKEBenchmarker.solveradaptors.executionwrapper module
    :undoc-members:
 
 DIKEBenchmarker.solveradaptors.solveradaptor module
-----------------------------------------------------------
+---------------------------------------------------
 
 .. automodule:: DIKEBenchmarker.solveradaptors.solveradaptor
    :members:

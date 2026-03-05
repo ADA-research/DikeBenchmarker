@@ -8,12 +8,10 @@ from threading import Thread
 from queue import Queue
 
 from abc import ABC
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from DIKEBenchmarker.benchmarkatoms import Job, Result
-    from DIKEBenchmarker.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
-    from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criteria import StoppingCriteria
+from DIKEBenchmarker.benchmarkatoms import Job, Result
+from DIKEBenchmarker.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
+from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criteria import StoppingCriteria
 
 __all__ = ["Benchmarker"]
 

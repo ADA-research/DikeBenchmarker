@@ -1,5 +1,5 @@
 DIKEBenchmarker package
-==============================
+=======================
 
 Subpackages
 -----------
@@ -19,7 +19,7 @@ Submodules
 ----------
 
 DIKEBenchmarker.benchmarkatoms module
---------------------------------------------
+-------------------------------------
 
 .. automodule:: DIKEBenchmarker.benchmarkatoms
    :members:
