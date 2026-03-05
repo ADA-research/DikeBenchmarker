@@ -268,3 +268,26 @@ class SqlDataAdaptor(DataAdaptor):
             return [row[0] for row in results]
         finally:
             conn.close()
+
+    def bulk_load_performances(self, inst_ids: list[str], solver_ids: list[str]) -> dict:
+        """Load all (inst_hash, solver_id) -> perf pairs in a single SQL query.
+
+        Args:
+            inst_ids: List of instance hashes to include.
+            solver_ids: List of solver IDs to include.
+
+        Returns:
+            dict mapping (inst_hash, solver_id) -> float perf value.
+        """
+        conn = sqlite3.connect(self.database_path)
+        try:
+            inst_placeholders = ",".join("?" * len(inst_ids))
+            sol_placeholders = ",".join("?" * len(solver_ids))
+            query = (
+                f"SELECT p.inst_hash, p.solver_id, p.perf FROM performances p WHERE p.inst_hash IN ({inst_placeholders}) AND p.solver_id IN ({sol_placeholders})"
+            )
+            cursor = conn.cursor()
+            cursor.execute(query, inst_ids + solver_ids)
+            return {(row[0], row[1]): row[2] for row in cursor.fetchall()}
+        finally:
+            conn.close()

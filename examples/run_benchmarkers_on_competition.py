@@ -4,7 +4,7 @@ import importlib.resources
 import logging
 import os
 import sqlite3
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from DIKEBenchmarker.benchmarkingmethods.combined_benchmarker import CombinedBenchmarker
 from DIKEBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
@@ -14,6 +14,7 @@ from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_sto
 from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
 from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
 from DIKEBenchmarker.dataadaptors.dataadaptor import DataAdaptor
+from DIKEBenchmarker.dataadaptors.inmemory_dataadaptor import InMemoryDataAdaptor
 from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
 from DIKEBenchmarker.infrastructureadaptors.abstractrunner import AbstractRunner
 from DIKEBenchmarker.infrastructureadaptors.virtual_runner import VirtualRunner
@@ -63,7 +64,7 @@ def _run_single_experiment(
     other_solvers = [s for s in solver_hashes if s != solver_id]
     total_cost = total_cost_per_solver[solver_id]
 
-    adaptor = make_adaptor()
+    adaptor = InMemoryDataAdaptor(cost_lookup)
 
     benchmarker = make_benchmarker_from_config(
         sel_cls,
@@ -196,12 +197,9 @@ def run_experiment(competition: str, confidence: float, output_dir: str, force: 
 
     os.makedirs(output_dir, exist_ok=True)
 
-    # Precompute runtime cost per (instance, solver) pair
-    cost_lookup = {}
-    for solver_id in tqdm(solver_hashes, desc="Precomputing runtime costs"):
-        for inst_id in benchmark_ids:
-            perf_df = adaptor.get_performances(inst_hash=inst_id, solver_id=solver_id)
-            cost_lookup[(inst_id, solver_id)] = perf_df["perf"][0]
+    # Precompute runtime cost per (instance, solver) pair in one bulk SQL query
+    print("Bulk-loading performance data...")
+    cost_lookup = adaptor.bulk_load_performances(benchmark_ids, solver_hashes)
 
     # Precompute total cost per solver (if all benchmarks were run)
     total_cost_per_solver = {}
@@ -239,7 +237,7 @@ def run_experiment(competition: str, confidence: float, output_dir: str, force: 
             tasks.append((solver_id, method_idx, sel_cls, stop_cls))
 
     num_workers = min(os.cpu_count() or 1, len(tasks))
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = {
             executor.submit(
                 _run_single_experiment,

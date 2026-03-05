@@ -19,7 +19,7 @@ class DiscriminationInstanceSelector(InstanceSelector):
         ordered = []
         for benchmark_id in benchmark_ids:
             perf_data = data.get_performances(benchmark_id).get_column("perf")
-            score = (perf_data >= self.rho * perf_data.mean()).shape[0] / perf_data.mean()
+            score = (perf_data >= self.rho * perf_data.median()).shape[0] / perf_data.mean()
             ordered.append((score, benchmark_id))
         ordered.sort(key=lambda x: x[0])
         self.queue = [x[1] for x in ordered]
