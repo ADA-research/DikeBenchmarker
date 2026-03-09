@@ -102,4 +102,3 @@ class WilcoxonStoppingCriterion(StoppingCriteria):
                     self.sorted_solver_ids.append(to_compare)
 
         return False
-

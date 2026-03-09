@@ -97,4 +97,3 @@ class MinimumAccuracyStoppingCriterion(StoppingCriteria):
 
         accuracy = correct_pairs / total_pairs
         return accuracy >= self.min_accuracy
-

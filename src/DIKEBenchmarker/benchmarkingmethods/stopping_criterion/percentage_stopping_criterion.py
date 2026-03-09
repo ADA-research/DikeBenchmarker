@@ -19,4 +19,3 @@ class PercentageStoppingCriterion(StoppingCriteria):
         if len(self.benchmark_ids) == 0:
             return True
         return len(self.selected_benchmark_ids) / len(self.benchmark_ids) >= self.percentage
-

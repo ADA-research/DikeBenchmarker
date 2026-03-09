@@ -60,22 +60,17 @@ def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, 
             checker_id=checker_id,
             logroot=logroot,
         )
-        
+
     # Init data adaptor for selection methods that require performance data (discrimination-based and variance-based) and instance ordering based on that data
     db_path = importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
     data_adaptor = SqlDataAdaptor(db_path)
-    
+
     benchmark_ids = benchmarking_method["benchmarks"]
     solvers = data_adaptor.get_solvers_covering_instances(benchmark_ids)
 
     # For other selection methods, we need to create the appropriate instance selector and stopping criterion based on the configuration
     if benchmarking_method["stopping_criterion"] == "minimum-accuracy":
-        stopping_criterion = MinimumAccuracyStoppingCriterion(
-            benchmark_ids, 
-            solvers, 
-            min_accuracy=benchmarking_method["stopping_threshold"], 
-            data=data_adaptor
-        )
+        stopping_criterion = MinimumAccuracyStoppingCriterion(benchmark_ids, solvers, min_accuracy=benchmarking_method["stopping_threshold"], data=data_adaptor)
     elif benchmarking_method["stopping_criterion"] == "percentage":
         stopping_criterion = PercentageStoppingCriterion(benchmark_ids, percentage=benchmarking_method["stopping_threshold"])
     elif benchmarking_method["stopping_criterion"] == "wilcoxon":

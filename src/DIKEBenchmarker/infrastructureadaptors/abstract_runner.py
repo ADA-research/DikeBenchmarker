@@ -62,10 +62,10 @@ class AbstractRunner(ABC):
                     # resubmit failed job
                     self.submit(result.get_job().clone_retry(decrement=dec_retries))
                 continue
-            
+
             result.get_job().job_producer.handle_result(result)
             result.get_job().job_producer.results_to_consume.put(result)
-            
+
             # submit the next job
             job = None
             while job is None and i < len(benchmarkers):
@@ -85,17 +85,17 @@ class AbstractRunner(ABC):
     def submit(self, job: Job) -> bool:
         """Submit a job to the external system."""
         logger.debug(f"Submitting job: Solver {job.solver_id} on Benchmark {job.benchmark_id}")
-        
+
         self.jobs.append(job)
         job.mark_submitted()
-        
+
         output_root = job.get_log_prefix()
         os.makedirs(os.path.dirname(output_root), exist_ok=True)
         if os.path.exists(f"{output_root}.done"):
             # if the .done file exists, we can assume that the job was completed in a previous run and skip submission
             print(f"Job {job.solver_id} on {job.benchmark_id} already completed in previous run, skipping submission.")
             return False
-        
+
         return True
 
     @abstractmethod

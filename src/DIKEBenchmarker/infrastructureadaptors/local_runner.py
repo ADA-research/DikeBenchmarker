@@ -37,15 +37,15 @@ class LocalRunner(AbstractRunner):
         """
         if not super().submit(job):
             return False
-        
+
         job.mark_running()
 
         solverpath = self.solver.get_path(job.solver_id)
         instancepath = self.instances.get_path(job.benchmark_id)
         future = self.pool.submit(wrapper, solverpath, instancepath, job)
-        
+
         self.futures_map[job.uid] = future
-        
+
         return True
 
     def completed(self, job: Job) -> Result:

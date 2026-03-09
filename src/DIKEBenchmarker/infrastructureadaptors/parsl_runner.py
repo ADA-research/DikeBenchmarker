@@ -145,7 +145,7 @@ class ParslRunner(AbstractRunner):
         """
         if not super().submit(job):
             return False
-        
+
         job.mark_running()
 
         runsolver_future = runsolver(
@@ -165,9 +165,9 @@ class ParslRunner(AbstractRunner):
             benchmark_instance=File(self.instance_adaptor.get_path(job.benchmark_id)),
             outputs=[File(job.get_log_prefix() + ext) for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]],
         )
-        
+
         self.futures_map[job.uid] = runsolver_future
-        
+
         return True
 
     def completed(self, job: Job) -> Result:

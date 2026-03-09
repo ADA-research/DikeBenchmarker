@@ -10,7 +10,7 @@ __all__ = ["StoppingCriteria", "OrStoppingCriteria", "NoStoppingCriteria", "AndS
 
 class StoppingCriteria(ABC):
     """Decides when to stop submitting jobs."""
-    
+
     def __init__(self):
         """Initialize the stopping criteria."""
         self.selected_benchmark_ids: list[str] = []
@@ -23,7 +23,7 @@ class StoppingCriteria(ABC):
     def handle_result(self, result: Result) -> None:
         """Called for each finished/failed job to update planning or process results."""
         pass
-    
+
     def job_submitted(self, job) -> None:
         """Called for each submitted job to update planning or process results."""
         self.selected_benchmark_ids.append(job.benchmark_id)
@@ -58,7 +58,7 @@ class OrStoppingCriteria(StoppingCriteria):
         """Handle result by passing it to all criteria."""
         for c in self.criteria:
             c.handle_result(result)
-            
+
     def job_submitted(self, job) -> None:
         """Handle job submission by passing it to all criteria."""
         for c in self.criteria:

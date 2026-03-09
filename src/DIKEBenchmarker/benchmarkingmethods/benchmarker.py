@@ -1,6 +1,6 @@
 """Benchmarker interface.
 
-Allows for combining different instance selectors and stopping criteria, 
+Allows for combining different instance selectors and stopping criteria,
 and for registering result consumers that process results when they are available.
 """
 

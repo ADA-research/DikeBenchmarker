@@ -270,15 +270,13 @@ class SqlDataAdaptor(DataAdaptor):
         try:
             inst_placeholders = ",".join("?" * len(inst_ids))
             sol_placeholders = ",".join("?" * len(solver_ids))
-            query = (
-                f"SELECT p.inst_hash, p.solver_id, p.perf FROM performances p WHERE p.inst_hash IN ({inst_placeholders}) AND p.solver_id IN ({sol_placeholders})"
-            )
+            query = f"SELECT p.inst_hash, p.solver_id, p.perf FROM performances p WHERE p.inst_hash IN ({inst_placeholders}) AND p.solver_id IN ({sol_placeholders})"
             cursor = conn.cursor()
             cursor.execute(query, inst_ids + solver_ids)
             return {(row[0], row[1]): row[2] for row in cursor.fetchall()}
         finally:
             conn.close()
-            
+
     def get_solvers_covering_instances(self, inst_hashes: list[str]) -> list[str]:
         """Returns a list of solver IDs that have performance data for all the given instance hashes."""
         if not inst_hashes:

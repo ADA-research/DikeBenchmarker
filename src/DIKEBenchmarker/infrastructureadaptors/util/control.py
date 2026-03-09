@@ -1,4 +1,5 @@
 """Control module for graceful shutdown and SLURM job requeuing."""
+
 import signal
 import os
 import subprocess
