@@ -1,37 +1,37 @@
-DIKEBenchmarker.solveradaptors package
+DikeBenchmarker.solveradaptors package
 ======================================
 
 Submodules
 ----------
 
-DIKEBenchmarker.solveradaptors.abstractexecutable module
+DikeBenchmarker.solveradaptors.abstractexecutable module
 --------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.solveradaptors.abstractexecutable
+.. automodule:: DikeBenchmarker.solveradaptors.abstractexecutable
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.solveradaptors.checkeradaptor module
+DikeBenchmarker.solveradaptors.checkeradaptor module
 ----------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.solveradaptors.checkeradaptor
+.. automodule:: DikeBenchmarker.solveradaptors.checkeradaptor
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.solveradaptors.executionwrapper module
+DikeBenchmarker.solveradaptors.executionwrapper module
 ------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.solveradaptors.executionwrapper
+.. automodule:: DikeBenchmarker.solveradaptors.executionwrapper
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.solveradaptors.solveradaptor module
+DikeBenchmarker.solveradaptors.solveradaptor module
 ---------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.solveradaptors.solveradaptor
+.. automodule:: DikeBenchmarker.solveradaptors.solveradaptor
    :members:
    :show-inheritance:
    :undoc-members:
@@ -39,7 +39,7 @@ DIKEBenchmarker.solveradaptors.solveradaptor module
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.solveradaptors
+.. automodule:: DikeBenchmarker.solveradaptors
    :members:
    :show-inheritance:
    :undoc-members:

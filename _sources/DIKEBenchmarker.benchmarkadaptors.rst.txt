@@ -1,21 +1,21 @@
-DIKEBenchmarker.benchmarkadaptors package
+DikeBenchmarker.benchmarkadaptors package
 =========================================
 
 Submodules
 ----------
 
-DIKEBenchmarker.benchmarkadaptors.abstractinstance module
+DikeBenchmarker.benchmarkadaptors.abstractinstance module
 ---------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.benchmarkadaptors.abstractinstance
+.. automodule:: DikeBenchmarker.benchmarkadaptors.abstractinstance
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.benchmarkadaptors.satinstance module
+DikeBenchmarker.benchmarkadaptors.satinstance module
 ----------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.benchmarkadaptors.satinstance
+.. automodule:: DikeBenchmarker.benchmarkadaptors.satinstance
    :members:
    :show-inheritance:
    :undoc-members:
@@ -23,7 +23,7 @@ DIKEBenchmarker.benchmarkadaptors.satinstance module
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.benchmarkadaptors
+.. automodule:: DikeBenchmarker.benchmarkadaptors
    :members:
    :show-inheritance:
    :undoc-members:

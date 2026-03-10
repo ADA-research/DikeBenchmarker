@@ -1,4 +1,4 @@
-DIKEBenchmarker.data package
+DikeBenchmarker.data package
 ============================
 
 Subpackages
@@ -7,12 +7,12 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   DIKEBenchmarker.data.db
+   DikeBenchmarker.data.db
 
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.data
+.. automodule:: DikeBenchmarker.data
    :members:
    :show-inheritance:
    :undoc-members:

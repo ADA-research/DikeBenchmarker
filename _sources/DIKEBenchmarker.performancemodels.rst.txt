@@ -1,21 +1,21 @@
-DIKEBenchmarker.performancemodels package
+DikeBenchmarker.performancemodels package
 =========================================
 
 Submodules
 ----------
 
-DIKEBenchmarker.performancemodels.abstractperformancemodel module
+DikeBenchmarker.performancemodels.abstractperformancemodel module
 -----------------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.performancemodels.abstractperformancemodel
+.. automodule:: DikeBenchmarker.performancemodels.abstractperformancemodel
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.performancemodels.randomforestmodel module
+DikeBenchmarker.performancemodels.randomforestmodel module
 ----------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.performancemodels.randomforestmodel
+.. automodule:: DikeBenchmarker.performancemodels.randomforestmodel
    :members:
    :show-inheritance:
    :undoc-members:
@@ -23,7 +23,7 @@ DIKEBenchmarker.performancemodels.randomforestmodel module
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.performancemodels
+.. automodule:: DikeBenchmarker.performancemodels
    :members:
    :show-inheritance:
    :undoc-members:

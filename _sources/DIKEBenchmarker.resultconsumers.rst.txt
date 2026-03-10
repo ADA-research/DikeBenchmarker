@@ -1,37 +1,37 @@
-DIKEBenchmarker.resultconsumers package
+DikeBenchmarker.resultconsumers package
 =======================================
 
 Submodules
 ----------
 
-DIKEBenchmarker.resultconsumers.abstract\_consumer module
+DikeBenchmarker.resultconsumers.abstract\_consumer module
 ---------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.resultconsumers.abstract_consumer
+.. automodule:: DikeBenchmarker.resultconsumers.abstract_consumer
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.resultconsumers.csv\_consumer module
+DikeBenchmarker.resultconsumers.csv\_consumer module
 ----------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.resultconsumers.csv_consumer
+.. automodule:: DikeBenchmarker.resultconsumers.csv_consumer
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.resultconsumers.lambda\_consumer module
+DikeBenchmarker.resultconsumers.lambda\_consumer module
 -------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.resultconsumers.lambda_consumer
+.. automodule:: DikeBenchmarker.resultconsumers.lambda_consumer
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.resultconsumers.then\_result\_consumer module
+DikeBenchmarker.resultconsumers.then\_result\_consumer module
 -------------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.resultconsumers.then_result_consumer
+.. automodule:: DikeBenchmarker.resultconsumers.then_result_consumer
    :members:
    :show-inheritance:
    :undoc-members:
@@ -39,7 +39,7 @@ DIKEBenchmarker.resultconsumers.then\_result\_consumer module
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.resultconsumers
+.. automodule:: DikeBenchmarker.resultconsumers
    :members:
    :show-inheritance:
    :undoc-members:

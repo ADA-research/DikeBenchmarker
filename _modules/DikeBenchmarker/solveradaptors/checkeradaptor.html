@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DIKEBenchmarker.solveradaptors.checkeradaptor &mdash; DIKE 1 documentation</title>
+  <title>DikeBenchmarker.solveradaptors.checkeradaptor &mdash; Dike 1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            DIKE
+            Dike
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration File Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">DIKEBenchmarker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">DikeBenchmarker</a></li>
 </ul>
 
         </div>
@@ -51,7 +51,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">DIKE</a>
+          <a href="../../../index.html">Dike</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -60,7 +60,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">DIKEBenchmarker.solveradaptors.checkeradaptor</li>
+      <li class="breadcrumb-item active">DikeBenchmarker.solveradaptors.checkeradaptor</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,16 +69,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for DIKEBenchmarker.solveradaptors.checkeradaptor</h1><div class="highlight"><pre>
+  <h1>Source code for DikeBenchmarker.solveradaptors.checkeradaptor</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module provides an adaptor for executing checkers of sat or unsat certificates.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">DIKEBenchmarker.solveradaptors.abstractexecutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractExecutable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.solveradaptors.abstractexecutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractExecutable</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CheckerAdaptor&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="CheckerAdaptor">
-<a class="viewcode-back" href="../../../DIKEBenchmarker.solveradaptors.html#DIKEBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor">[docs]</a>
+<a class="viewcode-back" href="../../../DIKEBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CheckerAdaptor</span><span class="p">(</span><span class="n">AbstractExecutable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for executing checkers of sat or unsat certificates.&quot;&quot;&quot;</span>
 
@@ -170,7 +170,7 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="CheckerAdaptor.format_command">
-<a class="viewcode-back" href="../../../DIKEBenchmarker.solveradaptors.html#DIKEBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.format_command">[docs]</a>
+<a class="viewcode-back" href="../../../DIKEBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.format_command">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">format_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="n">binaries</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">certificate</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the command line for a given checker ID, replacing placeholders.&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_base</span><span class="p">(</span><span class="n">xid</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
@@ -185,7 +185,7 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="CheckerAdaptor.parse_result">
-<a class="viewcode-back" href="../../../DIKEBenchmarker.solveradaptors.html#DIKEBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.parse_result">[docs]</a>
+<a class="viewcode-back" href="../../../DIKEBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.parse_result">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the result from the checker file.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>

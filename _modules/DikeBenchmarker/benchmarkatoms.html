@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DIKEBenchmarker.benchmarkatoms &mdash; DIKE 1 documentation</title>
+  <title>DikeBenchmarker.benchmarkatoms &mdash; Dike 1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../index.html" class="icon icon-home">
-            DIKE
+            Dike
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration File Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">DIKEBenchmarker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">DikeBenchmarker</a></li>
 </ul>
 
         </div>
@@ -51,7 +51,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">DIKE</a>
+          <a href="../../index.html">Dike</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -60,7 +60,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">DIKEBenchmarker.benchmarkatoms</li>
+      <li class="breadcrumb-item active">DikeBenchmarker.benchmarkatoms</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,7 +69,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for DIKEBenchmarker.benchmarkatoms</h1><div class="highlight"><pre>
+  <h1>Source code for DikeBenchmarker.benchmarkatoms</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Basic benchmarking job and result representation&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -79,13 +79,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">DIKEBenchmarker.benchmarkingmethods.benchmarker</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractBenchmarker</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.benchmarkingmethods.benchmarker</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractBenchmarker</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="JobState">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.JobState">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.JobState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">JobState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Possible states of a Job.&quot;&quot;&quot;</span>
 
@@ -99,14 +99,14 @@
 
 
 <div class="viewcode-block" id="JobStateError">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.JobStateError">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.JobStateError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">JobStateError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an invalid state transition is attempted on a Job.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="Job">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Job</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Benchmarking Job that behaves like a future.</span>
@@ -155,7 +155,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Job.clone_retry">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job.clone_retry">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.clone_retry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clone_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decrement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Job&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a clone of this job with identical benchmark_id, solver_id, checker_id, and logroot.</span>
@@ -173,7 +173,7 @@
 
 
 <div class="viewcode-block" id="Job.get_log_prefix">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job.get_log_prefix">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.get_log_prefix">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_log_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the logfile prefix for this job.</span>
@@ -182,7 +182,7 @@
 
 
 <div class="viewcode-block" id="Job.mark_submitted">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job.mark_submitted">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.mark_submitted">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_submitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Mark the job as submitted.</span>
@@ -200,7 +200,7 @@
 
 
 <div class="viewcode-block" id="Job.mark_running">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job.mark_running">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.mark_running">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Mark the job as running.</span>
@@ -216,7 +216,7 @@
 
 
 <div class="viewcode-block" id="Job.set_finished">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job.set_finished">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.set_finished">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Mark the job as finished.</span>
@@ -229,7 +229,7 @@
 
 
 <div class="viewcode-block" id="Job.set_failed">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job.set_failed">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.set_failed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Mark the job as failed.</span>
@@ -243,7 +243,7 @@
 
 
 <div class="viewcode-block" id="Job.cancel_local">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Job.cancel_local">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.cancel_local">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cancel_local</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Mark the job as cancelled.</span>
@@ -262,7 +262,7 @@
 
 
 <div class="viewcode-block" id="Result">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Result">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Result">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents the result of a benchmark job.</span>
@@ -276,13 +276,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">failed</span> <span class="o">=</span> <span class="n">failed</span>
 
 <div class="viewcode-block" id="Result.has_failed">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Result.has_failed">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Result.has_failed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">failed</span></div>
 
 
 <div class="viewcode-block" id="Result.get_job">
-<a class="viewcode-back" href="../../DIKEBenchmarker.html#DIKEBenchmarker.benchmarkatoms.Result.get_job">[docs]</a>
+<a class="viewcode-back" href="../../DIKEBenchmarker.html#DikeBenchmarker.benchmarkatoms.Result.get_job">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_job</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Job&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span></div>
 

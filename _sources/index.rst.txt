@@ -1,9 +1,9 @@
-.. DIKE documentation master file, created by
+.. Dike documentation master file, created by
    sphinx-quickstart on Tue Feb 24 16:01:22 2026.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-DIKE documentation
+Dike documentation
 ==================
 
 Add your content using ``reStructuredText`` syntax. See the

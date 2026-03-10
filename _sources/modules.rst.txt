@@ -1,7 +1,7 @@
-DIKEBenchmarker
+DikeBenchmarker
 ======================
 
 .. toctree::
    :maxdepth: 4
 
-   DIKEBenchmarker
+   DikeBenchmarker
