@@ -1,4 +1,4 @@
-DIKEBenchmarker package
+DikeBenchmarker package
 =======================
 
 Subpackages
@@ -7,21 +7,21 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   DIKEBenchmarker.benchmarkadaptors
-   DIKEBenchmarker.data
-   DIKEBenchmarker.dataadaptors
-   DIKEBenchmarker.infrastructureadaptors
-   DIKEBenchmarker.performancemodels
-   DIKEBenchmarker.resultconsumers
-   DIKEBenchmarker.solveradaptors
+   DikeBenchmarker.benchmarkadaptors
+   DikeBenchmarker.data
+   DikeBenchmarker.dataadaptors
+   DikeBenchmarker.infrastructureadaptors
+   DikeBenchmarker.performancemodels
+   DikeBenchmarker.resultconsumers
+   DikeBenchmarker.solveradaptors
 
 Submodules
 ----------
 
-DIKEBenchmarker.benchmarkatoms module
+DikeBenchmarker.benchmarkatoms module
 -------------------------------------
 
-.. automodule:: DIKEBenchmarker.benchmarkatoms
+.. automodule:: DikeBenchmarker.benchmarkatoms
    :members:
    :show-inheritance:
    :undoc-members:
@@ -29,7 +29,7 @@ DIKEBenchmarker.benchmarkatoms module
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker
+.. automodule:: DikeBenchmarker
    :members:
    :show-inheritance:
    :undoc-members:

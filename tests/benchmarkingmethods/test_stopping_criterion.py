@@ -1,15 +1,15 @@
 import importlib
 import pytest
 
-from DIKEBenchmarker.benchmarkatoms import Job, Result
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
-from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from DikeBenchmarker.benchmarkatoms import Job, Result
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
+from DikeBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
 
 
 def build_adaptor() -> SqlDataAdaptor:
-    db_path = importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
+    db_path = importlib.resources.files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db")
     db_adaptor = SqlDataAdaptor(db_path)
     return db_adaptor
 

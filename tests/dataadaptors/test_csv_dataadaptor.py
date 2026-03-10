@@ -1,5 +1,5 @@
 import pytest
-from DIKEBenchmarker.dataadaptors.csv_dataadaptor import CsvDataAdaptor
+from DikeBenchmarker.dataadaptors.csv_dataadaptor import CsvDataAdaptor
 
 
 INSTANCE_HASH = "b4f28bc5f78ead2bf150639790768df4"

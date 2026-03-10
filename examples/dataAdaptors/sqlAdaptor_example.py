@@ -1,8 +1,8 @@
 # simple example reading from the database the data corresponding to a specific solver and printing it to stdout
 import importlib.resources
-from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from DikeBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
 
-db_path = importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
+db_path = importlib.resources.files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db")
 
 db_adaptor = SqlDataAdaptor(db_path)
 competition_env_hash = db_adaptor.get_competition_env_hash("main2024")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DIKE Benchmarker - Main entry point for running benchmarking experiments."""
+"""Dike Benchmarker - Main entry point for running benchmarking experiments."""
 
 import argparse
 import importlib
@@ -13,25 +13,25 @@ from parsl.providers import LocalProvider
 
 import polars as pl
 
-from DIKEBenchmarker.benchmarkingmethods.benchmarker import Benchmarker
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criteria import NoStoppingCriteria
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.trivial_instance_selector import TrivialInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.random_instance_selector import RandomInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.variance_instance_selector import VarianceInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
-from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
-from DIKEBenchmarker.infrastructureadaptors.util import slurm_limits
+from DikeBenchmarker.benchmarkingmethods.benchmarker import Benchmarker
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criteria import NoStoppingCriteria
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.trivial_instance_selector import TrivialInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.random_instance_selector import RandomInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.variance_instance_selector import VarianceInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
+from DikeBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from DikeBenchmarker.infrastructureadaptors.util import slurm_limits
 
-from DIKEBenchmarker.infrastructureadaptors.util.parsl_configs import make_slurm_config
-from DIKEBenchmarker.infrastructureadaptors.parsl_runner import ParslRunner
-from DIKEBenchmarker.resultconsumers.lambda_consumer import LambdaConsumer
-from DIKEBenchmarker.solveradaptors.executionwrapper import ExecutionWrapper
-from DIKEBenchmarker.solveradaptors.solveradaptor import SolverAdaptor
-from DIKEBenchmarker.benchmarkadaptors.satinstance import SATInstanceAdaptor
-from DIKEBenchmarker.infrastructureadaptors.util import control
+from DikeBenchmarker.infrastructureadaptors.util.parsl_configs import make_slurm_config
+from DikeBenchmarker.infrastructureadaptors.parsl_runner import ParslRunner
+from DikeBenchmarker.resultconsumers.lambda_consumer import LambdaConsumer
+from DikeBenchmarker.solveradaptors.executionwrapper import ExecutionWrapper
+from DikeBenchmarker.solveradaptors.solveradaptor import SolverAdaptor
+from DikeBenchmarker.benchmarkadaptors.satinstance import SATInstanceAdaptor
+from DikeBenchmarker.infrastructureadaptors.util import control
 
 
 def get_solver_adaptor(solvers_csv: str) -> SolverAdaptor:
@@ -62,7 +62,7 @@ def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, 
         )
 
     # Init data adaptor for selection methods that require performance data (discrimination-based and variance-based) and instance ordering based on that data
-    db_path = importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
+    db_path = importlib.resources.files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db")
     data_adaptor = SqlDataAdaptor(db_path)
 
     benchmark_ids = benchmarking_method["benchmarks"]
@@ -207,7 +207,7 @@ def run_local(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="DIKE: Data-Informed Knowledge-driven Evaluation")
+    parser = argparse.ArgumentParser(description="Dike: Data-Informed Knowledge-driven Evaluation")
 
     parser.add_argument("config", type=str, help="Path to YAML configuration file")
     parser.add_argument("--requeue", type=str, default=None, help="Path to slurm script for requeuing; if not provided then requeuing is disabled.")

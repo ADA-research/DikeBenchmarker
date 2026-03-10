@@ -1,6 +1,6 @@
 from importlib.resources import files
 import pytest
-from DIKEBenchmarker.dataadaptors.competition_dataadaptor import CompetitionDataAdaptor
+from DikeBenchmarker.dataadaptors.competition_dataadaptor import CompetitionDataAdaptor
 
 
 INSTANCE_HASH = "b4f28bc5f78ead2bf150639790768df4"
@@ -96,7 +96,7 @@ ALL_COLS = [
 
 
 def build_adaptor() -> CompetitionDataAdaptor:
-    db_path = files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
+    db_path = files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db")
 
     cp_adaptor = CompetitionDataAdaptor.from_competition_csv("./examples/dataAdaptors/sat/main2024.csv", source_name="main2024", database_path=db_path)
     return cp_adaptor

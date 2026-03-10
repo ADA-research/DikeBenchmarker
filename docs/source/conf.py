@@ -11,7 +11,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../../src"))
 
-project = "DIKE"
+project = "Dike"
 copyright = "2026, Ashlin Iser, Marie Anastacio, Théo Matricon"
 author = "Ashlin Iser, Marie Anastacio, Théo Matricon"
 release = "1"

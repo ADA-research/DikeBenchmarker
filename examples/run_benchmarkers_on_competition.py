@@ -6,18 +6,18 @@ import os
 import sqlite3
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from tqdm import tqdm
-from DIKEBenchmarker.benchmarkingmethods.benchmarker import Benchmarker
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.random_instance_selector import RandomInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.variance_instance_selector import VarianceInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
-from DIKEBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
-from DIKEBenchmarker.dataadaptors.dataadaptor import DataAdaptor
-from DIKEBenchmarker.dataadaptors.inmemory_dataadaptor import InMemoryDataAdaptor
-from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
-from DIKEBenchmarker.infrastructureadaptors.abstract_runner import AbstractRunner
-from DIKEBenchmarker.infrastructureadaptors.virtual_runner import VirtualRunner
+from DikeBenchmarker.benchmarkingmethods.benchmarker import Benchmarker
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.random_instance_selector import RandomInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.variance_instance_selector import VarianceInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
+from DikeBenchmarker.dataadaptors.dataadaptor import DataAdaptor
+from DikeBenchmarker.dataadaptors.inmemory_dataadaptor import InMemoryDataAdaptor
+from DikeBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from DikeBenchmarker.infrastructureadaptors.abstract_runner import AbstractRunner
+from DikeBenchmarker.infrastructureadaptors.virtual_runner import VirtualRunner
 
 
 INSTANCE_SELECTOR_CLASSES = [VarianceInstanceSelector, RandomInstanceSelector, DiscriminationInstanceSelector]
@@ -103,7 +103,7 @@ def _run_single_experiment(
 
 
 def make_adaptor() -> SqlDataAdaptor:
-    db_path = str(importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db"))
+    db_path = str(importlib.resources.files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db"))
     return SqlDataAdaptor(db_path)
 
 

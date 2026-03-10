@@ -2,15 +2,15 @@ from importlib.resources import files
 import pytest
 
 
-from DIKEBenchmarker.benchmarkatoms import Job
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.random_instance_selector import RandomInstanceSelector
-from DIKEBenchmarker.benchmarkingmethods.instance_selectors.variance_instance_selector import VarianceInstanceSelector
-from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from DikeBenchmarker.benchmarkatoms import Job
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.discrimination_instance_selector import DiscriminationInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.random_instance_selector import RandomInstanceSelector
+from DikeBenchmarker.benchmarkingmethods.instance_selectors.variance_instance_selector import VarianceInstanceSelector
+from DikeBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
 
 
 def build_adaptor() -> SqlDataAdaptor:
-    db_path = files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
+    db_path = files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db")
     print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Using database at: {db_path}")
     db_adaptor = SqlDataAdaptor(db_path)
     return db_adaptor

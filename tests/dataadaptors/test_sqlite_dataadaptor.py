@@ -1,13 +1,13 @@
 import pytest
 import polars as pl
 import importlib.resources
-from DIKEBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
+from DikeBenchmarker.dataadaptors.sqlite_dataadaptor import SqlDataAdaptor
 
 
 @pytest.fixture
 def db_path():
     # Use importlib.resources to get the path to the test database
-    with importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db") as db_file:
+    with importlib.resources.files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db") as db_file:
         return str(db_file)
 
 

@@ -1,53 +1,53 @@
-DIKEBenchmarker.dataadaptors package
+DikeBenchmarker.dataadaptors package
 ====================================
 
 Submodules
 ----------
 
-DIKEBenchmarker.dataadaptors.competition\_dataadaptor module
+DikeBenchmarker.dataadaptors.competition\_dataadaptor module
 ------------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.dataadaptors.competition_dataadaptor
+.. automodule:: DikeBenchmarker.dataadaptors.competition_dataadaptor
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.dataadaptors.csv\_dataadaptor module
+DikeBenchmarker.dataadaptors.csv\_dataadaptor module
 ----------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.dataadaptors.csv_dataadaptor
+.. automodule:: DikeBenchmarker.dataadaptors.csv_dataadaptor
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.dataadaptors.dataadaptor module
+DikeBenchmarker.dataadaptors.dataadaptor module
 -----------------------------------------------
 
-.. automodule:: DIKEBenchmarker.dataadaptors.dataadaptor
+.. automodule:: DikeBenchmarker.dataadaptors.dataadaptor
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.dataadaptors.inmemory\_dataadaptor module
+DikeBenchmarker.dataadaptors.inmemory\_dataadaptor module
 ---------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.dataadaptors.inmemory_dataadaptor
+.. automodule:: DikeBenchmarker.dataadaptors.inmemory_dataadaptor
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.dataadaptors.merge\_dataadaptor module
+DikeBenchmarker.dataadaptors.merge\_dataadaptor module
 ------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.dataadaptors.merge_dataadaptor
+.. automodule:: DikeBenchmarker.dataadaptors.merge_dataadaptor
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.dataadaptors.sqlite\_dataadaptor module
+DikeBenchmarker.dataadaptors.sqlite\_dataadaptor module
 -------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.dataadaptors.sqlite_dataadaptor
+.. automodule:: DikeBenchmarker.dataadaptors.sqlite_dataadaptor
    :members:
    :show-inheritance:
    :undoc-members:
@@ -55,7 +55,7 @@ DIKEBenchmarker.dataadaptors.sqlite\_dataadaptor module
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.dataadaptors
+.. automodule:: DikeBenchmarker.dataadaptors
    :members:
    :show-inheritance:
    :undoc-members:

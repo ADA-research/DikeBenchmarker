@@ -5,7 +5,7 @@ import lzma
 import pytest
 from requests import HTTPError
 
-from DIKEBenchmarker.benchmarkadaptors.satinstance import SATInstanceAdaptor
+from DikeBenchmarker.benchmarkadaptors.satinstance import SATInstanceAdaptor
 
 
 INSTANCE_HASH = "001304ba2e4e8adbd179aa3d8acb697b"

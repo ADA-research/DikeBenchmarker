@@ -1,4 +1,4 @@
-# DIKEBenchmarker
+# DikeBenchmarker
 
 ## Project Setup
 
@@ -7,8 +7,8 @@
 1. Clone the repository and its submodules:
 
    ```bash
-   git clone --recurse-submodules https://github.com/ADA-research/DIKEBenchmarker.git
-   cd DIKEBenchmarker
+   git clone --recurse-submodules https://github.com/ADA-research/DikeBenchmarker.git
+   cd DikeBenchmarker
    ```
 
 2. Install ``sqlite3`` on your system, chances are it is already installed, you can check if it is installed with:
@@ -20,7 +20,7 @@
 3. Run the setup script to configure git filters and restore the database:
 
    ```bash
-   cd src/DIKEBenchmarker/data/db
+   cd src/DikeBenchmarker/data/db
    ./setup.sh
    cd ../../../..
    ```
@@ -35,8 +35,8 @@ If you prefer to work from your own files or from the data originating from GBD,
 You can simply clone the repository and its submodules:
 
    ```bash
-   git clone https://github.com/ADA-research/DIKEBenchmarker.git
-   cd DIKEBenchmarker
+   git clone https://github.com/ADA-research/DikeBenchmarker.git
+   cd DikeBenchmarker
    ```
 
 
@@ -45,5 +45,5 @@ You can simply clone the repository and its submodules:
 you can fetch the path of the database with :
 
 ```
-db_path = importlib.resources.files("DIKEBenchmarker.data.db").joinpath("sustainablecompetition.db")
+db_path = importlib.resources.files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db")
 ```

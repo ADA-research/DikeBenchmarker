@@ -1,10 +1,10 @@
-DIKEBenchmarker.data.db package
+DikeBenchmarker.data.db package
 ===============================
 
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.data.db
+.. automodule:: DikeBenchmarker.data.db
    :members:
    :show-inheritance:
    :undoc-members:

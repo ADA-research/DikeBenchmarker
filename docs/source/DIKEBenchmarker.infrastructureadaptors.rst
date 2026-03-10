@@ -1,37 +1,37 @@
-DIKEBenchmarker.infrastructureadaptors package
+DikeBenchmarker.infrastructureadaptors package
 ==============================================
 
 Submodules
 ----------
 
-DIKEBenchmarker.infrastructureadaptors.abstract\_runner module
+DikeBenchmarker.infrastructureadaptors.abstract\_runner module
 --------------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.infrastructureadaptors.abstract_runner
+.. automodule:: DikeBenchmarker.infrastructureadaptors.abstract_runner
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.infrastructureadaptors.local\_runner module
+DikeBenchmarker.infrastructureadaptors.local\_runner module
 -----------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.infrastructureadaptors.local_runner
+.. automodule:: DikeBenchmarker.infrastructureadaptors.local_runner
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.infrastructureadaptors.parsl\_runner module
+DikeBenchmarker.infrastructureadaptors.parsl\_runner module
 -----------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.infrastructureadaptors.parsl_runner
+.. automodule:: DikeBenchmarker.infrastructureadaptors.parsl_runner
    :members:
    :show-inheritance:
    :undoc-members:
 
-DIKEBenchmarker.infrastructureadaptors.virtual\_runner module
+DikeBenchmarker.infrastructureadaptors.virtual\_runner module
 -------------------------------------------------------------
 
-.. automodule:: DIKEBenchmarker.infrastructureadaptors.virtual_runner
+.. automodule:: DikeBenchmarker.infrastructureadaptors.virtual_runner
    :members:
    :show-inheritance:
    :undoc-members:
@@ -39,7 +39,7 @@ DIKEBenchmarker.infrastructureadaptors.virtual\_runner module
 Module contents
 ---------------
 
-.. automodule:: DIKEBenchmarker.infrastructureadaptors
+.. automodule:: DikeBenchmarker.infrastructureadaptors
    :members:
    :show-inheritance:
    :undoc-members:

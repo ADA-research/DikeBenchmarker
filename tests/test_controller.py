@@ -1,9 +1,9 @@
 import polars as pl
-from DIKEBenchmarker.benchmarkatoms import Result
-from DIKEBenchmarker.benchmarkingmethods.benchmarker import TrivialBenchmarker
-from DIKEBenchmarker.dataadaptors.competition_dataadaptor import CompetitionDataAdaptor
-from DIKEBenchmarker.infrastructureadaptors.virtual_runner import VirtualRunner
-from DIKEBenchmarker.resultconsumers.lambda_consumer import LambdaConsumer
+from DikeBenchmarker.benchmarkatoms import Result
+from DikeBenchmarker.benchmarkingmethods.benchmarker import TrivialBenchmarker
+from DikeBenchmarker.dataadaptors.competition_dataadaptor import CompetitionDataAdaptor
+from DikeBenchmarker.infrastructureadaptors.virtual_runner import VirtualRunner
+from DikeBenchmarker.resultconsumers.lambda_consumer import LambdaConsumer
 
 
 def test_run():
