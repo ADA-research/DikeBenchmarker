@@ -11,6 +11,7 @@ dependencies = [
     "parsl>=2025.9.1",
     "gbd-tools>=5.0.0",
     "pyyaml",
+    "adastop>=0.1.3",
 ]
 
 [tool.ruff]

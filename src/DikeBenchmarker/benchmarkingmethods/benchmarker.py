@@ -7,8 +7,6 @@ and for registering result consumers that process results when they are availabl
 from threading import Thread
 from queue import Queue
 
-from abc import ABC
-
 from DikeBenchmarker.benchmarkatoms import Job, Result
 from DikeBenchmarker.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
 from DikeBenchmarker.benchmarkingmethods.instance_selectors.trivial_instance_selector import TrivialInstanceSelector
@@ -18,7 +16,7 @@ from DikeBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criteria im
 __all__ = ["Benchmarker", "TrivialBenchmarker"]
 
 
-class Benchmarker(ABC):
+class Benchmarker:
     """Decides which jobs to submit next; can depend on past results/dependencies."""
 
     def __init__(

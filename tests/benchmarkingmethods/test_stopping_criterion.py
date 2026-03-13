@@ -2,6 +2,7 @@ import importlib
 import pytest
 
 from DikeBenchmarker.benchmarkatoms import Job, Result
+from DikeBenchmarker.benchmarkingmethods.stopping_criterion.adastop_criterion import AdaStopCriterion
 from DikeBenchmarker.benchmarkingmethods.stopping_criterion.minimum_accuracy_stopping_criterion import MinimumAccuracyStoppingCriterion
 from DikeBenchmarker.benchmarkingmethods.stopping_criterion.percentage_stopping_criterion import PercentageStoppingCriterion
 from DikeBenchmarker.benchmarkingmethods.stopping_criterion.wilcoxon_stopping_criterion import WilcoxonStoppingCriterion
@@ -117,3 +118,9 @@ class TestWilcoxonStoppingCriterion:
         criterion = WilcoxonStoppingCriterion(benchmark_ids, ids[0], ids[1:], min_accuracy=0.95, db_adaptor=adaptor)
         assert set(criterion.sorted_solver_ids) == set(ids[1:])
         assert criterion.challenger == ids[0]
+
+
+class TestAdaStopCriterion:
+    def test_does_not_stop_initially(self, adaptor, benchmark_ids, solver_ids):
+        criterion = AdaStopCriterion(benchmark_ids, solver_ids[0], solver_ids[1:3], alpha=0.05, db_adaptor=adaptor)
+        assert criterion.should_stop() is False
