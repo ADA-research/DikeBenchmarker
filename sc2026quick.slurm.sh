@@ -8,6 +8,7 @@
 #SBATCH --signal=B:USR1@300             # 5 min warning before end
 #SBATCH --time=12:00:00                 # 33 solvers x 20 instances, ~12h budget
 #SBATCH --partition=cpuonly
+#SBATCH --account=hk-project-p0027597
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
