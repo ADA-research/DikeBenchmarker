@@ -16,7 +16,7 @@ checker_memory: 32768        # Memory limit for checkers in MB
 scheduling:
   scheduler: slurm
   machine: cpuonly                      # partition name
-  account: hk-project-test-p0026435    # SLURM account
+  account: hk-project-p0027597         # SLURM account
   tasks_per_node: 16                    # parallel solver jobs per node
   jobname: sc2026quick
   workerinit: "export PYTHONNOUSERSITE=1; unset PYTHONPATH; source /home/hk-project-toolbox/fv2117/git/sc2026/venv/bin/activate; cd /home/hk-project-toolbox/fv2117/git/sc2026/dike"
