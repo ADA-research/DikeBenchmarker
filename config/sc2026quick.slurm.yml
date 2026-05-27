@@ -1,0 +1,30 @@
+# SC2026 Quick-Test Configuration — SLURM (HPC)
+# 10 SAT + 10 UNSAT benchmarks solved by kissat-sc2025 within 5 minutes.
+# Submit via: sbatch sc2026quick.slurm.sh  (from the dike/ directory)
+
+# Solver resource limits (5-minute budget)
+solver_cputime: 300          # CPU time limit for solvers in seconds
+solver_walltime: 360         # Wall time limit (20% headroom over 5 min)
+solver_memory: 32768         # Memory limit for solvers in MB
+
+# Checker resource limits (proof sizes are modest for 5-min runs)
+checker_cputime: 1800        # CPU time limit for checkers in seconds
+checker_walltime: 2700       # Wall time limit for checkers in seconds
+checker_memory: 32768        # Memory limit for checkers in MB
+
+# Job scheduler configuration
+scheduling:
+  scheduler: slurm
+  machine: cpuonly                      # partition name
+  account: hk-project-test-p0026435    # SLURM account
+  tasks_per_node: 16                    # parallel solver jobs per node
+  jobname: sc2026quick
+  workerinit: "export PYTHONNOUSERSITE=1; unset PYTHONPATH; source /home/hk-project-toolbox/fv2117/git/sc2026/venv/bin/activate; cd /home/hk-project-toolbox/fv2117/git/sc2026/dike"
+
+benchmarks:
+  file: ./sc2026quick.instances.csv   # 20 quick-test benchmark hashes
+  selection_method: allpairs          # Run every solver on every instance
+
+# Benchmark and solver files
+solvers: ./satcomp26.solvers.csv      # All SC2026 solver entries
+results: ./sc2026quick.slurm.results  # Output directory for results

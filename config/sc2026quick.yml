@@ -1,10 +1,10 @@
-# SC2026 Quick-Test Configuration
+# SC2026 Quick-Test Configuration — LOCAL
 # 10 SAT + 10 UNSAT benchmarks solved by kissat-sc2025 within 5 minutes.
 # Use this to locally verify that all SC2026 solvers build and run correctly
 # before submitting to the HPC cluster.
 
-# Solver resource limits (5-minute wall-clock budget)
-solver_cputime: 300          # CPU time limit for solvers in seconds
+# Solver resource limits (5-minute budget)
+solver_cputime: 300
 solver_walltime: 360         # Wall time limit (20% headroom over 5 min)
 solver_memory: 32768         # Memory limit for solvers in MB
 
