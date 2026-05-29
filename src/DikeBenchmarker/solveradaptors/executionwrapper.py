@@ -3,10 +3,16 @@
 Resolves the paths to the wrapper binaries and constructs command-line arguments using the specified resource limits.
 """
 
+import os as _os
+
 from DikeBenchmarker.solveradaptors.abstractexecutable import AbstractExecutable
 
 
 __all__ = ["ExecutionWrapper"]
+
+# Absolute path to runsolver, resolved relative to the dike package root regardless of CWD.
+_DIKE_ROOT = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))))
+_RUNSOLVER_BIN = _os.path.join(_DIKE_ROOT, "external", "runsolver")
 
 
 class ExecutionWrapper(AbstractExecutable):
@@ -18,7 +24,7 @@ class ExecutionWrapper(AbstractExecutable):
         if "runsolver" not in self.registry:
             self.register(
                 "runsolver",
-                ["./external/runsolver"],
+                [_RUNSOLVER_BIN],
                 "$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --vsize-limit $MEMORY --var $WRAPPER_OUTPUT --solver-data $WRAPPED_OUTPUT sh -c '$WRAPPED_COMMAND'",
                 None,
             )
