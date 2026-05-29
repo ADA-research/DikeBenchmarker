@@ -75,10 +75,16 @@
 <span class="sd">Resolves the paths to the wrapper binaries and constructs command-line arguments using the specified resource limits.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_os</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.solveradaptors.abstractexecutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractExecutable</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExecutionWrapper&quot;</span><span class="p">]</span>
+
+<span class="c1"># Absolute path to runsolver, resolved relative to the dike package root regardless of CWD.</span>
+<span class="n">_DIKE_ROOT</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))))</span>
+<span class="n">_RUNSOLVER_BIN</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_DIKE_ROOT</span><span class="p">,</span> <span class="s2">&quot;external&quot;</span><span class="p">,</span> <span class="s2">&quot;runsolver&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ExecutionWrapper">
@@ -92,7 +98,7 @@
         <span class="k">if</span> <span class="s2">&quot;runsolver&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
                 <span class="s2">&quot;runsolver&quot;</span><span class="p">,</span>
-                <span class="p">[</span><span class="s2">&quot;./external/runsolver&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">_RUNSOLVER_BIN</span><span class="p">],</span>
                 <span class="s2">&quot;$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --vsize-limit $MEMORY --var $WRAPPER_OUTPUT --solver-data $WRAPPED_OUTPUT sh -c &#39;$WRAPPED_COMMAND&#39;&quot;</span><span class="p">,</span>
                 <span class="kc">None</span><span class="p">,</span>
             <span class="p">)</span>
