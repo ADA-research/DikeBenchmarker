@@ -159,6 +159,16 @@
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="s2">&quot;sr&quot;</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;./external/checkers/dsr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/lsr-check&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            $BIN0 $INST $CERT $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
             <span class="s2">&quot;satchecker&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="s2">&quot;./external/checkers/gratchk&quot;</span><span class="p">],</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
