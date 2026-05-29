@@ -85,6 +85,16 @@ class CheckerAdaptor(AbstractExecutable):
             None,
         )
         self.register(
+            "sr",
+            ["./external/checkers/dsr-trim", "./external/checkers/lsr-check"],
+            """
+            $BIN0 $INST $CERT $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
+            $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
+            rm -f $CERT.trimmed
+            """,
+            None,
+        )
+        self.register(
             "satchecker",
             ["./external/checkers/gratchk"],
             """
