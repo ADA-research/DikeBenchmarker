@@ -95,6 +95,12 @@ class CheckerAdaptor(AbstractExecutable):
             None,
         )
         self.register(
+            "none",
+            [],
+            "",
+            None,
+        )
+        self.register(
             "satchecker",
             ["./external/checkers/gratchk"],
             """

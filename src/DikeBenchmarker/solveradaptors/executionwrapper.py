@@ -56,6 +56,8 @@ class ExecutionWrapper(AbstractExecutable):
 
     def format_command(self, xid: str, binaries: list[str], wrapped_cmd: str, wrapper_output: str, wrapped_output: str) -> str:
         """Return the command line to run the execution wrapper with parameters."""
+        if not wrapped_cmd:
+            return ""
         result = self._format_base(xid, binaries)
         result = self._format_extra(result, wrapped_cmd, wrapper_output, wrapped_output)
         return result
