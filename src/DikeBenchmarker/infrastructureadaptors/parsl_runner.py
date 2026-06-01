@@ -19,6 +19,9 @@ from DikeBenchmarker.solveradaptors.executionwrapper import ExecutionWrapper
 from DikeBenchmarker.solveradaptors.solveradaptor import SolverAdaptor
 
 
+logger = logging.getLogger(__name__)
+
+
 @bash_app
 def runsolver(
     solver_wrapper_id: str,
@@ -84,7 +87,7 @@ def runsolver(
     # stop eagerly on error
     set -e
     set -x  # enable debug output to see which commands are executed
-
+"
     # log system information
     uname -a; echo; lscpu; echo; free -h; echo; df -h; echo; ps aux; echo;
     echo "{wrapper_cmd}"
@@ -209,7 +212,19 @@ class ParslRunner(AbstractRunner):
         return Result(job, resource_usage["cputime"], resource_usage["memory"])
 
     def cancel(self, job):
-        """Cancel a running job."""
-        job_future = self.futures_map[job.uid]
-        job_future.cancel()
+        """Cancel a running job.
+
+        Parsl's AppFuture does not implement cancel() (raises NotImplementedError),
+        so we best-effort try and otherwise just mark the job as cancelled locally.
+        Without this, a SLURM-triggered graceful shutdown crashes the whole run.
+        """
+        job_future = self.futures_map.get(job.uid)
+        if job_future is not None and not job_future.done():
+            try:
+                job_future.cancel()
+            except NotImplementedError:
+                # parsl AppFuture cannot be cancelled; nothing to do here.
+                pass
+            except Exception as e:
+                logger.warning(f"Failed to cancel parsl future for job {job.uid}: {e}")
         return super().cancel(job)
