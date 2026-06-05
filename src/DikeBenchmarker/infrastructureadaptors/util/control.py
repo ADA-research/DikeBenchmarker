@@ -9,6 +9,18 @@ import parsl
 
 _SLURM_REQUEUE_SCRIPT_PATH = None
 _SHUTTING_DOWN = False
+_ALL_JOBS_COMPLETE = False
+
+
+def flag_all_jobs_complete():
+    """Flag that all jobs have finished, so no requeue is needed on shutdown."""
+    global _ALL_JOBS_COMPLETE
+    _ALL_JOBS_COMPLETE = True
+
+
+def all_jobs_complete() -> bool:
+    """Check whether all jobs have already finished."""
+    return _ALL_JOBS_COMPLETE
 
 
 def flag_shutting_down():
@@ -30,7 +42,10 @@ def shutdown(signum, frame):
         return
     flag_shutting_down()
 
-    if has_slurm_requeue_script_path():
+    # Only requeue if there is still pending work; a run that already finished
+    # all its jobs must not spawn a continuation just because SLURM sent the
+    # pre-walltime signal to the still-alive controller process.
+    if has_slurm_requeue_script_path() and not all_jobs_complete():
         submit_slurm_requeue_job()
         unset_slurm_requeue_script_path()  # avoid multiple submissions if multiple signals are received
 

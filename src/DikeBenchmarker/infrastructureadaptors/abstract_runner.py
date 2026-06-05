@@ -86,16 +86,17 @@ class AbstractRunner(ABC):
         """Submit a job to the external system."""
         logger.debug(f"Submitting job: Solver {job.solver_id} on Benchmark {job.benchmark_id}")
 
-        self.jobs.append(job)
-        job.mark_submitted()
-
         output_root = job.get_log_prefix()
         os.makedirs(os.path.dirname(output_root), exist_ok=True)
         if os.path.exists(f"{output_root}.done"):
-            # if the .done file exists, we can assume that the job was completed in a previous run and skip submission
+            # if the .done file exists, the job was completed in a previous run; skip it
+            # entirely. It must not be tracked in self.jobs, otherwise it would sit in a
+            # non-terminal SUBMITTED state and block the completion loop until walltime.
             print(f"Job {job.solver_id} on {job.benchmark_id} already completed in previous run, skipping submission.")
             return False
 
+        self.jobs.append(job)
+        job.mark_submitted()
         return True
 
     @abstractmethod
@@ -128,6 +129,9 @@ class AbstractRunner(ABC):
             if control.is_shutting_down():
                 print("Runner is shutting down, exiting completions loop.")
                 return
+        # all jobs reached a finished state without an external shutdown:
+        # signal that no requeue/continuation is needed.
+        control.flag_all_jobs_complete()
 
     @abstractmethod
     def cancel(self, job: Job):
