@@ -87,7 +87,7 @@ def runsolver(
     # stop eagerly on error
     set -e
     set -x  # enable debug output to see which commands are executed
-"
+
     # log system information
     uname -a; echo; lscpu; echo; free -h; echo; df -h; echo; ps aux; echo;
     echo "{wrapper_cmd}"
