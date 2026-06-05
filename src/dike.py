@@ -210,6 +210,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Dike: Data-Informed Knowledge-driven Evaluation")
 
     parser.add_argument("config", type=str, help="Path to YAML configuration file")
+    parser.add_argument(
+        "outputdir",
+        type=str,
+        help="Output directory for logs and results. Absolute, or relative to the config file's directory.",
+    )
     parser.add_argument("--requeue", type=str, default=None, help="Path to slurm script for requeuing; if not provided then requeuing is disabled.")
 
     args = parser.parse_args()
@@ -262,8 +267,10 @@ if __name__ == "__main__":
         "checker_memory": config.get("checker_memory", 64 * 1024),
     }
 
-    # Output directory for logs and results
-    results = os.path.join(config_dir, config.get("results"))
+    # Output directory for logs and results. Given on the command line; if
+    # relative it is resolved against the config file's directory.
+    out_root = args.outputdir if os.path.isabs(args.outputdir) else os.path.join(config_dir, args.outputdir)
+    results = os.path.join(out_root, os.path.basename(config.get("results")))
 
     scheduling = config.get("scheduling", {})
     scheduler = scheduling.get("scheduler", "slurm")
