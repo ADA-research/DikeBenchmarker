@@ -178,9 +178,8 @@
             <span class="s2">&quot;satchecker&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="s2">&quot;./external/checkers/gratchk&quot;</span><span class="p">],</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            grep &quot;^v&quot; $CERT | sed -re &#39;s/^v//g&#39; &gt; $CERT.model</span>
-<span class="sd">            $BIN0 sat $INST $CERT.model 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
-<span class="sd">            rm -f $CERT.model</span>
+<span class="sd">            grep &quot;^v&quot; $CERT | sed -re &#39;s/^v//g&#39; &gt; $TRIMMER_OUTPUT</span>
+<span class="sd">            $BIN0 sat $INST $TRIMMER_OUTPUT 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
