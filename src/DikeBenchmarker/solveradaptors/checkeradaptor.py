@@ -104,9 +104,8 @@ class CheckerAdaptor(AbstractExecutable):
             "satchecker",
             ["./external/checkers/gratchk"],
             """
-            grep "^v" $CERT | sed -re 's/^v//g' > $CERT.model
-            $BIN0 sat $INST $CERT.model 1> $CHECKER_OUTPUT 2>&1
-            rm -f $CERT.model
+            grep "^v" $CERT | sed -re 's/^v//g' > $TRIMMER_OUTPUT
+            $BIN0 sat $INST $TRIMMER_OUTPUT 1> $CHECKER_OUTPUT 2>&1
             """,
             None,
         )

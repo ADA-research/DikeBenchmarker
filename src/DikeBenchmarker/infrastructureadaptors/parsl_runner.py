@@ -80,7 +80,10 @@ def runsolver(
         wrapper_out.filepath + ".checker_wrapper",
         checker_out.filepath + ".checker_wrapped",
     )
-    model_checker_cmd = checker.format_command("satchecker", satchecker_binaries_paths, cnf, solver_out.filepath, "", checker_out.filepath)
+    # The satchecker extracts the solver's model into the dedicated `.model`
+    # output (model_out) so it is retained for inspection regardless of the
+    # verification outcome. The trimmer-output slot carries that path.
+    model_checker_cmd = checker.format_command("satchecker", satchecker_binaries_paths, cnf, solver_out.filepath, model_out.filepath, checker_out.filepath)
     return f"""
     # redirect output and error streams
     exec >"{out.filepath}" 2>"{err.filepath}"
