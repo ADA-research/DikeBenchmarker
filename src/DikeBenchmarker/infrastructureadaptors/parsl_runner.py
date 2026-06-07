@@ -89,8 +89,15 @@ def runsolver(
     set -x  # enable debug output to see which commands are executed
 
     # log system information
-    uname -a; echo; lscpu; echo; free -h; echo; df -h; echo; ps aux; echo;
-    echo "{wrapper_cmd}"
+    #uname -a; echo; lscpu; echo; free -h; echo; df -h; echo; ps aux; echo;
+    # Log the wrapped command literally. A quoted heredoc is used instead of
+    # `echo "{{wrapper_cmd}}"` because the command may contain command
+    # substitutions ($(...)), embedded quotes and shell variables; inside a
+    # double-quoted echo the shell would evaluate/re-parse those, run a stray
+    # fragment as a command (exit 127) and abort the whole job under `set -e`.
+    cat <<'DIKE_WRAPPER_CMD_EOF'
+{wrapper_cmd}
+DIKE_WRAPPER_CMD_EOF
 
     case "{benchmark_instance.filepath}" in
         *.xz)              xzcat "{benchmark_instance.filepath}" ;;
