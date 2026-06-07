@@ -13,6 +13,7 @@ from parsl.data_provider.files import File
 
 from DikeBenchmarker.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 from DikeBenchmarker.infrastructureadaptors.abstract_runner import AbstractRunner
+from DikeBenchmarker.infrastructureadaptors.util import control
 from DikeBenchmarker.benchmarkatoms import Job, Result
 from DikeBenchmarker.solveradaptors.checkeradaptor import CheckerAdaptor
 from DikeBenchmarker.solveradaptors.executionwrapper import ExecutionWrapper
@@ -235,3 +236,14 @@ class ParslRunner(AbstractRunner):
             except Exception as e:
                 logger.warning(f"Failed to cancel parsl future for job {job.uid}: {e}")
         return super().cancel(job)
+
+    def teardown(self):
+        """Shut down parsl, scancel'ing any worker blocks.
+
+        On normal completion run() does not receive a SLURM signal, so the
+        graceful-shutdown handler never runs. Without this, parsl exits without
+        cleaning up the DFK and leaves its worker blocks queued/running as
+        orphans (no interchange to register with). Reuses the same idempotent
+        cleanup used by the signal handler.
+        """
+        control.cleanup_parsl()

@@ -47,8 +47,8 @@ def make_slurm_config(
     exclusive: bool = True,
     tasks_per_node: int = None,
     nodes_per_block: int = 1,
-    init_blocks: int = 1,
-    min_blocks: int = 1,
+    init_blocks: int = 0,
+    min_blocks: int = 0,
     max_blocks: int = 100,
     walltime_seconds: int = 172800,  # two days in seconds (default)
     worker_init: str = """# Load your environment here""",

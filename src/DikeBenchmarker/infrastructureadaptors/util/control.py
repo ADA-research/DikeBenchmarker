@@ -49,8 +49,20 @@ def shutdown(signum, frame):
         submit_slurm_requeue_job()
         unset_slurm_requeue_script_path()  # avoid multiple submissions if multiple signals are received
 
-    parsl.dfk().cleanup()
-    parsl.clear()
+    cleanup_parsl()
+
+
+def cleanup_parsl():
+    """Tear down the parsl DFK, scancel'ing any worker blocks.
+
+    Idempotent: safe to call more than once and whether or not parsl is
+    currently loaded (if it is not, parsl.dfk() raises and is ignored).
+    """
+    try:
+        parsl.dfk().cleanup()
+        parsl.clear()
+    except Exception as e:
+        print(f"parsl cleanup skipped or already done: {e}")
 
 
 def register_shutdown_handler():

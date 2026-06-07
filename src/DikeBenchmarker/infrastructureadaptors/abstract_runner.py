@@ -81,6 +81,17 @@ class AbstractRunner(ABC):
         for benchmarker in benchmarkers:
             benchmarker.result_consumer_thread.join()
 
+        # tear down the external execution backend so it does not leave
+        # orphaned resources (e.g. parsl worker blocks) behind on normal exit.
+        self.teardown()
+
+    def teardown(self):
+        """Release any external resources held by the runner.
+
+        Default implementation is a no-op; backends that allocate external
+        resources (e.g. SLURM worker blocks) should override this.
+        """
+
     @abstractmethod
     def submit(self, job: Job) -> bool:
         """Submit a job to the external system."""
