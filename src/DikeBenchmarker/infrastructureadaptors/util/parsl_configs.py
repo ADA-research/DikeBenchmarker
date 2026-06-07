@@ -2,6 +2,8 @@
 Some basic Parsl configurations for demonstration and testing purposes.
 """
 
+import os
+
 from parsl import ThreadPoolExecutor
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
@@ -64,7 +66,17 @@ def make_slurm_config(
 
     formatted_walltime = f"{walltime_seconds // 3600:02d}:{(walltime_seconds % 3600) // 60:02d}:{walltime_seconds % 60:02d}"
 
+    # Every author controller starts from the same shared dike working
+    # directory, so parsl's default run_dir ("runinfo") is shared across all of
+    # them. parsl picks the next runinfo/NNN by globbing the existing dirs and
+    # then makedirs()-ing max+1, which is not atomic: when many controllers
+    # start at once they choose the SAME number and all but one crash with
+    # FileExistsError. Give each SLURM job its own run_dir so the numbered
+    # rundirs can never collide (falls back to the jobname off-SLURM).
+    run_dir = os.path.join("runinfo", os.environ.get("SLURM_JOB_ID") or jobname)
+
     return Config(
+        run_dir=run_dir,
         executors=[
             HighThroughputExecutor(
                 label=f"{jobname}",
