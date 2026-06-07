@@ -146,6 +146,11 @@ class ParslRunner(AbstractRunner):
         parsl.load(parsl_config)
         logging.basicConfig(level=logging.WARNING)
         logging.getLogger("parsl").setLevel(logging.WARNING)
+        # Silence parsl's per-task failure dump ("Task N failed after 0 retry
+        # attempts" followed by a multi-line traceback). dike already reports
+        # the real cause as a single concise line (see completed() / the runner
+        # error log), so parsl's traceback is pure noise that buries the log.
+        logging.getLogger("parsl.dataflow.dflow").setLevel(logging.CRITICAL)
         # parsl.set_stream_logger()
         self.futures_map = {}  # maps job uid to future for easy lookup
 
