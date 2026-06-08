@@ -57,7 +57,7 @@ class CheckerAdaptor(AbstractExecutable):
             """
             $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl 1> $TRIMMER_OUTPUT 2>&1
             rm -f $CERT
-            $BIN1 @MLton max-heap 30G -- unsat $INST $CERT.gratl $CERT.gratp 1> $CHECKER_OUTPUT 2>&1
+            $BIN1 @MLton max-heap 31G -- unsat $INST $CERT.gratl $CERT.gratp 1> $CHECKER_OUTPUT 2>&1
             rm -f $CERT.gratl $CERT.gratp
             """,
             None,
@@ -68,7 +68,7 @@ class CheckerAdaptor(AbstractExecutable):
             """
             $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl -b 1> $TRIMMER_OUTPUT 2>&1
             rm -f $CERT
-            $BIN1 @MLton max-heap 30G -- unsat $INST $CERT.gratl $CERT.gratp 1> $CHECKER_OUTPUT 2>&1
+            $BIN1 @MLton max-heap 31G -- unsat $INST $CERT.gratl $CERT.gratp 1> $CHECKER_OUTPUT 2>&1
             rm -f $CERT.gratl $CERT.gratp
             """,
             None,
