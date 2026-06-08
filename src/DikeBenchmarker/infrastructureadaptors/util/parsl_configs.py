@@ -71,9 +71,12 @@ def make_slurm_config(
     # them. parsl picks the next runinfo/NNN by globbing the existing dirs and
     # then makedirs()-ing max+1, which is not atomic: when many controllers
     # start at once they choose the SAME number and all but one crash with
-    # FileExistsError. Give each SLURM job its own run_dir so the numbered
-    # rundirs can never collide (falls back to the jobname off-SLURM).
-    run_dir = os.path.join("runinfo", os.environ.get("SLURM_JOB_ID") or jobname)
+    # FileExistsError. Give each controller its own run_dir so the numbered
+    # rundirs can never collide. We key on SLURM_JOB_ID *and* jobname: separate
+    # master jobs differ by job id, while several masters co-hosted in ONE job
+    # (single-node combined launch) share a job id and are disambiguated by
+    # their per-solver jobname. Falls back to jobname off-SLURM.
+    run_dir = os.path.join("runinfo", f"{os.environ.get('SLURM_JOB_ID', 'local')}-{jobname}")
 
     return Config(
         run_dir=run_dir,
