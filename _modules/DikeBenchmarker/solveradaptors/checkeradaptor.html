@@ -149,7 +149,8 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
             <span class="s2">&quot;veripb&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/pboxide_veripb&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_pb_cnf&quot;</span><span class="p">],</span>
+            <span class="c1"># [&quot;./external/checkers/pboxide_veripb&quot;, &quot;./external/checkers/cake_pb_cnf&quot;],</span>
+            <span class="p">[</span><span class="s2">&quot;./external/checkers/veripb&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_pb&quot;</span><span class="p">],</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 --cnf --elaborate $CERT.trimmed $INST $CERT 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
