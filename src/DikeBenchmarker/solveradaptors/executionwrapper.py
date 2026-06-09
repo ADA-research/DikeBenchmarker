@@ -25,7 +25,10 @@ class ExecutionWrapper(AbstractExecutable):
             self.register(
                 "runsolver",
                 [_RUNSOLVER_BIN],
-                "$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --vsize-limit $MEMORY --var $WRAPPER_OUTPUT --solver-data $WRAPPED_OUTPUT sh -c '$WRAPPED_COMMAND'",
+                "$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME"
+                " --vsize-limit $MEMORY --rss-swap-limit $MEMORY"
+                " --watcher-data $WATCHER_OUTPUT --var $WRAPPER_OUTPUT"
+                " --solver-data $WRAPPED_OUTPUT sh -c '$WRAPPED_COMMAND'",
                 None,
             )
         self.memorylimit = serialized.get("memorylimit", 64 * 1024) if serialized else mem
@@ -54,18 +57,19 @@ class ExecutionWrapper(AbstractExecutable):
         self.cputimelimit = cputimelimit or self.cputimelimit
         self.walltimelimit = walltimelimit or self.walltimelimit
 
-    def format_command(self, xid: str, binaries: list[str], wrapped_cmd: str, wrapper_output: str, wrapped_output: str) -> str:
+    def format_command(self, xid: str, binaries: list[str], wrapped_cmd: str, wrapper_output: str, wrapped_output: str, watcher_output: str) -> str:
         """Return the command line to run the execution wrapper with parameters."""
         if not wrapped_cmd:
             return ""
         result = self._format_base(xid, binaries)
-        result = self._format_extra(result, wrapped_cmd, wrapper_output, wrapped_output)
+        result = self._format_extra(result, wrapped_cmd, wrapper_output, wrapped_output, watcher_output)
         return result
 
-    def _format_extra(self, base: str, wrapped_cmd: str, wrapper_output: str, wrapped_output: str) -> str:
+    def _format_extra(self, base: str, wrapped_cmd: str, wrapper_output: str, wrapped_output: str, watcher_output: str) -> str:
         """Construct the commandline specific to runsolver with the specified resource limits."""
         return (
             base.replace("$WRAPPED_COMMAND", wrapped_cmd)
+            .replace("$WATCHER_OUTPUT", watcher_output)
             .replace("$WRAPPER_OUTPUT", wrapper_output)
             .replace("$WRAPPED_OUTPUT", wrapped_output)
             .replace("$WALLTIME", str(self.walltimelimit))

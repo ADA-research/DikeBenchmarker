@@ -60,7 +60,10 @@ def runsolver(
     checker_binaries_paths = [f.filepath for f in checker_binaries]
     satchecker_binaries_paths = [f.filepath for f in satchecker_binaries]
 
-    out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = outputs
+    (
+        out, err, wrapper_out, wrapper_watcher_out, solver_out, model_out,
+        trimmer_out, checker_out, checker_wrapper_out, checker_wrapped_out, checker_watcher_out,
+    ) = outputs
     cnf = f"{solver_out.filepath}.unpacked.cnf"
     cert_out = f"{solver_out.filepath}.cert"
 
@@ -70,15 +73,23 @@ def runsolver(
     checker = CheckerAdaptor.from_dict(checker_serialized)
 
     solve_cmd = solver.format_command(solver_id, solver_binaries_paths, cnf, cert_out)
-    wrapper_cmd = solver_wrapper.format_command(solver_wrapper_id, solver_wrapper_binaries_paths, solve_cmd, wrapper_out.filepath, solver_out.filepath)
+    wrapper_cmd = solver_wrapper.format_command(
+        solver_wrapper_id,
+        solver_wrapper_binaries_paths,
+        solve_cmd,
+        wrapper_out.filepath,
+        solver_out.filepath,
+        wrapper_watcher_out.filepath,
+    )
 
     proof_checker_cmd = checker.format_command(checker_id, checker_binaries_paths, cnf, cert_out, trimmer_out.filepath, checker_out.filepath)
     proof_checker_wrapper_cmd = checker_wrapper.format_command(
         checker_wrapper_id,
         checker_wrapper_binaries_paths,
         proof_checker_cmd,
-        wrapper_out.filepath + ".checker_wrapper",
-        checker_out.filepath + ".checker_wrapped",
+        checker_wrapper_out.filepath,
+        checker_wrapped_out.filepath,
+        checker_watcher_out.filepath
     )
     # The satchecker extracts the solver's model into the dedicated `.model`
     # output (model_out) so it is retained for inspection regardless of the
@@ -182,7 +193,12 @@ class ParslRunner(AbstractRunner):
             checker_binaries=[File(f) for f in self.checker_adaptor.get_binaries(job.checker_id)],
             satchecker_binaries=[File(f) for f in self.checker_adaptor.get_binaries("satchecker")],
             benchmark_instance=File(self.instance_adaptor.get_path(job.benchmark_id)),
-            outputs=[File(job.get_log_prefix() + ext) for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]],
+            outputs=[
+                File(job.get_log_prefix() + ext) for ext in [
+                    ".out", ".err", ".wrapper", ".watcher", ".solver", ".model", ".trimmer",
+                    ".checker", ".checker.wrapper", ".checker.wrapped", ".checker.watcher"
+                ]
+            ],
         )
 
         self.futures_map[job.uid] = runsolver_future
@@ -197,8 +213,12 @@ class ParslRunner(AbstractRunner):
 
         # get output file paths
         output_root = job.get_log_prefix()
-        out, err, wrapper_out, solver_out, model_out, trimmer_out, checker_out = [
-            output_root + ext for ext in [".out", ".err", ".wrapper", ".solver", ".model", ".trimmer", ".checker"]
+        extensions = [
+            ".out", ".err", ".wrapper", ".watcher", ".solver", ".model", ".trimmer",
+            ".checker", ".checker.wrapper", ".checker.wrapped", ".checker.watcher"
+        ]
+        out, err, wrapper_out, wrapper_watcher, solver_out, model_out, trimmer_out, checker_out, checker_wrapper, checker_wrapped, checker_watcher = [
+            output_root + ext for ext in extensions
         ]
 
         # cleanup .unpacked.cnf and .cert files if they still exist
