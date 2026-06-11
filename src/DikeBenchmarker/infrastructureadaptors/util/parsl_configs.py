@@ -45,6 +45,7 @@ def make_local_threads(n: int = 8) -> Config:
 def make_slurm_config(
     partition: str = "compute",
     account: str = None,  # your account name or None to skip
+    reservation: str = None,  # SLURM reservation name or None to skip
     jobname: str = "benchmark_job",
     exclusive: bool = True,
     tasks_per_node: int = None,
@@ -59,6 +60,8 @@ def make_slurm_config(
     scheduler_opts = [f"#SBATCH --job-name={jobname}", "#SBATCH --no-requeue"]
     if account:
         scheduler_opts.append(f"#SBATCH --account={account}")
+    if reservation:
+        scheduler_opts.append(f"#SBATCH --reservation={reservation}")
     if exclusive:
         scheduler_opts.append("#SBATCH --exclusive")
     if tasks_per_node:

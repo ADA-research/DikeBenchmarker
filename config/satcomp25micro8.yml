@@ -15,6 +15,7 @@ scheduling:
   scheduler: slurm
   machine: cpuonly                  # machine/partition name for scheduler
   account: hk-project-test-p0026435 # Account name for scheduler
+  reservation: sat2           # SLURM reservation; remove or set DIKE_RESERVATION= to disable
   tasks_per_node: 8                # Number of tasks per node
   jobname: satcomp25micro8         # Job name for scheduler
   workerinit: "source /home/hk-project-toolbox/fv2117/git/SustainableCompetition/venv/bin/activate; export PYTHONPATH=/home/hk-project-toolbox/fv2117/git/SustainableCompetition:$PYTHONPATH; cd /home/hk-project-toolbox/fv2117/git/SustainableCompetition"  # Initialization commands for each worker node

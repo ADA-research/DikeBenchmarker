@@ -17,6 +17,7 @@ scheduling:
   scheduler: slurm
   machine: cpuonly                      # partition name
   account: hk-project-p0027597         # SLURM account
+  reservation: sat2           # SLURM reservation; remove or set DIKE_RESERVATION= to disable
   tasks_per_node: 16                    # parallel solver jobs per node
   jobname: sc2026quick
   workerinit: "export PYTHONNOUSERSITE=1; unset PYTHONPATH; source /home/hk-project-toolbox/fv2117/git/sc2026/venv/bin/activate; cd /home/hk-project-toolbox/fv2117/git/sc2026/dike"

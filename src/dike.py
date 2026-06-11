@@ -111,6 +111,7 @@ def run_slurm(
     logroot,
     machine: str,
     account: str = None,
+    reservation: str = None,
     tasks_per_node: int = 32,
     jobname: str = "benchmark",
     workerinit: str = "",
@@ -125,6 +126,8 @@ def run_slurm(
         f"with threshold {benchmarking_method['stopping_threshold']}"
     )
     print(f"Using machine {machine} with account {account} and {tasks_per_node} tasks per node.")
+    if reservation:
+        print(f"Using SLURM reservation: {reservation}")
 
     solver_adaptor = get_solver_adaptor(solvers_file)
     instance_adaptor = get_instance_adaptor()
@@ -134,6 +137,7 @@ def run_slurm(
     config = make_slurm_config(
         partition=machine,
         account=account,
+        reservation=reservation,
         jobname=jobname,
         tasks_per_node=tasks_per_node,
         walltime_seconds=resource_limits["solver_walltime"] + resource_limits["checker_walltime"],
@@ -280,6 +284,12 @@ if __name__ == "__main__":
 
         control.register_shutdown_handler()
 
+        # Reservation: yml value is the default; DIKE_RESERVATION env var overrides
+        # it (set DIKE_RESERVATION= to empty string to disable the reservation entirely).
+        yml_reservation = scheduling.get("reservation") or None
+        if "DIKE_RESERVATION" in os.environ:
+            yml_reservation = os.environ["DIKE_RESERVATION"] or None
+
         run_slurm(
             benchmarking_method=benchmarking_method,
             solvers_file=solvers_file,
@@ -287,6 +297,7 @@ if __name__ == "__main__":
             logroot=results,
             machine=scheduling.get("machine"),
             account=scheduling.get("account"),
+            reservation=yml_reservation,
             tasks_per_node=scheduling.get("tasks_per_node", 32),
             jobname=scheduling.get("jobname", "benchmark"),
             workerinit=scheduling.get("workerinit", ""),

@@ -107,5 +107,12 @@ def has_slurm_requeue_script_path() -> bool:
 def submit_slurm_requeue_job():
     """Submit a SLURM job for the next batch using the registered script path."""
     print(f"Submitting SLURM job for next batch using script at {_SLURM_REQUEUE_SCRIPT_PATH}...")
-    res = subprocess.run(["sbatch", _SLURM_REQUEUE_SCRIPT_PATH], capture_output=True, text=True, check=False)
+    cmd = ["sbatch"]
+    # Preserve the original job name (set by submit.sh) so the continuation
+    # appears under the same name in the queue instead of the script default.
+    job_name = os.environ.get("SLURM_JOB_NAME")
+    if job_name:
+        cmd += ["--job-name", job_name]
+    cmd.append(_SLURM_REQUEUE_SCRIPT_PATH)
+    res = subprocess.run(cmd, capture_output=True, text=True, check=False)
     print("OUT:", res.stdout, "ERR:", res.stderr, "RETURN CODE:", res.returncode)
