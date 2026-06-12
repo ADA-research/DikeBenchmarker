@@ -64,8 +64,16 @@ def runsolver(
         out, err, wrapper_out, wrapper_watcher_out, solver_out, model_out,
         trimmer_out, checker_out, checker_wrapper_out, checker_wrapped_out, checker_watcher_out,
     ) = outputs
-    cnf = f"{solver_out.filepath}.unpacked.cnf"
-    cert_out = f"{solver_out.filepath}.cert"
+    # Place the extracted instance and the proof certificate on the node-local
+    # SSD ($TMPDIR on HoreKa, /tmp fallback elsewhere) instead of the shared
+    # parallel filesystem. Large DRAT/proof files and the decompressed CNF are
+    # written/read sequentially and would otherwise saturate Lustre/GPFS,
+    # stalling the solver on I/O. The basename of solver_out.filepath is unique
+    # per (solver, instance) job, so no collisions occur on the shared SSD.
+    scratch = "${TMPDIR:-/tmp}"
+    job_stem = os.path.basename(solver_out.filepath)
+    cnf = f"{scratch}/{job_stem}.unpacked.cnf"
+    cert_out = f"{scratch}/{job_stem}.cert"
 
     solver_wrapper = ExecutionWrapper.from_dict(solver_wrapper_serialized)
     solver = SolverAdaptor.from_dict(solver_serialized)
@@ -221,9 +229,14 @@ class ParslRunner(AbstractRunner):
             output_root + ext for ext in extensions
         ]
 
-        # cleanup .unpacked.cnf and .cert files if they still exist
-        cnf_path = f"{output_root}.solver.unpacked.cnf"
-        cert_path = f"{output_root}.solver.cert"
+        # cleanup .unpacked.cnf and .cert files if they still exist. These live
+        # on the node-local scratch ($TMPDIR/tmp), mirroring the runsolver task.
+        # On HoreKa the compute node's $TMPDIR is purged automatically at job
+        # end; this safety net covers same-node (local) execution.
+        scratch = os.environ.get("TMPDIR", "/tmp")
+        job_stem = os.path.basename(f"{output_root}.solver")
+        cnf_path = f"{scratch}/{job_stem}.unpacked.cnf"
+        cert_path = f"{scratch}/{job_stem}.cert"
         if os.path.exists(cnf_path):
             os.remove(cnf_path)
         if os.path.exists(cert_path):
