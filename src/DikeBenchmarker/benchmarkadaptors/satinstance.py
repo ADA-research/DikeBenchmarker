@@ -61,6 +61,11 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
         instance_path = self.download_instance(instance_id)
         return instance_path
 
+    @staticmethod
+    def _normalize_filename(filename: str) -> str:
+        """Replace characters that are problematic in shell scripts (e.g. '#', ' ') with underscores."""
+        return re.sub(r'[# ]', '_', filename)
+
     def download_instance(self, instance_id: str) -> str:
         """
         Download a SAT instance file from the benchmark database.
@@ -75,6 +80,7 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
             filename = filename_match.group(1) if filename_match else instance_id
         else:
             filename = instance_id
+        filename = self._normalize_filename(filename)
         instance_path = os.path.join(self.local_folder, filename)
         with open(instance_path, "wb") as f:
             f.write(response.content)
