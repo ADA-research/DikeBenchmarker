@@ -134,13 +134,21 @@ def run_slurm(
 
     queue_max = queuelimit or slurm_limits.compute_max_blocks(safety_factor=0.8, fallback=100)
 
+    # SLURM block walltime is the sum of the per-job solver+checker budgets, but
+    # capped at 3 days so it never exceeds the partition's maximum runtime.
+    MAX_BLOCK_WALLTIME = 3 * 24 * 3600  # 3 days in seconds
+    block_walltime = min(
+        resource_limits["solver_walltime"] + resource_limits["checker_walltime"],
+        MAX_BLOCK_WALLTIME,
+    )
+
     config = make_slurm_config(
         partition=machine,
         account=account,
         reservation=reservation,
         jobname=jobname,
         tasks_per_node=tasks_per_node,
-        walltime_seconds=resource_limits["solver_walltime"] + resource_limits["checker_walltime"],
+        walltime_seconds=block_walltime,
         max_blocks=queue_max,
         worker_init=workerinit,
     )
