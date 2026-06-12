@@ -75,8 +75,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "veripb",
-            # ["./external/checkers/pboxide_veripb", "./external/checkers/cake_pb_cnf"],
-            ["./external/checkers/veripb", "./external/checkers/cake_pb"],
+            ["./external/checkers/veripb", "./external/checkers/cake_pb_cnf"],
             """
             $BIN0 --cnf --elaborate $CERT.trimmed $INST $CERT 1> $TRIMMER_OUTPUT 2>&1
             rm -f $CERT
