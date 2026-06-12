@@ -77,7 +77,7 @@ class CheckerAdaptor(AbstractExecutable):
             "veripb",
             ["./external/checkers/veripb", "./external/checkers/cake_pb_cnf"],
             """
-            $BIN0 --cnf --elaborate $CERT.trimmed $INST $CERT 1> $TRIMMER_OUTPUT 2>&1
+            $BIN0 --cnf -u --elaborate $CERT.trimmed $INST $CERT 1> $TRIMMER_OUTPUT 2>&1
             rm -f $CERT
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
             rm -f $CERT.trimmed
