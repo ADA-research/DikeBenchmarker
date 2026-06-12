@@ -264,10 +264,10 @@ if __name__ == "__main__":
     # Extract resource limits from configuration
     resource_limits = {
         "solver_cputime": config.get("solver_cputime", 5000),
-        "solver_walltime": config.get("solver_walltime", 7000),
+        "solver_walltime": config.get("solver_walltime", 7 * 5000),
         "solver_memory": config.get("solver_memory", 64 * 1024),
         "checker_cputime": config.get("checker_cputime", 45000),
-        "checker_walltime": config.get("checker_walltime", 70000),
+        "checker_walltime": config.get("checker_walltime", 7 * 45000),
         "checker_memory": config.get("checker_memory", 64 * 1024),
     }
 
