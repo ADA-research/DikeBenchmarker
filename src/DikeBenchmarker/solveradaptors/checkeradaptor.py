@@ -104,7 +104,7 @@ class CheckerAdaptor(AbstractExecutable):
             "satchecker",
             ["./external/checkers/gratchk"],
             """
-            grep "^v" $CERT | sed -re 's/^v//g' > $TRIMMER_OUTPUT
+            grep "^v" $CERT | sed -re 's/^v//g' | awk '{sub(/ 0$/, ""); if (NR>1) print prev; prev=$0} END {if (NR>0) print prev " 0"}' > $TRIMMER_OUTPUT
             $BIN0 sat $INST $TRIMMER_OUTPUT 1> $CHECKER_OUTPUT 2>&1
             """,
             None,
