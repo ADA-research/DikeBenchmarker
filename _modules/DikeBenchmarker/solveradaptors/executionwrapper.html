@@ -99,8 +99,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
                 <span class="s2">&quot;runsolver&quot;</span><span class="p">,</span>
                 <span class="p">[</span><span class="n">_RUNSOLVER_BIN</span><span class="p">],</span>
-                <span class="s2">&quot;$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME&quot;</span>
-                <span class="s2">&quot; --vsize-limit $MEMORY --rss-swap-limit $MEMORY&quot;</span>
+                <span class="s2">&quot;$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --rss-swap-limit $MEMORY&quot;</span>
                 <span class="s2">&quot; --watcher-data $WATCHER_OUTPUT --var $WRAPPER_OUTPUT&quot;</span>
                 <span class="s2">&quot; --solver-data $WRAPPED_OUTPUT sh -c &#39;$WRAPPED_COMMAND&#39;&quot;</span><span class="p">,</span>
                 <span class="kc">None</span><span class="p">,</span>
