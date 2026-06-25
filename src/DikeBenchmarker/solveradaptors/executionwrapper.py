@@ -25,8 +25,7 @@ class ExecutionWrapper(AbstractExecutable):
             self.register(
                 "runsolver",
                 [_RUNSOLVER_BIN],
-                "$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME"
-                " --vsize-limit $MEMORY --rss-swap-limit $MEMORY"
+                "$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --rss-swap-limit $MEMORY"
                 " --watcher-data $WATCHER_OUTPUT --var $WRAPPER_OUTPUT"
                 " --solver-data $WRAPPED_OUTPUT sh -c '$WRAPPED_COMMAND'",
                 None,
