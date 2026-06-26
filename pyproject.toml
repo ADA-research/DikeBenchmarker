@@ -16,9 +16,11 @@ dependencies = [
 
 [tool.ruff]
 line-length = 160
+
+[tool.ruff.lint]
 select = ["E", "F", "D"]  # enable docstring rules
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.pylint.format]
