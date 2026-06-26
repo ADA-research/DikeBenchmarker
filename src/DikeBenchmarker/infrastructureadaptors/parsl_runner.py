@@ -143,6 +143,8 @@ DIKE_WRAPPER_CMD_EOF
     elif ( grep "s UNSATISFIABLE" {solver_out.filepath} > /dev/null ); then
         echo "s UNSATISFIABLE"
         {proof_checker_wrapper_cmd}
+    elif ( grep "s UNKNOWN" {solver_out.filepath} > /dev/null ); then
+        echo "s UNKNOWN"
     fi
 
     rm -f "{cnf}" "{cert_out}"
