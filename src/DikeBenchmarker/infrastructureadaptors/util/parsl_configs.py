@@ -14,7 +14,7 @@ from parsl.addresses import address_by_hostname
 
 # needed by slurm config
 from parsl.providers import SlurmProvider
-from parsl.launchers import SrunLauncher
+from parsl.launchers import SimpleLauncher
 
 
 def make_local_processes(n: int = 8) -> Config:
@@ -98,7 +98,7 @@ def make_slurm_config(
                     min_blocks=min_blocks,
                     max_blocks=max_blocks,
                     walltime=formatted_walltime,
-                    launcher=SrunLauncher(overrides=""),  # use srun to launch
+                    launcher=SimpleLauncher(),
                     worker_init=worker_init,
                     scheduler_options="\n".join(scheduler_opts),
                     cmd_timeout=120,
