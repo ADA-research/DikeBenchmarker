@@ -91,7 +91,9 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 $INST $CERT -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -101,7 +103,9 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 $INST $CERT -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -111,7 +115,9 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 $INST $CERT -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -121,7 +127,9 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 $INST $CERT -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -132,7 +140,9 @@
 <span class="sd">            $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
 <span class="sd">            $BIN1 @MLton max-heap 31G -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.gratl $CERT.gratp</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -143,7 +153,9 @@
 <span class="sd">            $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl -b 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
 <span class="sd">            $BIN1 @MLton max-heap 31G -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.gratl $CERT.gratp</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -154,7 +166,9 @@
 <span class="sd">            $BIN0 --cnf -u --elaborate $CERT.trimmed $INST $CERT 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -164,7 +178,9 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 $INST $CERT $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            exit $rc</span>
 <span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
