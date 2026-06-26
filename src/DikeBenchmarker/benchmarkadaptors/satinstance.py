@@ -64,7 +64,7 @@ class SATInstanceAdaptor(AbstractInstanceAdaptor):
     @staticmethod
     def _normalize_filename(filename: str) -> str:
         """Replace characters that are problematic in shell scripts (e.g. '#', ' ') with underscores."""
-        return re.sub(r'[# ]', '_', filename)
+        return re.sub(r"[# ]", "_", filename)
 
     def download_instance(self, instance_id: str) -> str:
         """
