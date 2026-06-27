@@ -197,38 +197,45 @@ class ParslRunner(AbstractRunner):
 
         job.mark_running()
 
-        runsolver_future = runsolver(
-            solver_wrapper_id="runsolver",
-            solver_wrapper_serialized=self.solver_wrapper.to_dict(),
-            solver_wrapper_binaries=[File(f) for f in self.solver_wrapper.get_binaries("runsolver")],
-            solver_id=job.solver_id,
-            solver_serialized=self.solver_adaptor.to_dict(),
-            solver_binaries=[File(f) for f in self.solver_adaptor.get_binaries(job.solver_id)],
-            checker_wrapper_id="runsolver",
-            checker_wrapper_serialized=self.checker_wrapper.to_dict(),
-            checker_wrapper_binaries=[File(f) for f in self.checker_wrapper.get_binaries("runsolver")],
-            checker_id=job.checker_id,
-            checker_serialized=self.checker_adaptor.to_dict(),
-            checker_binaries=[File(f) for f in self.checker_adaptor.get_binaries(job.checker_id)],
-            satchecker_binaries=[File(f) for f in self.checker_adaptor.get_binaries("satchecker")],
-            benchmark_instance=File(self.instance_adaptor.get_path(job.benchmark_id)),
-            outputs=[
-                File(job.get_log_prefix() + ext)
-                for ext in [
-                    ".out",
-                    ".err",
-                    ".wrapper",
-                    ".watcher",
-                    ".solver",
-                    ".model",
-                    ".trimmer",
-                    ".checker",
-                    ".checker.wrapper",
-                    ".checker.wrapped",
-                    ".checker.watcher",
-                ]
-            ],
-        )
+        try:
+            runsolver_future = runsolver(
+                solver_wrapper_id="runsolver",
+                solver_wrapper_serialized=self.solver_wrapper.to_dict(),
+                solver_wrapper_binaries=[File(f) for f in self.solver_wrapper.get_binaries("runsolver")],
+                solver_id=job.solver_id,
+                solver_serialized=self.solver_adaptor.to_dict(),
+                solver_binaries=[File(f) for f in self.solver_adaptor.get_binaries(job.solver_id)],
+                checker_wrapper_id="runsolver",
+                checker_wrapper_serialized=self.checker_wrapper.to_dict(),
+                checker_wrapper_binaries=[File(f) for f in self.checker_wrapper.get_binaries("runsolver")],
+                checker_id=job.checker_id,
+                checker_serialized=self.checker_adaptor.to_dict(),
+                checker_binaries=[File(f) for f in self.checker_adaptor.get_binaries(job.checker_id)],
+                satchecker_binaries=[File(f) for f in self.checker_adaptor.get_binaries("satchecker")],
+                benchmark_instance=File(self.instance_adaptor.get_path(job.benchmark_id)),
+                outputs=[
+                    File(job.get_log_prefix() + ext)
+                    for ext in [
+                        ".out",
+                        ".err",
+                        ".wrapper",
+                        ".watcher",
+                        ".solver",
+                        ".model",
+                        ".trimmer",
+                        ".checker",
+                        ".checker.wrapper",
+                        ".checker.wrapped",
+                        ".checker.watcher",
+                    ]
+                ],
+            )
+        except Exception as exc:
+            # A single malformed job (e.g. an unknown checker id from a misparsed
+            # CSV row) must not crash the master; skip it and continue.
+            logger.error("Skipping job %s on %s: %s", job.solver_id, job.benchmark_id, exc)
+            job.set_failed(str(exc))
+            return False
 
         self.futures_map[job.uid] = runsolver_future
 
