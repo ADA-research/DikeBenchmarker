@@ -105,5 +105,8 @@ def make_slurm_config(
                 ),
             )
         ],
-        strategy="simple",  # allow Parsl to scale blocks up/down
+        # 'htex_auto_scale' (unlike 'simple') also scales IDLE worker blocks back in during the run
+        # 'simple' only releases blocks once the executor has zero outstanding tasks
+        # idle blocks are reclaimed after Config.max_idletime (default 120 s).
+        strategy="htex_auto_scale",
     )
