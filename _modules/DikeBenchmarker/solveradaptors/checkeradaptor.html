@@ -72,6 +72,8 @@
   <h1>Source code for DikeBenchmarker.solveradaptors.checkeradaptor</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module provides an adaptor for executing checkers of sat or unsat certificates.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.solveradaptors.abstractexecutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractExecutable</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CheckerAdaptor&quot;</span><span class="p">]</span>
@@ -81,6 +83,20 @@
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CheckerAdaptor</span><span class="p">(</span><span class="n">AbstractExecutable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for executing checkers of sat or unsat certificates.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Verified checkers whose maximum heap size is fixed at compile time ship as</span>
+    <span class="c1"># separate 32 GB and 64 GB binaries. A checker id may carry a trailing &quot;32&quot;</span>
+    <span class="c1"># or &quot;64&quot; to select one; without it the 32 GB build is used.</span>
+    <span class="n">HEAP_VARIANTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;32&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">)</span>
+    <span class="n">DEFAULT_VARIANT</span> <span class="o">=</span> <span class="s2">&quot;32&quot;</span>
+
+    <span class="c1"># Binaries that exist as per-variant builds. The selected size is appended to</span>
+    <span class="c1"># the base name (e.g. &quot;cake_lpr&quot; -&gt; &quot;cake_lpr64&quot;).</span>
+    <span class="n">SCALABLE_BINARIES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;cake_lpr&quot;</span><span class="p">,</span> <span class="s2">&quot;cake_pb_cnf&quot;</span><span class="p">)</span>
+
+    <span class="c1"># gratchk takes its heap limit as an MLton runtime argument instead of a</span>
+    <span class="c1"># dedicated binary, so the matching value is patched into the command.</span>
+    <span class="n">GRAT_MAXHEAP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;32&quot;</span><span class="p">:</span> <span class="s2">&quot;31G&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">:</span> <span class="s2">&quot;62G&quot;</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided.&quot;&quot;&quot;</span>
@@ -139,7 +155,7 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
-<span class="sd">            $BIN1 @MLton max-heap 31G -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN1 @MLton max-heap $MAXHEAP -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.gratl $CERT.gratp</span>
 <span class="sd">            exit $rc</span>
@@ -152,7 +168,7 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl -b 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
-<span class="sd">            $BIN1 @MLton max-heap 31G -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN1 @MLton max-heap $MAXHEAP -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.gratl $CERT.gratp</span>
 <span class="sd">            exit $rc</span>
@@ -200,11 +216,40 @@
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split a checker id into its base id and heap-size variant.</span>
+
+<span class="sd">        A trailing &quot;32&quot; or &quot;64&quot; selects the heap-size variant of the checker;</span>
+<span class="sd">        when absent the variant defaults to DEFAULT_VARIANT. The number is</span>
+<span class="sd">        stripped only when the remainder is a registered checker, so ids such as</span>
+<span class="sd">        &quot;drat&quot; or &quot;none&quot; are returned unchanged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">variant</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">HEAP_VARIANTS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">xid</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">variant</span><span class="p">):</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">xid</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">variant</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="n">variant</span>
+        <span class="k">return</span> <span class="n">xid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_VARIANT</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_variant_to_binaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binaries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">variant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append the heap-size suffix to checker binaries that have per-variant builds.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">b</span> <span class="o">+</span> <span class="n">variant</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SCALABLE_BINARIES</span> <span class="k">else</span> <span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">binaries</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CheckerAdaptor.get_binaries">
+<a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.get_binaries">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_binaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the binary paths for a checker id, resolving its heap-size variant.&quot;&quot;&quot;</span>
+        <span class="n">base_id</span><span class="p">,</span> <span class="n">variant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_variant</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_variant_to_binaries</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_binaries</span><span class="p">(</span><span class="n">base_id</span><span class="p">),</span> <span class="n">variant</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="CheckerAdaptor.format_command">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.format_command">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">format_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="n">binaries</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">certificate</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the command line for a given checker ID, replacing placeholders.&quot;&quot;&quot;</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_base</span><span class="p">(</span><span class="n">xid</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
+        <span class="n">base_id</span><span class="p">,</span> <span class="n">variant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_variant</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_base</span><span class="p">(</span><span class="n">base_id</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$MAXHEAP&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GRAT_MAXHEAP</span><span class="p">[</span><span class="n">variant</span><span class="p">])</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_extra</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 

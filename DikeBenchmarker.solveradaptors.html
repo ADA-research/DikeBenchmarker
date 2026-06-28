@@ -196,10 +196,36 @@ resolved relative to the registry file’s directory.</p></li>
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.solveradaptors.checkeradaptor.</span></span><span class="sig-name descname"><span class="pre">CheckerAdaptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serialized</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/checkeradaptor.html#CheckerAdaptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable" title="DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractExecutable</span></code></a></p>
 <p>A class for executing checkers of sat or unsat certificates.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.DEFAULT_VARIANT">
+<span class="sig-name descname"><span class="pre">DEFAULT_VARIANT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'32'</span></span><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.DEFAULT_VARIANT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.GRAT_MAXHEAP">
+<span class="sig-name descname"><span class="pre">GRAT_MAXHEAP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'32':</span> <span class="pre">'31G',</span> <span class="pre">'64':</span> <span class="pre">'62G'}</span></span><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.GRAT_MAXHEAP" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.HEAP_VARIANTS">
+<span class="sig-name descname"><span class="pre">HEAP_VARIANTS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('32',</span> <span class="pre">'64')</span></span><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.HEAP_VARIANTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.SCALABLE_BINARIES">
+<span class="sig-name descname"><span class="pre">SCALABLE_BINARIES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('cake_lpr',</span> <span class="pre">'cake_pb_cnf')</span></span><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.SCALABLE_BINARIES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.format_command">
 <span class="sig-name descname"><span class="pre">format_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binaries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trimmer_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checker_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/checkeradaptor.html#CheckerAdaptor.format_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.format_command" title="Link to this definition"></a></dt>
 <dd><p>Get the command line for a given checker ID, replacing placeholders.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.get_binaries">
+<span class="sig-name descname"><span class="pre">get_binaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/checkeradaptor.html#CheckerAdaptor.get_binaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.get_binaries" title="Link to this definition"></a></dt>
+<dd><p>Return the binary paths for a checker id, resolving its heap-size variant.</p>
 </dd></dl>
 
 <dl class="py method">
