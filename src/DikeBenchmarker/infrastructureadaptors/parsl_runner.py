@@ -184,6 +184,15 @@ class ParslRunner(AbstractRunner):
         # the real cause as a single concise line (see completed() / the runner
         # error log), so parsl's traceback is pure noise that buries the log.
         logging.getLogger("parsl.dataflow.dflow").setLevel(logging.CRITICAL)
+        # Drop only parsl's benign "Could not find enough blocks to kill" notice.
+        # The htex_auto_scale strategy requests scale-in sized by surplus *slots*,
+        # but a block (node) is killed only once it is wholly idle past
+        # max_idletime; while nodes are partially busy none qualify and parsl
+        # warns it selected fewer than wanted. It has no effect on running jobs,
+        # so filter just this message and keep every other executor warning.
+        logging.getLogger("parsl.executors.high_throughput.executor").addFilter(
+            lambda record: not record.getMessage().startswith("Could not find enough blocks to kill")
+        )
         # parsl.set_stream_logger()
         self.futures_map = {}  # maps job uid to future for easy lookup
 
