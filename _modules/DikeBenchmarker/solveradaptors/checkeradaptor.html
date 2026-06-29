@@ -85,9 +85,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for executing checkers of sat or unsat certificates.&quot;&quot;&quot;</span>
 
     <span class="c1"># Verified checkers whose maximum heap size is fixed at compile time ship as</span>
-    <span class="c1"># separate 32 GB and 64 GB binaries. A checker id may carry a trailing &quot;32&quot;</span>
-    <span class="c1"># or &quot;64&quot; to select one; without it the 32 GB build is used.</span>
-    <span class="n">HEAP_VARIANTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;32&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">)</span>
+    <span class="c1"># separate 32 GB, 64 GB, and 256 GB binaries. A checker id may carry a</span>
+    <span class="c1"># trailing &quot;32&quot;, &quot;64&quot;, or &quot;256&quot; to select one; without it the 32 GB build</span>
+    <span class="c1"># is used.</span>
+    <span class="n">HEAP_VARIANTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;256&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">,</span> <span class="s2">&quot;32&quot;</span><span class="p">)</span>
     <span class="n">DEFAULT_VARIANT</span> <span class="o">=</span> <span class="s2">&quot;32&quot;</span>
 
     <span class="c1"># Binaries that exist as per-variant builds. The selected size is appended to</span>
@@ -96,7 +97,8 @@
 
     <span class="c1"># gratchk takes its heap limit as an MLton runtime argument instead of a</span>
     <span class="c1"># dedicated binary, so the matching value is patched into the command.</span>
-    <span class="n">GRAT_MAXHEAP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;32&quot;</span><span class="p">:</span> <span class="s2">&quot;31G&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">:</span> <span class="s2">&quot;62G&quot;</span><span class="p">}</span>
+    <span class="c1"># 256: sized to fit within the 239400 MiB checker_memory of all256.yml.</span>
+    <span class="n">GRAT_MAXHEAP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;32&quot;</span><span class="p">:</span> <span class="s2">&quot;31G&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">:</span> <span class="s2">&quot;62G&quot;</span><span class="p">,</span> <span class="s2">&quot;256&quot;</span><span class="p">:</span> <span class="s2">&quot;230G&quot;</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided.&quot;&quot;&quot;</span>
