@@ -11,9 +11,10 @@ class CheckerAdaptor(AbstractExecutable):
     """A class for executing checkers of sat or unsat certificates."""
 
     # Verified checkers whose maximum heap size is fixed at compile time ship as
-    # separate 32 GB and 64 GB binaries. A checker id may carry a trailing "32"
-    # or "64" to select one; without it the 32 GB build is used.
-    HEAP_VARIANTS = ("32", "64")
+    # separate 32 GB, 64 GB, and 256 GB binaries. A checker id may carry a
+    # trailing "32", "64", or "256" to select one; without it the 32 GB build
+    # is used.
+    HEAP_VARIANTS = ("256", "64", "32")
     DEFAULT_VARIANT = "32"
 
     # Binaries that exist as per-variant builds. The selected size is appended to
@@ -22,7 +23,8 @@ class CheckerAdaptor(AbstractExecutable):
 
     # gratchk takes its heap limit as an MLton runtime argument instead of a
     # dedicated binary, so the matching value is patched into the command.
-    GRAT_MAXHEAP = {"32": "31G", "64": "62G"}
+    # 256: sized to fit within the 239400 MiB checker_memory of all256.yml.
+    GRAT_MAXHEAP = {"32": "31G", "64": "62G", "256": "230G"}
 
     def __init__(self, serialized: dict = None):
         """Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided."""
