@@ -203,6 +203,24 @@
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="c1"># Forward/streaming variant of &quot;sr&quot;: dsr-trim defaults to backwards</span>
+            <span class="c1"># checking with eager parsing, which loads the whole DSR proof into</span>
+            <span class="c1"># memory and can exhaust RAM (xrealloc failure) even on small</span>
+            <span class="c1"># formulas with large binary SR proofs. &quot;-f&quot; switches dsr-trim to</span>
+            <span class="c1"># forwards checking with a streaming parser (one witness at a time),</span>
+            <span class="c1"># keeping memory bounded at the cost of a larger, untrimmed LSR.</span>
+            <span class="s2">&quot;srfwd&quot;</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;./external/checkers/dsr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/lsr-check&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            $BIN0 -f $INST $CERT $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            rc=$?</span>
+<span class="sd">            rm -f $CERT.trimmed</span>
+<span class="sd">            exit $rc</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
             <span class="s2">&quot;none&quot;</span><span class="p">,</span>
             <span class="p">[],</span>
             <span class="s2">&quot;&quot;</span><span class="p">,</span>
