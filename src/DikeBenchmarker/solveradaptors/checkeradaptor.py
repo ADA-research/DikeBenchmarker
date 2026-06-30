@@ -129,6 +129,24 @@ class CheckerAdaptor(AbstractExecutable):
             None,
         )
         self.register(
+            # Forward/streaming variant of "sr": dsr-trim defaults to backwards
+            # checking with eager parsing, which loads the whole DSR proof into
+            # memory and can exhaust RAM (xrealloc failure) even on small
+            # formulas with large binary SR proofs. "-f" switches dsr-trim to
+            # forwards checking with a streaming parser (one witness at a time),
+            # keeping memory bounded at the cost of a larger, untrimmed LSR.
+            "srfwd",
+            ["./external/checkers/dsr-trim", "./external/checkers/lsr-check"],
+            """
+            $BIN0 -f $INST $CERT $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
+            $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
+            rc=$?
+            rm -f $CERT.trimmed
+            exit $rc
+            """,
+            None,
+        )
+        self.register(
             "none",
             [],
             "",
