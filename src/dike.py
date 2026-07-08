@@ -116,6 +116,7 @@ def run_slurm(
     jobname: str = "benchmark",
     workerinit: str = "",
     queuelimit: int = None,
+    strategy: str = "htex_auto_scale",
 ):
     """Run trivial benchmarking method on slurm cluster."""
     print(f"Benchmarking solvers in {solvers_file}")
@@ -151,6 +152,7 @@ def run_slurm(
         walltime_seconds=block_walltime,
         max_blocks=queue_max,
         worker_init=workerinit,
+        strategy=strategy,
     )
 
     methods = []
@@ -310,6 +312,7 @@ if __name__ == "__main__":
             jobname=scheduling.get("jobname", "benchmark"),
             workerinit=scheduling.get("workerinit", ""),
             queuelimit=scheduling.get("queuelimit", None),
+            strategy=scheduling.get("strategy", "htex_auto_scale"),
         )
     elif scheduler == "local":
         print("Running with local scheduler...")

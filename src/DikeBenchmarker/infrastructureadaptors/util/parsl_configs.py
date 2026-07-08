@@ -55,6 +55,7 @@ def make_slurm_config(
     max_blocks: int = 100,
     walltime_seconds: int = 172800,  # two days in seconds (default)
     worker_init: str = """# Load your environment here""",
+    strategy: str = "htex_auto_scale",
 ) -> Config:
     """Create a Parsl config for SLURM-managed clusters."""
     scheduler_opts = [f"#SBATCH --job-name={jobname}", "#SBATCH --no-requeue"]
@@ -108,5 +109,9 @@ def make_slurm_config(
         # 'htex_auto_scale' (unlike 'simple') also scales IDLE worker blocks back in during the run
         # 'simple' only releases blocks once the executor has zero outstanding tasks
         # idle blocks are reclaimed after Config.max_idletime (default 120 s).
-        strategy="htex_auto_scale",
+        # A second/small master competing for a busy reservation should use
+        # 'simple': htex_auto_scale otherwise reclaims blocks it cannot re-acquire
+        # and kills mid-task managers, whose tasks resubmit forever on 'loss of
+        # manager' and never complete.
+        strategy=strategy,
     )
