@@ -170,6 +170,7 @@ class ParslRunner(AbstractRunner):
         solver_wrapper: ExecutionWrapper,
         checker_wrapper: ExecutionWrapper,
         parsl_config: Config = default_config,
+        debug: bool = False,
     ):
         """Initialize the ParslRunner."""
         super().__init__(solver_adaptor, instance_adaptor)
@@ -177,19 +178,18 @@ class ParslRunner(AbstractRunner):
         self.solver_wrapper = solver_wrapper
         self.checker_wrapper = checker_wrapper
         parsl.load(parsl_config)
-        logging.basicConfig(level=logging.WARNING)
-        logging.getLogger("parsl").setLevel(logging.WARNING)
-        # Silence parsl's per-task failure dump ("Task N failed after 0 retry
-        # attempts" followed by a multi-line traceback). dike already reports
-        # the real cause as a single concise line (see completed() / the runner
-        # error log), so parsl's traceback is pure noise that buries the log.
-        logging.getLogger("parsl.dataflow.dflow").setLevel(logging.CRITICAL)
-        # Drop only parsl's benign "Could not find enough blocks to kill" notice.
-        # The htex_auto_scale strategy requests scale-in sized by surplus *slots*,
-        # but a block (node) is killed only once it is wholly idle past
-        # max_idletime; while nodes are partially busy none qualify and parsl
-        # warns it selected fewer than wanted. It has no effect on running jobs,
-        # so filter just this message and keep every other executor warning.
+        # debug (set from the yml) raises all parsl logging to DEBUG. Off by default.
+        if debug:
+            logging.basicConfig(level=logging.DEBUG)
+            logging.getLogger("parsl").setLevel(logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.WARNING)
+            logging.getLogger("parsl").setLevel(logging.WARNING)
+            # Silence parsl's per-task failure dump ("Task N failed after 0 retry
+            # attempts" followed by a multi-line traceback). dike already reports
+            # the real cause as a single concise line.
+            logging.getLogger("parsl.dataflow.dflow").setLevel(logging.CRITICAL)
+        # Drop parsl's benign "Could not find enough blocks to kill" notice.
         logging.getLogger("parsl.executors.high_throughput.executor").addFilter(
             lambda record: not record.getMessage().startswith("Could not find enough blocks to kill")
         )

@@ -56,6 +56,8 @@ def make_slurm_config(
     walltime_seconds: int = 172800,  # two days in seconds (default)
     worker_init: str = """# Load your environment here""",
     strategy: str = "htex_auto_scale",
+    runinfo_root: str = "runinfo",
+    debug: bool = False,
 ) -> Config:
     """Create a Parsl config for SLURM-managed clusters."""
     scheduler_opts = [f"#SBATCH --job-name={jobname}", "#SBATCH --no-requeue"]
@@ -80,7 +82,9 @@ def make_slurm_config(
     # master jobs differ by job id, while several masters co-hosted in ONE job
     # (single-node combined launch) share a job id and are disambiguated by
     # their per-solver jobname. Falls back to jobname off-SLURM.
-    run_dir = os.path.join("runinfo", f"{os.environ.get('SLURM_JOB_ID', 'local')}-{jobname}")
+    # runinfo_root places these per-controller rundirs next to the caller's
+    # output/log directory.
+    run_dir = os.path.join(runinfo_root, f"{os.environ.get('SLURM_JOB_ID', 'local')}-{jobname}")
 
     return Config(
         run_dir=run_dir,
@@ -91,7 +95,9 @@ def make_slurm_config(
                 # Worker layout on each node:
                 cores_per_worker=1,  # number of cores per worker
                 max_workers_per_node=tasks_per_node or 1,  # number of workers per node
-                worker_debug=False,
+                # 'debug' (set from the yml) turns on parsl's per-worker/manager
+                # debug logs (run_dir/<block>/manager.log, worker_*.log).
+                worker_debug=debug,
                 provider=SlurmProvider(
                     partition=partition,
                     nodes_per_block=nodes_per_block,

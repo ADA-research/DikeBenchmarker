@@ -117,6 +117,7 @@ def run_slurm(
     workerinit: str = "",
     queuelimit: int = None,
     strategy: str = "htex_auto_scale",
+    debug: bool = False,
 ):
     """Run trivial benchmarking method on slurm cluster."""
     print(f"Benchmarking solvers in {solvers_file}")
@@ -143,6 +144,11 @@ def run_slurm(
         MAX_BLOCK_WALLTIME,
     )
 
+    # Place parsl's per-controller run dirs (block submit scripts, *.stdout/
+    # *.stderr, manager logs) next to the caller's output/log directory instead
+    # of the dike working dir.
+    runinfo_root = os.path.join(os.path.dirname(os.path.abspath(logroot)), "runinfo")
+
     config = make_slurm_config(
         partition=machine,
         account=account,
@@ -153,6 +159,8 @@ def run_slurm(
         max_blocks=queue_max,
         worker_init=workerinit,
         strategy=strategy,
+        runinfo_root=runinfo_root,
+        debug=debug,
     )
 
     methods = []
@@ -171,6 +179,7 @@ def run_slurm(
             cputime=resource_limits["checker_cputime"], walltime=resource_limits["checker_walltime"], mem=resource_limits["checker_memory"]
         ),
         parsl_config=config,
+        debug=debug,
     )
 
     runner.run(methods, njobs=queue_max * tasks_per_node)
@@ -313,6 +322,7 @@ if __name__ == "__main__":
             workerinit=scheduling.get("workerinit", ""),
             queuelimit=scheduling.get("queuelimit", None),
             strategy=scheduling.get("strategy", "htex_auto_scale"),
+            debug=scheduling.get("debug", False),
         )
     elif scheduler == "local":
         print("Running with local scheduler...")
