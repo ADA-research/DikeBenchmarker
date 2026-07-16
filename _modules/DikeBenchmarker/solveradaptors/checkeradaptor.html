@@ -103,11 +103,19 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">serialized</span><span class="p">)</span>
+        <span class="c1"># drat-trim/dpr-trim have their own hard-coded internal time limit</span>
+        <span class="c1"># (`-t`, default 40000s -- see their `--help`), independent of and</span>
+        <span class="c1"># potentially BELOW whatever cpu-limit the checker-wrapper (e.g.</span>
+        <span class="c1"># runsolver) enforces. Without an explicit `-t`, a slow-to-trim proof</span>
+        <span class="c1"># can self-terminate with &#39;s TIMEOUT&#39; before the wrapper&#39;s own limit</span>
+        <span class="c1"># fires (TIMEOUT=false/MEMOUT=false then look &quot;correct&quot; but are</span>
+        <span class="c1"># misleading). Pass a value comfortably above any configured</span>
+        <span class="c1"># checker-wrapper cpu-limit so that limit stays the sole authority.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
             <span class="s2">&quot;drat&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="s2">&quot;./external/checkers/drat-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            $BIN0 $INST $CERT -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
@@ -119,7 +127,7 @@
             <span class="s2">&quot;dratbin&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="s2">&quot;./external/checkers/drat-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            $BIN0 $INST $CERT -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
@@ -131,7 +139,7 @@
             <span class="s2">&quot;dpr&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="s2">&quot;./external/checkers/dpr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            $BIN0 $INST $CERT -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
@@ -143,7 +151,7 @@
             <span class="s2">&quot;dprbin&quot;</span><span class="p">,</span>
             <span class="p">[</span><span class="s2">&quot;./external/checkers/dpr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            $BIN0 $INST $CERT -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
+<span class="sd">            $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
