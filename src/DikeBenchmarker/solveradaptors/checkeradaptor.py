@@ -29,11 +29,19 @@ class CheckerAdaptor(AbstractExecutable):
     def __init__(self, serialized: dict = None):
         """Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided."""
         super().__init__(serialized)
+        # drat-trim/dpr-trim have their own hard-coded internal time limit
+        # (`-t`, default 40000s -- see their `--help`), independent of and
+        # potentially BELOW whatever cpu-limit the checker-wrapper (e.g.
+        # runsolver) enforces. Without an explicit `-t`, a slow-to-trim proof
+        # can self-terminate with 's TIMEOUT' before the wrapper's own limit
+        # fires (TIMEOUT=false/MEMOUT=false then look "correct" but are
+        # misleading). Pass a value comfortably above any configured
+        # checker-wrapper cpu-limit so that limit stays the sole authority.
         self.register(
             "drat",
             ["./external/checkers/drat-trim", "./external/checkers/cake_lpr"],
             """
-            $BIN0 $INST $CERT -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
+            $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
             rc=$?
             rm -f $CERT.trimmed
@@ -45,7 +53,7 @@ class CheckerAdaptor(AbstractExecutable):
             "dratbin",
             ["./external/checkers/drat-trim", "./external/checkers/cake_lpr"],
             """
-            $BIN0 $INST $CERT -i -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
+            $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
             rc=$?
             rm -f $CERT.trimmed
@@ -57,7 +65,7 @@ class CheckerAdaptor(AbstractExecutable):
             "dpr",
             ["./external/checkers/dpr-trim", "./external/checkers/cake_lpr"],
             """
-            $BIN0 $INST $CERT -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
+            $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
             rc=$?
             rm -f $CERT.trimmed
@@ -69,7 +77,7 @@ class CheckerAdaptor(AbstractExecutable):
             "dprbin",
             ["./external/checkers/dpr-trim", "./external/checkers/cake_lpr"],
             """
-            $BIN0 $INST $CERT -i -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
+            $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
             rc=$?
             rm -f $CERT.trimmed
