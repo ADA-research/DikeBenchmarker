@@ -1,2 +1,0 @@
-kissat-public;./satcomp25.solvers/biere/kissat-public/kissat;$BIN0 "$INST" "$CERT";gratbin
-cadical-sc2025;./satcomp25.solvers/biere/cadical-sc2025/cadical;$BIN0 "$INST" "$CERT";gratbin

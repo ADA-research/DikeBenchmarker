@@ -4,16 +4,10 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 .vscode/
-logs*/
-config/*.results/
-venv/
-config/*.results/
-parsl-master*.err
-parsl-master*.out
-parsl-master*.log
+.venv/
+logs/
 
-# parsl generated files and directories
-cmd_*.sh
+# created by parsl
 runinfo/
 
 # User-specific files

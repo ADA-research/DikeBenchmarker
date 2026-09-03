@@ -1,0 +1,20 @@
+solver_cputime: 300
+solver_walltime: 360
+solver_memory: 16384
+checker_cputime: 600
+checker_walltime: 900
+checker_memory: 16384
+
+scheduling:
+  scheduler: local
+  parallel: 3
+  jobname: satcomp26local
+
+benchmarks:
+  file: ./instances.easy.csv
+  selection_method: random
+  stopping_criterion: percentage
+  stopping_threshold: 0.01
+
+solvers: ./solvers.satcomp26.csv
+results: ./satcomp26local.results

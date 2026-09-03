@@ -1,0 +1,25 @@
+# SAT Competition 2026 Configuration
+
+solver_cputime: 5000
+solver_walltime: 35000
+solver_memory: 32768
+checker_cputime: 45000
+checker_walltime: 70000
+checker_memory: 32768
+
+scheduling:
+  scheduler: slurm
+  machine: cpuonly
+  account: hk-project-p0027597
+  reservation: sat2
+  tasks_per_node: 7
+  jobname: satcomp26
+  workerinit: "export PYTHONNOUSERSITE=1; unset PYTHONPATH; source /home/hk-project-toolbox/fv2117/git/sc2026/dike-configs/venv/bin/activate; cd /home/hk-project-toolbox/fv2117/git/sc2026/dike"  # slurm initialization commands for each worker node, make sure to access the correct path to the virtual environment and the SustainableCompetition repository
+
+
+benchmarks:
+  file: ./instances.satcomp26.csv
+  selection_method: allpairs
+
+solvers: ./solvers.satcomp26.csv
+results: ./satcomp26.results
