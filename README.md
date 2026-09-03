@@ -155,16 +155,15 @@ solvers_challenged = adap.get_competition_solver_id(competition)
 benchmark_ids = adap.get_competition_instance_id(competition)
 # Create benchmarking method
 benchmarker = Benchmarker(
-        RandomInstanceSelector(benchmark_ids, solver_id, seed=1),
-        WilcoxonStoppingCriterion(benchmark_ids, solver_id,
-                solvers_challenged, confidence, adap),
-        benchmark_ids,
-        solver_id)
+    RandomInstanceSelector(benchmark_ids, solver_id, seed=1),
+    WilcoxonStoppingCriterion(benchmark_ids, solver_id, solvers_challenged, confidence, adap),
+    benchmark_ids,
+    solver_id,
+)
 # Load files locally
 solver_adaptor = SolverAdaptor()
 solver_adaptor.read_registry("./solvers/sat/")
-instance_adaptor = SATInstanceAdaptor("./instances/sat/",
-        "./instances/cnf_data.db")
+instance_adaptor = SATInstanceAdaptor("./instances/sat/", "./instances/cnf_data.db")
 # Now make a runner so that we actually run something
 runner = LocalRunner(solver_adaptor, instance_adaptor, parallel=1)
 runner.run([benchmarker])
@@ -250,10 +249,7 @@ Fetching the bundled database path:
 ```python
 import importlib.resources
 
-db_path = str(
-    importlib.resources.files("DikeBenchmarker.data.db")
-    .joinpath("sustainablecompetition.db")
-)
+db_path = str(importlib.resources.files("DikeBenchmarker.data.db").joinpath("sustainablecompetition.db"))
 ```
 
 Key `SqlDataAdaptor` methods:
@@ -304,7 +300,7 @@ from DikeBenchmarker.infrastructureadaptors.virtual_runner import VirtualRunner
 from DikeBenchmarker.dataadaptors.inmemory_dataadaptor import InMemoryDataAdaptor
 
 adaptor = InMemoryDataAdaptor(cost_lookup)
-runner  = VirtualRunner(adaptor)
+runner = VirtualRunner(adaptor)
 runner.run([benchmarker])
 ```
 
@@ -464,6 +460,7 @@ The framework is designed for extensibility. Common extension points:
 from DikeBenchmarker.benchmarkingmethods.instance_selectors.instance_selector import InstanceSelector
 from DikeBenchmarker.benchmarkatoms import Result
 
+
 class MySelector(InstanceSelector):
     def next_benchmark_id(self) -> str:
         # return the hash of the next instance to evaluate
@@ -480,15 +477,13 @@ class MySelector(InstanceSelector):
 from DikeBenchmarker.benchmarkingmethods.stopping_criterion.stopping_criterion import StoppingCriteria
 from DikeBenchmarker.benchmarkatoms import Result, Job
 
+
 class MyStoppingCriterion(StoppingCriteria):
-    def should_stop(self) -> bool:
-        ...
+    def should_stop(self) -> bool: ...
 
-    def handle_result(self, result: Result) -> None:
-        ...
+    def handle_result(self, result: Result) -> None: ...
 
-    def job_submitted(self, job: Job) -> None:
-        ...
+    def job_submitted(self, job: Job) -> None: ...
 ```
 
 **Custom result consumer:**
@@ -497,9 +492,9 @@ class MyStoppingCriterion(StoppingCriteria):
 from DikeBenchmarker.resultconsumers.abstract_consumer import AbstractConsumer
 from DikeBenchmarker.benchmarkatoms import Result
 
+
 class MyConsumer(AbstractConsumer):
-    def consume_result(self, result: Result) -> None:
-        ...
+    def consume_result(self, result: Result) -> None: ...
 ```
 
 All new components should include unit tests under `tests/` following the existing conventions.

@@ -284,7 +284,7 @@ class ParslRunner(AbstractRunner):
             os.remove(cnf_path)
         if os.path.exists(cert_path):
             os.remove(cert_path)
-            
+
         # build result object from parsed outputs
         result = Result(job)
         result.execution = ExecutionResult()
@@ -293,18 +293,18 @@ class ParslRunner(AbstractRunner):
         if job_future.exception() is not None:
             print(f"Job {job.solver_id} on {job.benchmark_id} failed with exception: {job_future.exception()}")
             job.set_failed()
-            
+
             result.execution.state = ExecutionResult.State.ERROR
             result.execution.detail = str(job_future.exception())
-            
+
             return result
         else:
             # mark job as done for future runs
             with open(f"{output_root}.done", "w") as f:
                 f.write("")
-                
+
             job.set_finished()
-   
+
             result.execution.state = ExecutionResult.State.SUCCESS
 
         result.solver = self.solver_adaptor.parse_result(solver_out)

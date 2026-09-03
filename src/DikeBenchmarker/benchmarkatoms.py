@@ -74,7 +74,7 @@ class Job:
 
     def clone_retry(self, decrement: int = 1) -> "Job":
         """Create a clone of this job with identical benchmark_id, solver_id, checker_id, and logroot.
-        
+
         The cloned job will have a new created_at timestamp and will be in the CREATED state.
         """
         return Job(
@@ -91,7 +91,7 @@ class Job:
 
     def mark_submitted(self) -> None:
         """Mark the job as submitted.
-        
+
         Called by the infrastructure adaptor upon receiving the job.
         """
         if self.state == JobState.SUBMITTED:
@@ -106,7 +106,7 @@ class Job:
 
     def mark_running(self) -> None:
         """Mark the job as running.
-        
+
         Called by the infrastructure adaptor once the job started to run.
         """
         if self.state == JobState.RUNNING:
@@ -119,7 +119,7 @@ class Job:
 
     def set_finished(self) -> None:
         """Mark the job as finished.
-        
+
         Called by the infrastructure adaptor when the job has completed successfully.
         """
         if self.state != JobState.RUNNING:
@@ -129,7 +129,7 @@ class Job:
 
     def set_failed(self) -> None:
         """Mark the job as failed.
-        
+
         Called by the infrastructure adaptor when the job has completed unsuccessfully.
         """
         if self.state != JobState.RUNNING:
@@ -139,7 +139,7 @@ class Job:
 
     def cancel_local(self) -> bool:
         """Mark the job as cancelled.
-        
+
         Called by the benchmarker to prevent the job from being submitted to the external system.
         """
         if self.state in (JobState.CREATED, JobState.SUBMITTED):
@@ -181,22 +181,22 @@ class AbstractResult:
     def has_result(self) -> bool:
         """Return True if the result atom has a valid, non-error result."""
         return not self.is_empty and not self.has_error
-    
+
     @property
     def has_detail(self) -> bool:
         """Return True if the result atom has a detail message."""
         return self.detail is not None
-    
+
     @property
     def get_detail(self) -> Optional[str]:
         """Return the detail message of the result atom."""
         return self.detail
-    
-    
+
+
 @dataclass
 class ExecutionResult(AbstractResult):
     """Execution outcome of one wrapped job."""
-    
+
     class State(str, Enum):
         """Possible execution verdicts a wrapper can report."""
 
@@ -213,7 +213,7 @@ class ResourceResult(AbstractResult):
 
     class State(str, Enum):
         """Possible resource-limit verdicts a wrapper can report."""
-    
+
         NONE = "none"
         ERROR = "error"
         SUCCESS = "success"

@@ -240,7 +240,7 @@ class CheckerAdaptor(AbstractExecutable):
         }
         if trimmer_verdict in trimmer_failure_detail:
             return CheckerResult(CheckerResult.State.ERROR, trimmer_failure_detail[trimmer_verdict])
-                
+
         if not os.path.exists(checker_file):
             return CheckerResult(CheckerResult.State.ERROR, f"trimmer {trimmer_verdict}, no checker output")
 
