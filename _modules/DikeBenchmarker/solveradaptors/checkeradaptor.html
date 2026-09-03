@@ -322,7 +322,7 @@
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">trimmer_verdict</span> <span class="ow">in</span> <span class="n">trimmer_failure_detail</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">trimmer_failure_detail</span><span class="p">[</span><span class="n">trimmer_verdict</span><span class="p">])</span>
-                
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">checker_file</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"trimmer </span><span class="si">{</span><span class="n">trimmer_verdict</span><span class="si">}</span><span class="s2">, no checker output"</span><span class="p">)</span>
 

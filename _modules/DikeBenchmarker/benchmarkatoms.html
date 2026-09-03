@@ -156,7 +156,7 @@
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.clone_retry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clone_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decrement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Job"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Create a clone of this job with identical benchmark_id, solver_id, checker_id, and logroot.</span>
-<span class="sd">        </span>
+
 <span class="sd">        The cloned job will have a new created_at timestamp and will be in the CREATED state.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="n">Job</span><span class="p">(</span>
@@ -179,7 +179,7 @@
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.mark_submitted">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_submitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Mark the job as submitted.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Called by the infrastructure adaptor upon receiving the job.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">JobState</span><span class="o">.</span><span class="n">SUBMITTED</span><span class="p">:</span>
@@ -197,7 +197,7 @@
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.mark_running">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Mark the job as running.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Called by the infrastructure adaptor once the job started to run.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">JobState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
@@ -213,7 +213,7 @@
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.set_finished">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Mark the job as finished.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Called by the infrastructure adaptor when the job has completed successfully.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
@@ -226,7 +226,7 @@
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.set_failed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Mark the job as failed.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Called by the infrastructure adaptor when the job has completed unsuccessfully.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
@@ -239,7 +239,7 @@
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.cancel_local">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cancel_local</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Mark the job as cancelled.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Called by the benchmarker to prevent the job from being submitted to the external system.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">JobState</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">JobState</span><span class="o">.</span><span class="n">SUBMITTED</span><span class="p">):</span>
@@ -285,25 +285,25 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">has_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return True if the result atom has a valid, non-error result."""</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_error</span>
-    
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return True if the result atom has a detail message."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-    
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Return the detail message of the result atom."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span></div>
 
-    
-    
+
+
 <div class="viewcode-block" id="ExecutionResult">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ExecutionResult">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExecutionResult</span><span class="p">(</span><span class="n">AbstractResult</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Execution outcome of one wrapped job."""</span>
-    
+
 <div class="viewcode-block" id="ExecutionResult.State">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ExecutionResult.State">[docs]</a>
     <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
@@ -328,7 +328,7 @@
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ResourceResult.State">[docs]</a>
     <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Possible resource-limit verdicts a wrapper can report."""</span>
-    
+
         <span class="n">NONE</span> <span class="o">=</span> <span class="s2">"none"</span>
         <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"error"</span>
         <span class="n">SUCCESS</span> <span class="o">=</span> <span class="s2">"success"</span>
