@@ -15,6 +15,7 @@ class CSVConsumer(AbstractConsumer):
     """Writes the result to a CSV file."""
 
     def __init__(self, csv_path: str):
+        """Initialize the consumer with the path to the CSV file."""
         super().__init__()
         self.csv_path = csv_path
 
@@ -28,7 +29,8 @@ class CSVConsumer(AbstractConsumer):
             self.df.write_csv(csv_path)
 
     def consume_result(self, result: Result):
-        row = {"inst_hash": result.job.benchmark_id, "solver_hash": result.job.solver_id, "perf": str(result.runtime)}
+        """Append a benchmarking result to the CSV file."""
+        row = {"inst_hash": result.job.benchmark_id, "solver_hash": result.job.solver_id, "perf": str(result.solver_resources.cputime)}
         new_row = pl.DataFrame([row])
         self.df = pl.concat([self.df, new_row], how="vertical")
         self.df.write_csv(self.csv_path)

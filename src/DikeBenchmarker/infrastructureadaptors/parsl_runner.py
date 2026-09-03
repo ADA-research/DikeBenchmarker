@@ -14,7 +14,7 @@ from parsl.data_provider.files import File
 from DikeBenchmarker.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 from DikeBenchmarker.infrastructureadaptors.abstract_runner import AbstractRunner
 from DikeBenchmarker.infrastructureadaptors.util import control
-from DikeBenchmarker.benchmarkatoms import Job, Result
+from DikeBenchmarker.benchmarkatoms import ExecutionResult, Job, Result
 from DikeBenchmarker.solveradaptors.checkeradaptor import CheckerAdaptor
 from DikeBenchmarker.solveradaptors.executionwrapper import ExecutionWrapper
 from DikeBenchmarker.solveradaptors.solveradaptor import SolverAdaptor
@@ -275,10 +275,7 @@ class ParslRunner(AbstractRunner):
             output_root + ext for ext in extensions
         ]
 
-        # cleanup .unpacked.cnf and .cert files if they still exist. These live
-        # on the node-local scratch ($TMPDIR/tmp), mirroring the runsolver task.
-        # On HoreKa the compute node's $TMPDIR is purged automatically at job
-        # end; this safety net covers same-node (local) execution.
+        # cleanup .unpacked.cnf and .cert files if they still exist
         scratch = os.environ.get("TMPDIR", "/tmp")
         job_stem = os.path.basename(f"{output_root}.solver")
         cnf_path = f"{scratch}/{job_stem}.unpacked.cnf"
@@ -287,24 +284,35 @@ class ParslRunner(AbstractRunner):
             os.remove(cnf_path)
         if os.path.exists(cert_path):
             os.remove(cert_path)
+            
+        # build result object from parsed outputs
+        result = Result(job)
+        result.execution = ExecutionResult()
 
         # check for and handle exceptions
         if job_future.exception() is not None:
             print(f"Job {job.solver_id} on {job.benchmark_id} failed with exception: {job_future.exception()}")
-            with open(err, "a") as f:
-                f.write(f"Job failed with exception: {job_future.exception()}\n")
-            job.set_failed(str(job_future.exception()))
-            return Result(job, failed=True)
+            job.set_failed()
+            
+            result.execution.state = ExecutionResult.State.ERROR
+            result.execution.detail = str(job_future.exception())
+            
+            return result
+        else:
+            # mark job as done for future runs
+            with open(f"{output_root}.done", "w") as f:
+                f.write("")
+                
+            job.set_finished()
+   
+            result.execution.state = ExecutionResult.State.SUCCESS
 
-        # mark job as done for future runs
-        with open(f"{output_root}.done", "w") as f:
-            f.write("")
+        result.solver = self.solver_adaptor.parse_result(solver_out)
+        result.solver_resources = self.solver_wrapper.parse_result(wrapper_out, wrapper_watcher)
+        result.checker = self.checker_adaptor.parse_result(trimmer_out, checker_out)
+        result.checker_resources = self.checker_wrapper.parse_result(checker_wrapper, checker_watcher)
 
-        resource_usage = self.solver_wrapper.parse_result(wrapper_out)
-        solver_result = self.solver_adaptor.parse_result(solver_out)
-
-        job.set_finished()
-        return Result(job, resource_usage["cputime"], resource_usage["memory"])
+        return result
 
     def cancel(self, job):
         """Cancel a running job.

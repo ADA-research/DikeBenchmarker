@@ -1,10 +1,19 @@
 """This module provides an adaptor for executing checkers of sat or unsat certificates."""
 
+import importlib.resources
 import os
 
+from DikeBenchmarker.benchmarkatoms import CheckerResult
 from DikeBenchmarker.solveradaptors.abstractexecutable import AbstractExecutable
 
 __all__ = ["CheckerAdaptor"]
+
+_CHECKERS_DIR = importlib.resources.files("DikeBenchmarker.external.checkers")
+
+
+def _checker_bin(name: str) -> str:
+    """Return the absolute path to a bundled checker binary."""
+    return str(_CHECKERS_DIR.joinpath(name))
 
 
 class CheckerAdaptor(AbstractExecutable):
@@ -39,7 +48,7 @@ class CheckerAdaptor(AbstractExecutable):
         # checker-wrapper cpu-limit so that limit stays the sole authority.
         self.register(
             "drat",
-            ["./external/checkers/drat-trim", "./external/checkers/cake_lpr"],
+            [_checker_bin("drat-trim"), _checker_bin("cake_lpr")],
             """
             $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
@@ -51,7 +60,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "dratbin",
-            ["./external/checkers/drat-trim", "./external/checkers/cake_lpr"],
+            [_checker_bin("drat-trim"), _checker_bin("cake_lpr")],
             """
             $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
@@ -63,7 +72,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "dpr",
-            ["./external/checkers/dpr-trim", "./external/checkers/cake_lpr"],
+            [_checker_bin("dpr-trim"), _checker_bin("cake_lpr")],
             """
             $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
@@ -75,7 +84,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "dprbin",
-            ["./external/checkers/dpr-trim", "./external/checkers/cake_lpr"],
+            [_checker_bin("dpr-trim"), _checker_bin("cake_lpr")],
             """
             $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
@@ -87,7 +96,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "grat",
-            ["./external/checkers/gratgen", "./external/checkers/gratchk"],
+            [_checker_bin("gratgen"), _checker_bin("gratchk")],
             """
             $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl 1> $TRIMMER_OUTPUT 2>&1
             rm -f $CERT
@@ -100,7 +109,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "gratbin",
-            ["./external/checkers/gratgen", "./external/checkers/gratchk"],
+            [_checker_bin("gratgen"), _checker_bin("gratchk")],
             """
             $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl -b 1> $TRIMMER_OUTPUT 2>&1
             rm -f $CERT
@@ -113,7 +122,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "veripb",
-            ["./external/checkers/veripb", "./external/checkers/cake_pb_cnf"],
+            [_checker_bin("veripb"), _checker_bin("cake_pb_cnf")],
             """
             $BIN0 --cnf -u --elaborate $CERT.trimmed $INST $CERT 1> $TRIMMER_OUTPUT 2>&1
             rm -f $CERT
@@ -126,7 +135,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "sr",
-            ["./external/checkers/dsr-trim", "./external/checkers/lsr-check"],
+            [_checker_bin("dsr-trim"), _checker_bin("lsr-check")],
             """
             $BIN0 $INST $CERT $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
@@ -144,7 +153,7 @@ class CheckerAdaptor(AbstractExecutable):
             # forwards checking with a streaming parser (one witness at a time),
             # keeping memory bounded at the cost of a larger, untrimmed LSR.
             "srfwd",
-            ["./external/checkers/dsr-trim", "./external/checkers/lsr-check"],
+            [_checker_bin("dsr-trim"), _checker_bin("lsr-check")],
             """
             $BIN0 -f $INST $CERT $CERT.trimmed 1> $TRIMMER_OUTPUT 2>&1
             $BIN1 $INST $CERT.trimmed 1> $CHECKER_OUTPUT 2>&1
@@ -162,7 +171,7 @@ class CheckerAdaptor(AbstractExecutable):
         )
         self.register(
             "satchecker",
-            ["./external/checkers/gratchk"],
+            [_checker_bin("gratchk")],
             """
             grep "^v" $CERT | sed -re 's/^v//g' | awk '{sub(/ 0$/, ""); if (NR>1) print prev; prev=$0} END {if (NR>0) print prev " 0"}' > $TRIMMER_OUTPUT
             $BIN0 sat $INST $TRIMMER_OUTPUT 1> $CHECKER_OUTPUT 2>&1
@@ -208,10 +217,40 @@ class CheckerAdaptor(AbstractExecutable):
             base.replace("$INST", instance).replace("$CERT", certificate).replace("$TRIMMER_OUTPUT", trimmer_output).replace("$CHECKER_OUTPUT", checker_output)
         )
 
-    def parse_result(self, outfile: str):
-        """Extract the result from the checker file."""
-        with open(outfile, "r", encoding="utf-8") as f:
+    def parse_result(self, trimmer_file: str, checker_file: str) -> CheckerResult:
+        """Classify the trimmer + checker pipeline."""
+        if not os.path.exists(trimmer_file):
+            return CheckerResult(CheckerResult.State.ERROR, "no trimmer output")
+
+        trimmer_verdict = None
+        with open(trimmer_file, "r", encoding="utf-8") as f:
             for line in f:
-                if "VERIFIED" in line:
-                    return line
-        return "UNKNOWN"
+                stripped = line.strip()
+                if stripped.startswith("s "):
+                    trimmer_verdict = stripped[2:].strip()
+                elif "Ran out of memory" in line:
+                    trimmer_verdict = "MEMOUT"
+
+        # non-VERIFIED trimmer outcomes never yield a checker verdict
+        trimmer_failure_detail = {
+            None: "trimmer no verdict",
+            "MEMOUT": "trimmer internal memout",
+            "TIMEOUT": "trimmer internal timeout",
+            "ERROR": "trimmer error",
+        }
+        if trimmer_verdict in trimmer_failure_detail:
+            return CheckerResult(CheckerResult.State.ERROR, trimmer_failure_detail[trimmer_verdict])
+                
+        if not os.path.exists(checker_file):
+            return CheckerResult(CheckerResult.State.ERROR, f"trimmer {trimmer_verdict}, no checker output")
+
+        with open(checker_file, "r", encoding="utf-8") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped.startswith("s "):
+                    verdict = stripped[2:].strip()
+                    if verdict.startswith("VERIFIED"):
+                        return CheckerResult(CheckerResult.State.VERIFIED, None)
+                    return CheckerResult(CheckerResult.State.UNVERIFIED, f"trimmer {trimmer_verdict}, checker {verdict}")
+
+        return CheckerResult(CheckerResult.State.UNKNOWN, f"trimmer {trimmer_verdict}, no checker verdict")

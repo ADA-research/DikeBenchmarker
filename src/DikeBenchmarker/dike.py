@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Dike Benchmarker - Main entry point for running benchmarking experiments."""
 
 import argparse
@@ -41,9 +40,9 @@ def get_solver_adaptor(solvers_csv: str) -> SolverAdaptor:
     return solver_adaptor
 
 
-def get_instance_adaptor() -> SATInstanceAdaptor:
-    """Create a SATInstanceAdaptor with default paths."""
-    instance_adaptor = SATInstanceAdaptor("./instances/sat/", "./instances/cnf_data.db")
+def get_instance_adaptor(data_root: str) -> SATInstanceAdaptor:
+    """Create a SATInstanceAdaptor with paths resolved under data_root, just like solvers_file."""
+    instance_adaptor = SATInstanceAdaptor(os.path.join(data_root, "instances", "sat"), os.path.join(data_root, "instances", "cnf_data.db"))
     return instance_adaptor
 
 
@@ -107,6 +106,7 @@ def get_benchmarker(benchmarking_method: dict, solver_id: str, checker_id: str, 
 def run_slurm(
     benchmarking_method: dict,
     solvers_file: str,
+    data_root: str,
     resource_limits: dict,
     logroot,
     machine: str,
@@ -132,7 +132,7 @@ def run_slurm(
         print(f"Using SLURM reservation: {reservation}")
 
     solver_adaptor = get_solver_adaptor(solvers_file)
-    instance_adaptor = get_instance_adaptor()
+    instance_adaptor = get_instance_adaptor(data_root)
 
     queue_max = queuelimit or slurm_limits.compute_max_blocks(safety_factor=0.8, fallback=100)
 
@@ -188,6 +188,7 @@ def run_slurm(
 def run_local(
     benchmarking_method: dict,
     solvers_file: str,
+    data_root: str,
     resource_limits: dict,
     logroot,
     parallel: int = 3,
@@ -204,7 +205,7 @@ def run_local(
     print(f"Using local execution with {parallel} parallel workers.")
 
     solver_adaptor = get_solver_adaptor(solvers_file)
-    instance_adaptor = get_instance_adaptor()
+    instance_adaptor = get_instance_adaptor(data_root)
 
     config = Config(executors=[HighThroughputExecutor(label=jobname, max_workers_per_node=parallel, provider=LocalProvider())])
 
@@ -229,9 +230,15 @@ def run_local(
     runner.run(methods, njobs=parallel * 2)
 
 
-if __name__ == "__main__":
+def main():
+    """CLI entry point: parse args, load config, and dispatch to the configured scheduler."""
     parser = argparse.ArgumentParser(description="Dike: Data-Informed Knowledge-driven Evaluation")
 
+    parser.add_argument(
+        "data_root",
+        type=str,
+        help="Root directory containing instances/, solvers/, etc. Dike chdirs here before resolving any relative paths.",
+    )
     parser.add_argument("config", type=str, help="Path to YAML configuration file")
     parser.add_argument(
         "outputdir",
@@ -242,22 +249,28 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # Resolve paths given relative to the launch directory before chdir'ing into data_root.
+    config_path = os.path.abspath(args.config)
+    data_root = os.path.abspath(args.data_root)
     if args.requeue:
+        args.requeue = os.path.abspath(args.requeue)
         control.set_slurm_requeue_script_path(args.requeue)
+
+    os.chdir(data_root)
 
     # Load configuration from YAML file
     try:
-        with open(args.config, "r") as f:
+        with open(config_path, "r") as f:
             config = yaml.safe_load(f)
     except FileNotFoundError:
-        print(f"Error: Configuration file '{args.config}' not found.")
+        print(f"Error: Configuration file '{config_path}' not found.")
         sys.exit(1)
     except yaml.YAMLError as e:
         print(f"Error: Failed to parse YAML configuration: {e}")
         sys.exit(1)
 
     # Get the directory containing the config file
-    config_dir = os.path.dirname(os.path.abspath(args.config))
+    config_dir = os.path.dirname(config_path)
 
     # Load benchmarks from CSV
     benchmarking = config.get("benchmarks", {})
@@ -312,6 +325,7 @@ if __name__ == "__main__":
         run_slurm(
             benchmarking_method=benchmarking_method,
             solvers_file=solvers_file,
+            data_root=data_root,
             resource_limits=resource_limits,
             logroot=results,
             machine=scheduling.get("machine"),
@@ -332,6 +346,7 @@ if __name__ == "__main__":
         run_local(
             benchmarking_method=benchmarking_method,
             solvers_file=solvers_file,
+            data_root=data_root,
             resource_limits=resource_limits,
             logroot=results,
             parallel=scheduling.get("parallel", 3),
@@ -340,3 +355,7 @@ if __name__ == "__main__":
     else:
         print(f"Error: Unsupported scheduler '{scheduler}'.")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

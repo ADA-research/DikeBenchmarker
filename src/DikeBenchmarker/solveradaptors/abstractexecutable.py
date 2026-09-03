@@ -9,6 +9,8 @@ import csv
 from abc import ABC, abstractmethod
 import os
 
+from DikeBenchmarker.benchmarkatoms import AbstractResult
+
 
 class AbstractExecutable(ABC):
     """Interface for Executables such as Solvers or Execution Wrappers."""
@@ -79,8 +81,8 @@ class AbstractExecutable(ABC):
         return base
 
     @abstractmethod
-    def parse_result(self, outfile: str):
-        """Extract the result from the solver file."""
+    def parse_result(self, *args, **kwargs) -> AbstractResult:
+        """Parse result files; returns instance of an AbstractResult implementation."""
 
     def to_dict(self) -> dict:
         """Convert the executable to a dictionary representation."""

@@ -12,7 +12,7 @@ kissat-evolve-r1;./satcomp26.solvers/gopalan/kissat-evolve-r1/kissat;$BIN0 $INST
 kissat-evolve-rb;./satcomp26.solvers/gopalan/kissat-evolve-rb/kissat;$BIN0 $INST $CERT;dratbin
 kissat-ae-eg;./satcomp26.solvers/guo/kissat-ae-eg/kissat;$BIN0 $INST $CERT;gratbin
 kissat-ae-hucb;./satcomp26.solvers/guo/kissat-ae-hucb/kissat;$BIN0 $INST $CERT;gratbin
-lymphosat;./satcomp26.solvers/green/lymphosat/src/solver/solver;$BIN0 $INST $CERT;veripb
+lymphosat;./satcomp26.solvers/green/lymphosat/solver;$BIN0 $INST $CERT;veripb
 kissat-lr-ds;./satcomp26.solvers/liang/kissat-lr-ds/kissat;$BIN0 $INST $CERT;dratbin
 kissat-mab-da;./satcomp26.solvers/liang/kissat-mab-da/kissat;$BIN0 $INST $CERT;dratbin
 satsuma-lex-kissat;./satcomp26.solvers/oertel/satsuma-lex-kissat/satsuma,./satcomp26.solvers/oertel/satsuma-lex-kissat/kissat;"N=$(grep -m1 ""^p cnf"" $INST | cut -d"" "" -f3); if [ ${N:-0} -lt 5000000 ]; then $BIN0 --silent --proof-dense-crossover 60 --component-limit 500000 --order-model-limit 750000 --dense-model-limit 20000000 --add-reduced-as-unit --preprocess-cnf-unit -f $INST --proof-file $CERT --out-file $CERT.temp.cnf; $BIN1 -q --no-binary --witnessmaxvar=$N $CERT.temp.cnf $CERT; else echo ""pseudo-Boolean proof version 3.0"" > $CERT; $BIN1 -q --no-binary --witnessmaxvar=$N $INST $CERT; fi; if [ $? -eq 20 ]; then echo ""output NONE;"" >> $CERT; echo ""conclusion UNSAT;"" >> $CERT; echo ""end pseudo-Boolean proof;"" >> $CERT; fi; rm -f $CERT.temp.cnf";veripb

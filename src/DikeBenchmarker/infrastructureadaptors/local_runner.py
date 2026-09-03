@@ -3,7 +3,7 @@
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
 from DikeBenchmarker.infrastructureadaptors.abstract_runner import AbstractRunner
-from DikeBenchmarker.benchmarkatoms import Job, Result
+from DikeBenchmarker.benchmarkatoms import ExecutionResult, Job, Result
 from DikeBenchmarker.solveradaptors.abstractexecutable import AbstractExecutable
 from DikeBenchmarker.benchmarkadaptors.abstractinstance import AbstractInstanceAdaptor
 
@@ -52,5 +52,8 @@ class LocalRunner(AbstractRunner):
         """Check if a job has completed."""
         future = self.futures_map[job.uid]
         if future.done():
-            return Result(job, 0, 0)
+            result = Result(job)
+            result.execution.state = ExecutionResult.State.SUCCESS
+            result.execution.detail = "local-no-parse"
+            return result
         return None

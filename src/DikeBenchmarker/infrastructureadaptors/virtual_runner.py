@@ -1,7 +1,7 @@
 """Virtual Runner Adaptor."""
 
 from DikeBenchmarker.infrastructureadaptors.abstract_runner import AbstractRunner
-from DikeBenchmarker.benchmarkatoms import Job, Result
+from DikeBenchmarker.benchmarkatoms import Job, ResourceResult, Result
 from DikeBenchmarker.dataadaptors.dataadaptor import DataAdaptor
 
 
@@ -26,7 +26,11 @@ class VirtualRunner(AbstractRunner):
         solver = job.solver_id
         runtime = self.runtimes.get_performances(instance, solver)["perf"][0]
         job.set_finished()
-        return Result(job, runtime, 0)
+        result = Result(job)
+        result.solver_resources = ResourceResult()
+        result.solver_resources.cputime = runtime
+        result.solver_resources.detail = "simulation"
+        return result
 
     def cancel(self, job):
         """Cancel a job."""

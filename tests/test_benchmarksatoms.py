@@ -1,6 +1,17 @@
 import pytest
 from datetime import datetime
-from DikeBenchmarker.benchmarkatoms import Job, JobState, JobStateError
+from enum import Enum
+from DikeBenchmarker.benchmarkatoms import (
+    AbstractResult,
+    CheckerResult,
+    ExecutionResult,
+    Job,
+    JobState,
+    JobStateError,
+    Result,
+    ResourceResult,
+    SolverResult,
+)
 
 # ---- test job.mark_submitted() ----
 
@@ -84,14 +95,12 @@ def test_set_failed_success():
     # Setup
     job = Job(None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.RUNNING
-    error_msg = "Test error message"
 
     # Action
-    job.set_failed(error_msg)
+    job.set_failed()
 
     # Assert
     assert job.state == JobState.FAILED
-    assert job.error == error_msg
     assert job.finished_at is not None
     assert isinstance(job.finished_at, datetime)
 
@@ -100,11 +109,10 @@ def test_set_failed_fails_if_not_running():
     # Setup
     job = Job(None, "bench_id", "solver_id", "checker_id", "./logs")
     job.state = JobState.SUBMITTED
-    error_msg = "Test error message"
 
     # Action & Assert
     with pytest.raises(JobStateError):
-        job.set_failed(error_msg)
+        job.set_failed()
 
 
 # ---- test job.cancel_local() ----

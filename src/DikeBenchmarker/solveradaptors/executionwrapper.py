@@ -3,16 +3,16 @@
 Resolves the paths to the wrapper binaries and constructs command-line arguments using the specified resource limits.
 """
 
-import os as _os
+import importlib.resources
+import os
 
+from DikeBenchmarker.benchmarkatoms import ResourceResult
 from DikeBenchmarker.solveradaptors.abstractexecutable import AbstractExecutable
 
 
 __all__ = ["ExecutionWrapper"]
 
-# Absolute path to runsolver, resolved relative to the dike package root regardless of CWD.
-_DIKE_ROOT = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))))
-_RUNSOLVER_BIN = _os.path.join(_DIKE_ROOT, "external", "runsolver")
+_RUNSOLVER_BIN = str(importlib.resources.files("DikeBenchmarker.external").joinpath("runsolver"))
 
 
 class ExecutionWrapper(AbstractExecutable):
@@ -76,38 +76,54 @@ class ExecutionWrapper(AbstractExecutable):
             .replace("$MEMORY", str(self.memorylimit))
         )
 
-    def parse_result(self, outfile: str):
-        """Parse the runsolver log output to extract runtime statistics.
+    def parse_result(self, wrapper_file: str, watcher_file: str) -> ResourceResult:
+        """Parse wrapper record + watcher log into resource-based metrics."""
+        if not os.path.exists(wrapper_file):
+            return ResourceResult(ResourceResult.State.NONE, detail="no wrapper output")
 
-        Parameters:
-        - tool_output: Path to the runsolver log output file.
-
-        Returns:
-        - dictionary with keys 'walltime', 'cputime', 'memory', 'timeout', 'memout', and 'exitstatus'.
-        """
-        result = {
-            "walltime": None,
-            "cputime": None,
-            "memory": None,
-            "timeout": False,
-            "memout": False,
-            "exitstatus": None,
-        }
-
-        with open(outfile, "r", encoding="utf-8") as f:
+        cputime = walltime = memory = None
+        state = ResourceResult.State.SUCCESS
+        with open(wrapper_file, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if line.startswith("WCTIME="):
-                    result["walltime"] = float(line.split("=", 1)[1].strip())
+                    walltime = float(line.split("=", 1)[1])
                 elif line.startswith("CPUTIME="):
-                    result["cputime"] = float(line.split("=", 1)[1].strip())
-                elif line.startswith("MAXRSS="):
-                    result["memory"] = int(line.split("=", 1)[1].strip())
-                elif line.startswith("TIMEOUT="):
-                    result["timeout"] = line.split("=", 1)[1].strip().lower() == "true"
-                elif line.startswith("MEMOUT="):
-                    result["memout"] = line.split("=", 1)[1].strip().lower() == "true"
-                elif line.startswith("EXITSTATUS="):
-                    result["exitstatus"] = int(line.split("=", 1)[1].strip())
+                    cputime = float(line.split("=", 1)[1])
+                elif line.startswith("MAXVM="):
+                    memory = int(line.split("=", 1)[1]) / 1024
+                elif line.startswith("TIMEOUT=") and line.split("=", 1)[1].lower() == "true":
+                    state = ResourceResult.State.TIMEOUT
+                elif line.startswith("MEMOUT=") and line.split("=", 1)[1].lower() == "true":
+                    state = ResourceResult.State.MEMOUT
 
-        return result
+        if not os.path.exists(watcher_file):
+            return ResourceResult(state, cputime=cputime, walltime=walltime, memory=memory, detail="no watcher output")
+
+        detail = None
+        with open(watcher_file, "r", encoding="utf-8") as f:
+            for line in f:
+                # trust the watcher over the TIMEOUT/MEMOUT flags above (runsolver quirks)
+                if "Maximum memory exceeded" in line:
+                    state = ResourceResult.State.MEMOUT
+                    detail = "runsolver memory limit exceeded"
+                    break
+                if "Child ended because it received signal 24 (SIGXCPU)" in line:
+                    state = ResourceResult.State.TIMEOUT
+                    detail = "cpu time limit exceeded (SIGXCPU)"
+                    break
+                if "Child ended because it received signal 9 (SIGKILL)" in line:
+                    state = ResourceResult.State.ERROR
+                    detail = "killed (SIGKILL via exit 9)"
+                    break
+                if line.startswith("Child status: "):
+                    code = line.split(":", 1)[1].strip()
+                    if code == "137":
+                        # external kill (SLURM OOM-killer)
+                        state = ResourceResult.State.ERROR
+                        detail = "killed (SIGKILL via exit 137)"
+                    elif code != "0":
+                        detail = f"nonzero exit (code {code})"
+                    break
+
+        return ResourceResult(state, cputime=cputime, walltime=walltime, memory=memory, detail=detail)
