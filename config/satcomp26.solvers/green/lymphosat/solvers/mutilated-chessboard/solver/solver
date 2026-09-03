@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+"""Specialized VeriPB proof generator for mutilated chessboard CNFs.
+
+The supported formulas are domino-placement exact-cover encodings.  Positive
+clauses are "at least one incident domino" constraints on one side of a
+bipartite board graph.  The opposing side is encoded either directly with
+pairwise AMO clauses or with a mixed pairwise/Sinz sequential AMO encoding.
+For the mutilated boards the demand side is larger, so summing the demand
+clauses and the derived opposing AMO cardinalities gives an immediate Hall
+counting contradiction.
+"""
+
+from __future__ import annotations
+
+import itertools
+import lzma
+import sys
+from collections import Counter, defaultdict, deque
+from dataclasses import dataclass
+from typing import Iterable
+
+
+Clause = list[int]
+
+
+@dataclass
+class ProofPlan:
+    demand_clause_ids: list[int]
+    groups: list[list[int]]
+
+
+def read_dimacs(path: str) -> tuple[int, list[Clause]]:
+    opener = lzma.open if path.endswith(".xz") else open
+    nvars = 0
+    clauses: list[Clause] = []
+    with opener(path, "rt", encoding="ascii", errors="strict") as fh:
+        for raw in fh:
+            line = raw.strip()
+            if not line or line.startswith("c"):
+                continue
+            if line.startswith("p"):
+                parts = line.split()
+                if len(parts) < 4 or parts[1] != "cnf":
+                    raise ValueError("not DIMACS CNF")
+                nvars = int(parts[2])
+                continue
+            lits = [int(x) for x in line.split() if x != "0"]
+            if not lits:
+                continue
+            if any(abs(x) == 0 or abs(x) > nvars for x in lits):
+                raise ValueError("literal outside declared variable range")
+            clauses.append(lits)
+    if nvars <= 0 or not clauses:
+        raise ValueError("empty or missing header")
+    return nvars, clauses
+
+
+def is_positive(c: Clause) -> bool:
+    return bool(c) and all(x > 0 for x in c)
+
+
+def is_negative_binary(c: Clause) -> bool:
+    return len(c) == 2 and c[0] < 0 and c[1] < 0
+
+
+def has_implication_clause(clauses: list[Clause]) -> bool:
+    return any(len(c) == 2 and c[0] < 0 and c[1] > 0 for c in clauses)
+
+
+def parse_seq_group(
+    clauses: list[Clause], start: int, edge_vars: set[int], degree: int
+) -> tuple[list[int], int] | None:
+    """Parse a Sinz AMO group over edge variables, returning original vars."""
+    if degree < 2:
+        return None
+    needed = 3 * degree - 4
+    if start + needed > len(clauses):
+        return None
+
+    xs: list[int] = []
+    aux: list[int] = []
+    i = start
+
+    c = clauses[i]
+    if not (
+        len(c) == 2
+        and c[0] < 0
+        and c[1] > 0
+        and abs(c[0]) in edge_vars
+        and c[1] not in edge_vars
+    ):
+        return None
+    xs.append(abs(c[0]))
+    aux.append(c[1])
+    i += 1
+
+    for _ in range(2, degree):
+        c1, c2, c3 = clauses[i], clauses[i + 1], clauses[i + 2]
+        if not (
+            len(c1) == 2
+            and c1[0] < 0
+            and c1[1] > 0
+            and abs(c1[0]) in edge_vars
+            and c1[1] not in edge_vars
+        ):
+            return None
+        x = abs(c1[0])
+        s = c1[1]
+        if not (len(c2) == 2 and c2[0] < 0 and c2[1] < 0):
+            return None
+        if abs(c2[0]) != x or abs(c2[1]) != aux[-1]:
+            return None
+        if not (len(c3) == 2 and c3[0] < 0 and c3[1] > 0):
+            return None
+        if abs(c3[0]) != aux[-1] or c3[1] != s:
+            return None
+        xs.append(x)
+        aux.append(s)
+        i += 3
+
+    c = clauses[i]
+    if not (
+        len(c) == 2
+        and c[0] < 0
+        and c[1] < 0
+        and abs(c[0]) in edge_vars
+        and abs(c[1]) == aux[-1]
+    ):
+        return None
+    xs.append(abs(c[0]))
+    i += 1
+
+    if len(set(xs)) != degree or len(set(aux)) != degree - 1:
+        return None
+    return xs, i
+
+
+def parse_clique_group(
+    clauses: list[Clause], start: int, edge_vars: set[int], degree: int
+) -> tuple[list[int], int] | None:
+    needed = degree * (degree - 1) // 2
+    if start + needed > len(clauses):
+        return None
+
+    pairs: list[tuple[int, int]] = []
+    vars_seen: set[int] = set()
+    for off in range(needed):
+        c = clauses[start + off]
+        if not is_negative_binary(c):
+            return None
+        a, b = abs(c[0]), abs(c[1])
+        if a == b or a not in edge_vars or b not in edge_vars:
+            return None
+        pair = (a, b) if a < b else (b, a)
+        pairs.append(pair)
+        vars_seen.add(a)
+        vars_seen.add(b)
+
+    if len(vars_seen) != degree:
+        return None
+    expected = set(itertools.combinations(sorted(vars_seen), 2))
+    if set(pairs) != expected or len(pairs) != len(expected):
+        return None
+    return sorted(vars_seen), start + needed
+
+
+def build_mixed_plan(clauses: list[Clause]) -> ProofPlan | None:
+    prefix: list[tuple[int, Clause]] = []
+    i = 0
+    while i < len(clauses) and is_positive(clauses[i]):
+        if not 2 <= len(clauses[i]) <= 4:
+            return None
+        prefix.append((i + 1, clauses[i]))
+        i += 1
+    if not prefix:
+        return None
+    if any(is_positive(c) for c in clauses[i:]):
+        return None
+
+    edge_vars = {v for _, c in prefix for v in c}
+    pos_occ = Counter(v for _, c in prefix for v in c)
+    if any(count != 1 for count in pos_occ.values()):
+        return None
+
+    groups: list[list[int]] = []
+    used: Counter[int] = Counter()
+    while i < len(clauses) and len(used) < len(edge_vars):
+        parsed: tuple[list[int], int] | None = None
+        for degree in (4, 3, 2):
+            parsed = parse_seq_group(clauses, i, edge_vars, degree)
+            if parsed is not None:
+                break
+        if parsed is None:
+            for degree in (4, 3, 2):
+                parsed = parse_clique_group(clauses, i, edge_vars, degree)
+                if parsed is not None:
+                    break
+        if parsed is None:
+            return None
+
+        group, next_i = parsed
+        if any(v in used for v in group):
+            return None
+        groups.append(group)
+        used.update(group)
+        i = next_i
+
+    if set(used) != edge_vars or any(v != 1 for v in used.values()):
+        return None
+    if len(prefix) <= len(groups):
+        return None
+    return ProofPlan([idx for idx, _ in prefix], groups)
+
+
+def build_plain_plan(clauses: list[Clause]) -> ProofPlan | None:
+    positives = [(i + 1, c) for i, c in enumerate(clauses) if is_positive(c)]
+    if not positives:
+        return None
+    if any(not 2 <= len(c) <= 4 for _, c in positives):
+        return None
+    if any(
+        (not is_positive(c))
+        and not (len(c) == 1 and c[0] < 0)
+        and not is_negative_binary(c)
+        for c in clauses
+    ):
+        return None
+
+    neg_pairs = {
+        tuple(sorted((abs(c[0]), abs(c[1])))) for c in clauses if is_negative_binary(c)
+    }
+    incidence: dict[int, list[int]] = defaultdict(list)
+    clause_vars: dict[int, list[int]] = {}
+    for idx, c in positives:
+        clause_vars[idx] = c
+        for v in c:
+            incidence[v].append(idx)
+    if any(len(ids) != 2 for ids in incidence.values()):
+        return None
+
+    adj: dict[int, list[tuple[int, int]]] = defaultdict(list)
+    for v, (a, b) in incidence.items():
+        adj[a].append((b, v))
+        adj[b].append((a, v))
+
+    color: dict[int, int] = {}
+    for idx, _ in positives:
+        if idx in color:
+            continue
+        color[idx] = 0
+        q: deque[int] = deque([idx])
+        while q:
+            u = q.popleft()
+            for w, _ in adj[u]:
+                if w not in color:
+                    color[w] = color[u] ^ 1
+                    q.append(w)
+                elif color[w] == color[u]:
+                    return None
+
+    by_color: dict[int, list[int]] = {0: [], 1: []}
+    for idx, _ in positives:
+        by_color[color[idx]].append(idx)
+    if len(by_color[0]) == len(by_color[1]):
+        return None
+    demand_color = 0 if len(by_color[0]) > len(by_color[1]) else 1
+    demand = by_color[demand_color]
+    resource = by_color[demand_color ^ 1]
+    if len(demand) <= len(resource):
+        return None
+
+    demand_vars = Counter(v for idx in demand for v in clause_vars[idx])
+    resource_vars = Counter(v for idx in resource for v in clause_vars[idx])
+    if demand_vars != resource_vars or any(c != 1 for c in demand_vars.values()):
+        return None
+
+    groups = [clause_vars[idx] for idx in resource]
+    for group in groups:
+        for a, b in itertools.combinations(sorted(group), 2):
+            if (a, b) not in neg_pairs:
+                return None
+    return ProofPlan(demand, groups)
+
+
+def term_sum(terms: Iterable[str | int]) -> str:
+    ts = [str(t) for t in terms]
+    if not ts:
+        raise ValueError("empty cutting-planes sum")
+    if len(ts) == 1:
+        return ts[0]
+    out = [ts[0], ts[1], "+"]
+    for t in ts[2:]:
+        out.extend([t, "+"])
+    return " ".join(out)
+
+
+def pair_constraint_line(label: str, a: int, b: int) -> str:
+    return f"{label} rup 1 ~x{a} 1 ~x{b} >= 1 ;"
+
+
+def emit_group_proof(out: list[str], group_no: int, group: list[int]) -> str:
+    xs = sorted(group)
+    if not 2 <= len(xs) <= 4:
+        raise ValueError("unsupported AMO degree")
+
+    pair_labels: dict[tuple[int, int], str] = {}
+    for pair_no, (a, b) in enumerate(itertools.combinations(xs, 2)):
+        label = f"@p_{group_no}_{pair_no}"
+        pair_labels[(a, b)] = label
+        out.append(pair_constraint_line(label, a, b))
+
+    if len(xs) == 2:
+        return pair_labels[(xs[0], xs[1])]
+
+    if len(xs) == 3:
+        labels = [pair_labels[p] for p in itertools.combinations(xs, 2)]
+        g_label = f"@g_{group_no}"
+        out.append(f"{g_label} pol {term_sum(labels)} 2 d ;")
+        return g_label
+
+    triple_labels: list[str] = []
+    for tri_no, triple in enumerate(itertools.combinations(xs, 3)):
+        labels = [pair_labels[tuple(sorted(p))] for p in itertools.combinations(triple, 2)]
+        t_label = f"@t_{group_no}_{tri_no}"
+        out.append(f"{t_label} pol {term_sum(labels)} 2 d ;")
+        triple_labels.append(t_label)
+    g_label = f"@g_{group_no}"
+    out.append(f"{g_label} pol {term_sum(triple_labels)} 3 d ;")
+    return g_label
+
+
+def write_proof(path: str, plan: ProofPlan) -> None:
+    lines: list[str] = ["pseudo-Boolean proof version 3.0"]
+    group_terms = [
+        emit_group_proof(lines, group_no, group)
+        for group_no, group in enumerate(plan.groups)
+    ]
+    final_terms: list[str | int] = list(plan.demand_clause_ids) + group_terms
+    lines.append(f"@final pol {term_sum(final_terms)} ;")
+    lines.append("output NONE ;")
+    lines.append("conclusion UNSAT : @final ;")
+    lines.append("end pseudo-Boolean proof ;")
+    with open(path, "w", encoding="ascii") as fh:
+        fh.write("\n".join(lines))
+        fh.write("\n")
+
+
+def solve(formula_path: str, proof_path: str) -> int:
+    _, clauses = read_dimacs(formula_path)
+    if has_implication_clause(clauses):
+        plan = build_mixed_plan(clauses)
+    else:
+        plan = build_plain_plan(clauses)
+    if plan is None:
+        print("c unsupported structure")
+        print("s UNKNOWN")
+        return 0
+    write_proof(proof_path, plan)
+    print("s UNSATISFIABLE")
+    return 20
+
+
+def main(argv: list[str]) -> int:
+    if len(argv) != 3:
+        print("usage: solver <formula.cnf> <out.pbp>", file=sys.stderr)
+        return 1
+    try:
+        return solve(argv[1], argv[2])
+    except Exception as exc:
+        print(f"c solver declined instance: {exc}")
+        print("s UNKNOWN")
+        return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

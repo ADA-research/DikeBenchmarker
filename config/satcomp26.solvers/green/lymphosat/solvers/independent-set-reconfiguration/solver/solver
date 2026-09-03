@@ -1,0 +1,607 @@
+#!/usr/bin/env python3
+import collections
+import math
+import random
+import sys
+import time
+from functools import lru_cache
+
+
+def parse_dimacs(path, small_limit=450, clause_limit=3000000):
+    clauses = []
+    units = []
+    edges = []
+    nvars = 0
+    nclauses = 0
+    prefix = True
+    graph_n = 0
+    with open(path, "r", encoding="ascii", errors="ignore") as f:
+        for line in f:
+            if not line or line[0] == "c":
+                continue
+            if line[0] == "p":
+                parts = line.split()
+                nvars = int(parts[2])
+                nclauses = int(parts[3])
+                continue
+            lits = [int(x) for x in line.split() if x != "0"]
+            if not lits:
+                continue
+            if prefix and len(lits) == 2 and lits[0] < 0 and lits[1] < 0:
+                u, v = -lits[0] - 1, -lits[1] - 1
+                edges.append((u, v))
+                graph_n = max(graph_n, u + 1, v + 1)
+            else:
+                prefix = False
+                if graph_n > small_limit or nclauses > clause_limit:
+                    return nvars, graph_n, edges, None, None
+            clauses.append(lits)
+            if len(lits) == 1:
+                units.append(lits[0])
+    return nvars, graph_n, edges, clauses, units
+
+
+def shifted_graph_bases(clauses, edges):
+    if not edges:
+        return []
+    bases = [0]
+    ecount = len(edges)
+    i = ecount
+    total = len(clauses)
+    first_u, first_v = edges[0]
+    while i + ecount <= total:
+        c = clauses[i]
+        if len(c) == 2 and c[0] < 0 and c[1] < 0:
+            base = -c[0] - 1 - first_u
+            if base >= 0 and -c[1] - 1 == base + first_v:
+                ok = True
+                for j, (u, v) in enumerate(edges):
+                    cc = clauses[i + j]
+                    if len(cc) != 2 or cc[0] != -(base + u + 1) or cc[1] != -(base + v + 1):
+                        ok = False
+                        break
+                if ok:
+                    bases.append(base)
+                    i += ecount
+                    continue
+        i += 1
+    return bases
+
+
+def endpoints(n, bases, units):
+    unit = {abs(x): x for x in units}
+    source = 0
+    for v in range(n):
+        if unit.get(n + v + 1) == -(n + v + 1):
+            source |= 1 << v
+    if not bases:
+        return None, None
+    target_base = bases[-1]
+    target = 0
+    for v in range(n):
+        lit = unit.get(target_base + v + 1)
+        if lit is None:
+            return None, None
+        if lit > 0:
+            target |= 1 << v
+    if source.bit_count() != target.bit_count():
+        return None, None
+    return source, target
+
+
+def enumerate_independent_sets(n, adj, k, cap=600000):
+    sets = []
+
+    def rec(start, chosen, mask, forbidden):
+        if len(sets) > cap:
+            return
+        if chosen == k:
+            sets.append(mask)
+            return
+        need = k - chosen
+        for v in range(start, n):
+            if n - v < need:
+                break
+            if (forbidden >> v) & 1:
+                continue
+            rec(v + 1, chosen + 1, mask | (1 << v), forbidden | adj[v] | (1 << v))
+
+    rec(0, 0, 0, 0)
+    return sets if len(sets) <= cap else None
+
+
+def exact_simple_path(n, edges, source, target, length, deadline):
+    if ((source ^ target).bit_count() // 2) > length:
+        return None
+    adj = [0] * n
+    for u, v in edges:
+        adj[u] |= 1 << v
+        adj[v] |= 1 << u
+    k = source.bit_count()
+    sets = enumerate_independent_sets(n, adj, k)
+    if sets is None or source not in sets or target not in sets:
+        return None
+    valid = set(sets)
+
+    @lru_cache(maxsize=None)
+    def neigh(mask):
+        out = []
+        mm = mask
+        current = []
+        while mm:
+            bit = mm & -mm
+            current.append(bit.bit_length() - 1)
+            mm -= bit
+        for rem in current:
+            base = mask & ~(1 << rem)
+            for add in range(n):
+                if (mask >> add) & 1:
+                    continue
+                nm = base | (1 << add)
+                if nm in valid:
+                    out.append(nm)
+        return tuple(out)
+
+    q = collections.deque([target])
+    dist = {target: 0}
+    while q:
+        m = q.popleft()
+        for nm in neigh(m):
+            if nm not in dist:
+                dist[nm] = dist[m] + 1
+                q.append(nm)
+    if source not in dist or dist[source] > length:
+        return None
+
+    seen = {source}
+
+    def dfs(mask, rem):
+        if time.time() > deadline:
+            return None
+        if rem == 0:
+            return [] if mask == target else None
+        if dist.get(mask, 10**9) > rem:
+            return None
+        nxt = []
+        for nm in neigh(mask):
+            if nm == target and rem != 1:
+                continue
+            if nm in seen:
+                continue
+            nxt.append(nm)
+        slack = rem - dist.get(mask, rem)
+        if slack > 10:
+            nxt.sort(key=lambda x: (abs((rem - 1) - dist.get(x, 10**9) - 20), -len(neigh(x))))
+        else:
+            nxt.sort(key=lambda x: (dist.get(x, 10**9), -len(neigh(x))))
+        for nm in nxt:
+            seen.add(nm)
+            got = dfs(nm, rem - 1)
+            if got is not None:
+                return [nm] + got
+            seen.remove(nm)
+        return None
+
+    return dfs(source, length)
+
+
+def greedy_tail(n, adj, mask, target, seen):
+    path = []
+    local_seen = set(seen)
+    while mask != target:
+        missing = [a for a in range(n) if ((target >> a) & 1) and not ((mask >> a) & 1)]
+        extras = [r for r in range(n) if ((mask >> r) & 1) and not ((target >> r) & 1)]
+        found = False
+        for add in sorted(missing, key=lambda x: (adj[x] & mask).bit_count()):
+            for rem in extras:
+                nm = (mask & ~(1 << rem)) | (1 << add)
+                if nm in local_seen and nm != target:
+                    continue
+                if (adj[add] & (mask & ~(1 << rem))) == 0:
+                    path.append(nm)
+                    local_seen.add(nm)
+                    mask = nm
+                    found = True
+                    break
+            if found:
+                break
+        if not found:
+            return None
+    return path
+
+
+def random_exact_path(n, edges, source, target, length, deadline):
+    if ((source ^ target).bit_count() // 2) > length:
+        return None
+    adj = [0] * n
+    for u, v in edges:
+        adj[u] |= 1 << v
+        adj[v] |= 1 << u
+    rng = random.Random(7 + n * 131 + length)
+    all_mask = (1 << n) - 1
+
+    def moves(mask):
+        out = []
+        mm = mask
+        current = []
+        while mm:
+            bit = mm & -mm
+            current.append(bit.bit_length() - 1)
+            mm -= bit
+        notmask = all_mask ^ mask
+        for rem in current:
+            base = mask & ~(1 << rem)
+            cand = notmask
+            while cand:
+                bit = cand & -cand
+                add = bit.bit_length() - 1
+                cand -= bit
+                if (adj[add] & base) == 0:
+                    out.append(base | bit)
+        return out
+
+    while time.time() < deadline:
+        mask = source
+        seen = {source}
+        path = []
+        for step in range(length):
+            rem = length - step
+            tail = greedy_tail(n, adj, mask, target, seen)
+            if tail is not None and len(tail) == rem:
+                return path + tail
+            cand = []
+            for nm in moves(mask):
+                if nm in seen:
+                    continue
+                if nm == target and rem != 1:
+                    continue
+                if ((nm ^ target).bit_count() // 2) <= rem - 1:
+                    cand.append(nm)
+            if not cand:
+                break
+            scored = []
+            rng.shuffle(cand)
+            sample = cand[:96]
+            for nm in sample:
+                tail = greedy_tail(n, adj, nm, target, seen | {nm})
+                if tail is not None and len(tail) <= rem - 1:
+                    slack = (rem - 1) - len(tail)
+                    scored.append((abs(slack - 20), rng.random(), nm))
+            if scored:
+                scored.sort()
+                nm = scored[0][2]
+            else:
+                nm = cand[0]
+            seen.add(nm)
+            path.append(nm)
+            mask = nm
+    return None
+
+
+def queen_board_size(n, edges):
+    q = math.isqrt(n)
+    if q * q != n or q < 4:
+        return None
+    expected = 0
+    for a in range(n):
+        ar, ac = divmod(a, q)
+        for b in range(a + 1, n):
+            br, bc = divmod(b, q)
+            if ar == br or ac == bc or abs(ar - br) == abs(ac - bc):
+                expected += 1
+    if expected != len(edges):
+        return None
+    for u, v in edges:
+        ur, uc = divmod(u, q)
+        vr, vc = divmod(v, q)
+        if not (ur == vr or uc == vc or abs(ur - vr) == abs(uc - vc)):
+            return None
+    return q
+
+
+def queen_exact_path(n, edges, source, target, length, deadline):
+    q = queen_board_size(n, edges)
+    if q is None or source.bit_count() != q - 1 or target.bit_count() != q - 1:
+        return None
+    miss = 255
+
+    def mask_to_state(mask):
+        state = [miss] * q
+        mm = mask
+        while mm:
+            bit = mm & -mm
+            v = bit.bit_length() - 1
+            state[v // q] = v % q
+            mm -= bit
+        if state.count(miss) != 1:
+            return None
+        used = [False] * q
+        for c in state:
+            if c != miss:
+                if used[c]:
+                    return None
+                used[c] = True
+        if used.count(False) != 1:
+            return None
+        return bytes(state)
+
+    def state_to_mask(state):
+        mask = 0
+        for r, c in enumerate(state):
+            if c != miss:
+                mask |= 1 << (r * q + c)
+        return mask
+
+    def safe_after_remove(state, add_r, add_c, rem_r):
+        for r, c in enumerate(state):
+            if r == rem_r or c == miss:
+                continue
+            if c == add_c or abs(r - add_r) == abs(c - add_c):
+                return False
+        return True
+
+    def moves(state):
+        try:
+            miss_r = state.index(miss)
+        except ValueError:
+            return []
+        used = [False] * q
+        for c in state:
+            if c != miss:
+                used[c] = True
+        try:
+            miss_c = used.index(False)
+        except ValueError:
+            return []
+        out = []
+        for r, c in enumerate(state):
+            if c == miss:
+                continue
+            for add_r, add_c in ((r, miss_c), (miss_r, c), (miss_r, miss_c)):
+                if safe_after_remove(state, add_r, add_c, r):
+                    nxt = bytearray(state)
+                    nxt[r] = miss
+                    nxt[add_r] = add_c
+                    out.append(bytes(nxt))
+        return out
+
+    source_state = mask_to_state(source)
+    target_state = mask_to_state(target)
+    if source_state is None or target_state is None:
+        return None
+
+    def token_distance(state):
+        return ((state_to_mask(state) ^ target).bit_count() // 2)
+
+    def greedy_tail(state, seen, rng):
+        path = []
+        local_seen = set(seen)
+        while state != target_state and len(path) <= length:
+            current = token_distance(state)
+            cand = [nm for nm in moves(state)
+                    if (nm not in local_seen or nm == target_state)
+                    and token_distance(nm) <= current]
+            if not cand:
+                cand = [nm for nm in moves(state) if nm not in local_seen or nm == target_state]
+            if not cand:
+                return None
+            cand.sort(key=lambda nm: (token_distance(nm), rng.random()))
+            state = cand[0]
+            path.append(state)
+            local_seen.add(state)
+        return path if state == target_state else None
+
+    def random_walk():
+        rng = random.Random(911 + n * 17 + length)
+        while time.time() < deadline:
+            state = source_state
+            seen = {source_state}
+            path = []
+            for step in range(length):
+                rem = length - step
+                tail = greedy_tail(state, seen, rng)
+                if tail is not None and len(tail) == rem:
+                    return [state_to_mask(s) for s in path + tail]
+                cand = []
+                for nm in moves(state):
+                    if nm in seen:
+                        continue
+                    if nm == target_state and rem != 1:
+                        continue
+                    if token_distance(nm) > rem - 1:
+                        continue
+                    tail = greedy_tail(nm, seen | {nm}, rng)
+                    if tail is None or len(tail) > rem - 1:
+                        continue
+                    slack = rem - 1 - len(tail)
+                    cand.append((abs(slack - 10), -slack, token_distance(nm), rng.random(), nm))
+                if not cand:
+                    break
+                cand.sort()
+                pick = cand[min(len(cand) - 1, rng.randrange(min(5, len(cand))))][4]
+                seen.add(pick)
+                path.append(pick)
+                state = pick
+        return None
+
+    if length - ((source ^ target).bit_count() // 2) >= 16:
+        found = random_walk()
+        if found is not None:
+            return found
+
+    # Bidirectional shortest path. This covers tight queen20 instances where
+    # there is no room for a detour and random walks have very little guidance.
+    parents_f = {source_state: None}
+    parents_b = {target_state: None}
+    front_f = [source_state]
+    front_b = [target_state]
+    meet = None
+    while front_f and front_b and time.time() < deadline:
+        if len(front_f) <= len(front_b):
+            new_front = []
+            for state in front_f:
+                for nm in moves(state):
+                    if nm in parents_f:
+                        continue
+                    parents_f[nm] = state
+                    new_front.append(nm)
+                    if nm in parents_b:
+                        meet = nm
+                        break
+                if meet is not None:
+                    break
+            front_f = new_front
+        else:
+            new_front = []
+            for state in front_b:
+                for nm in moves(state):
+                    if nm in parents_b:
+                        continue
+                    parents_b[nm] = state
+                    new_front.append(nm)
+                    if nm in parents_f:
+                        meet = nm
+                        break
+                if meet is not None:
+                    break
+            front_b = new_front
+        if meet is not None:
+            path = []
+            cur = meet
+            while cur is not None:
+                path.append(cur)
+                cur = parents_f[cur]
+            path.reverse()
+            cur = parents_b[meet]
+            while cur is not None:
+                path.append(cur)
+                cur = parents_b[cur]
+            if len(path) - 1 == length:
+                return [state_to_mask(s) for s in path[1:]]
+            break
+
+    if time.time() < deadline:
+        return random_walk()
+    return None
+
+
+def set_lit(assign, lit):
+    v = abs(lit)
+    val = 1 if lit > 0 else -1
+    if assign[v] == -val:
+        return False
+    if assign[v] == 0:
+        assign[v] = val
+    return True
+
+
+def extend_and_verify(nvars, n, clauses, units, bases, states):
+    assign = [0] * (nvars + 1)
+    for base, mask in zip(bases, states):
+        for v in range(n):
+            lit = base + v + 1
+            if not set_lit(assign, lit if ((mask >> v) & 1) else -lit):
+                return None
+    for lit in units:
+        if not set_lit(assign, lit):
+            return None
+
+    for _ in range(30):
+        changed = False
+        for clause in clauses:
+            sat = False
+            unassigned = 0
+            last = 0
+            for lit in clause:
+                val = assign[abs(lit)]
+                if val == 0:
+                    unassigned += 1
+                    last = lit
+                elif (val > 0) == (lit > 0):
+                    sat = True
+                    break
+            if sat:
+                continue
+            if unassigned == 0:
+                return None
+            if unassigned == 1:
+                if not set_lit(assign, last):
+                    return None
+                changed = True
+        if not changed:
+            break
+
+    for v in range(1, nvars + 1):
+        if assign[v] == 0:
+            assign[v] = -1
+
+    for clause in clauses:
+        ok = False
+        for lit in clause:
+            if (assign[abs(lit)] > 0) == (lit > 0):
+                ok = True
+                break
+        if not ok:
+            return None
+    return assign
+
+
+def print_model(assign):
+    print("s SATISFIABLE")
+    line = ["v"]
+    for v in range(1, len(assign)):
+        line.append(str(v if assign[v] > 0 else -v))
+        if len(line) >= 20:
+            print(" ".join(line))
+            line = ["v"]
+    line.append("0")
+    print(" ".join(line))
+
+
+def main():
+    if len(sys.argv) != 3:
+        print("usage: solver <formula.cnf> <out.pbp>", file=sys.stderr)
+        return 1
+    deadline = time.time() + 540
+    nvars, n, edges, clauses, units = parse_dimacs(sys.argv[1])
+    if clauses is None or n == 0:
+        print(f"c unsupported graph size n={n}")
+        print("s UNKNOWN")
+        return 0
+    bases = shifted_graph_bases(clauses, edges)
+    source, target = endpoints(n, bases, units)
+    if source is None:
+        print("c detector failed on endpoint blocks")
+        print("s UNKNOWN")
+        return 0
+    print(f"c detected independent-set reconfiguration n={n} k={source.bit_count()} length={len(bases)}")
+    if len(bases) > 400:
+        print("c exact path is outside the current small-state search envelope")
+        print("s UNKNOWN")
+        return 0
+    if n == 100 and source.bit_count() > 40:
+        print("c dense grid endpoint regime is not handled by the current path constructor")
+        print("s UNKNOWN")
+        return 0
+    states = None
+    if n <= 50:
+        states = exact_simple_path(n, edges, source, target, len(bases), min(deadline, time.time() + 8))
+    if states is None and n > 225 and source.bit_count() <= 60:
+        states = queen_exact_path(n, edges, source, target, len(bases), min(deadline, time.time() + 180))
+    if states is None and n <= 225 and n > 24 and source.bit_count() <= 60:
+        states = random_exact_path(n, edges, source, target, len(bases), min(deadline, time.time() + 60))
+    if states is None or len(states) != len(bases):
+        print("c no exact simple path found by small-state enumerator")
+        print("s UNKNOWN")
+        return 0
+    model = extend_and_verify(nvars, n, clauses, units, bases, states)
+    if model is None:
+        print("c high-level path found, but CNF extension/verification failed")
+        print("s UNKNOWN")
+        return 0
+    print_model(model)
+    return 10
+
+
+if __name__ == "__main__":
+    sys.exit(main())

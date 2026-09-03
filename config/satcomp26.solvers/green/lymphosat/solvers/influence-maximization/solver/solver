@@ -1,0 +1,407 @@
+#!/usr/bin/env python3
+import sys, time, random, math
+
+
+def parse(path):
+    nv = 0
+    clauses = []
+    with open(path) as f:
+        for line in f:
+            if not line or line[0] == "c":
+                continue
+            if line.startswith("p "):
+                nv = int(line.split()[2])
+            else:
+                clauses.append([int(x) for x in line.split()[:-1]])
+    return nv, clauses
+
+
+def detect_n(clauses):
+    pairs = set()
+    for c in clauses:
+        if len(c) == 2:
+            pairs.add((c[0], c[1]))
+    best = 0
+    for cand in range(1, 200):
+        ok = True
+        for i in range(1, cand + 1):
+            if (-(cand + i), i) not in pairs or (cand + i, -i) not in pairs:
+                ok = False
+                break
+        if ok:
+            best = cand
+    return best
+
+
+def build_neg_index(clauses, nv):
+    neg = [[] for _ in range(nv + 1)]
+    for ci, c in enumerate(clauses):
+        for l in c:
+            if l < 0:
+                neg[-l].append(ci)
+    return neg
+
+
+def fanin(v, base_lo, base_hi, clauses, negidx, memo):
+    if base_lo <= v <= base_hi:
+        return {v - base_lo + 1}
+    if v in memo:
+        return memo[v]
+    s = set()
+    for ci in negidx[v]:
+        c = clauses[ci]
+        others = [x for x in c if x != -v]
+        if others and all(x > 0 and x < v for x in others):
+            for x in others:
+                s |= fanin(x, base_lo, base_hi, clauses, negidx, memo)
+    memo[v] = s
+    return s
+
+
+def local_rank(var, base_lo, base_hi, clauses, nv, max_k=None):
+    negidx = build_neg_index(clauses, nv)
+    support = sorted(fanin(var, base_lo, base_hi, clauses, negidx, {}))
+    if not support:
+        return None, []
+    if max_k is None:
+        max_k = len(support)
+    local = [c for c in clauses if len(c) > 1 and max(abs(x) for x in c) <= var]
+    for k in range(0, min(max_k, len(support)) + 1):
+        val = [0] * (nv + 1)
+        for idx, p in enumerate(support):
+            val[base_lo + p - 1] = 1 if idx < k else -1
+        changed = True
+        ok = True
+        while changed and ok:
+            changed = False
+            for c in local:
+                sat = False
+                un = 0
+                last = 0
+                for l in c:
+                    vv = val[abs(l)]
+                    if vv and ((l > 0 and vv > 0) or (l < 0 and vv < 0)):
+                        sat = True
+                        break
+                    if vv == 0:
+                        un += 1
+                        last = l
+                if sat:
+                    continue
+                if un == 0:
+                    ok = False
+                    break
+                if un == 1:
+                    v = abs(last)
+                    s = 1 if last > 0 else -1
+                    if val[v] == -s:
+                        ok = False
+                        break
+                    if val[v] == 0:
+                        val[v] = s
+                        changed = True
+        if ok and val[var] > 0:
+            return k, support
+    return None, support
+
+
+def recover(nv, clauses, n):
+    negidx = build_neg_index(clauses, nv)
+    triggers = []
+    min_trig = 10**9
+    for j in range(1, n + 1):
+        a = 2 * n + j
+        seed = j
+        tr = []
+        for c in clauses:
+            if -a in c and seed in c:
+                tr = [x for x in c if x not in (-a, seed) and x > 0]
+                break
+        if not tr:
+            return None
+        aux_tr = [x for x in tr if x > 2 * n]
+        if aux_tr:
+            min_trig = min(min_trig, min(aux_tr))
+        triggers.append((a, seed, tr))
+    if min_trig == 10**9:
+        return None
+    final_lo = min_trig - n
+    preds = []
+    theta = []
+    for a, seed, tr in triggers:
+        ps = set()
+        for x in tr:
+            ps |= fanin(x, n + 1, 2 * n, clauses, negidx, {})
+        ps = sorted(ps)
+        rank, _ = local_rank(max(tr), n + 1, 2 * n, clauses, nv, len(ps))
+        if rank is None:
+            rank = 1 if len(ps) > 0 else 10**9
+        preds.append([p - 1 for p in ps])
+        theta.append(rank)
+    units = [c[0] for c in clauses if len(c) == 1]
+    neg_units = [-u for u in units if u < 0]
+    pos_units = [u for u in units if u > 0]
+    if not neg_units or not pos_units:
+        return None
+    kr, _ = local_rank(neg_units[0], 1, n, clauses, nv, min(n, 80))
+    # The final cardinality network exposes its N outputs as the last N
+    # variables.  Output r denotes that at least r final activations hold;
+    # the encoding only needs the implication from inputs to output plus the
+    # asserted output, so local RUP-style rank probing overestimates here.
+    lr = pos_units[0] - (nv - n)
+    if kr is None or lr < 0 or lr > n:
+        return None
+    return preds, theta, kr - 1, lr
+
+
+def closure(preds, theta, seeds):
+    n = len(preds)
+    active = seeds
+    changed = True
+    while changed:
+        changed = False
+        for v in range(n):
+            if (active >> v) & 1:
+                continue
+            cnt = 0
+            for p in preds[v]:
+                if (active >> p) & 1:
+                    cnt += 1
+            if cnt >= theta[v]:
+                active |= 1 << v
+                changed = True
+    return active
+
+
+def make_closure(preds, theta):
+    masks = []
+    for ps in preds:
+        m = 0
+        for p in ps:
+            m |= 1 << p
+        masks.append(m)
+
+    def close(seeds):
+        active = seeds
+        changed = True
+        while changed:
+            changed = False
+            for v, m in enumerate(masks):
+                if ((active >> v) & 1) == 0 and (active & m).bit_count() >= theta[v]:
+                    active |= 1 << v
+                    changed = True
+        return active
+
+    return close
+
+
+def bit_list(mask, n, want):
+    return [i for i in range(n) if (((mask >> i) & 1) == want)]
+
+
+def search(preds, theta, k, target, deadline, bad, validator):
+    n = len(preds)
+    close = make_closure(preds, theta)
+    rng = random.Random(0x5EED + n * 1009 + k * 17 + target)
+    best_score = -1
+    best = 0
+
+    def consider(seeds):
+        nonlocal best_score, best
+        score = close(seeds).bit_count()
+        if score > best_score:
+            best_score, best = score, seeds
+        if score >= target and seeds not in bad:
+            model = validator(seeds)
+            if model is not None:
+                return score, model
+            bad.add(seeds)
+        return score, None
+
+    def improve(seeds, max_rounds=1000000):
+        score, model = consider(seeds)
+        if model is not None:
+            return seeds, score, model
+        rounds = 0
+        while time.time() < deadline and rounds < max_rounds:
+            rounds += 1
+            inl = bit_list(seeds, n, 1)
+            outl = bit_list(seeds, n, 0)
+            best_move = None
+            best_move_score = score
+            for a in inl:
+                base = seeds & ~(1 << a)
+                for b in outl:
+                    ns = base | (1 << b)
+                    ns_score = close(ns).bit_count()
+                    if ns_score > best_move_score:
+                        best_move_score = ns_score
+                        best_move = ns
+            if best_move is None:
+                return seeds, score, None
+            seeds = best_move
+            score, model = consider(seeds)
+            if model is not None:
+                return seeds, score, model
+        return seeds, score, None
+
+    # Deterministic greedy construction gives a strong, reproducible starting
+    # point and immediately solves several of the threshold-above-minimum cases.
+    seeds = 0
+    for _ in range(k):
+        best_v = None
+        best_v_score = -1
+        for v in range(n):
+            if (seeds >> v) & 1:
+                continue
+            sc = close(seeds | (1 << v)).bit_count()
+            if sc > best_v_score:
+                best_v_score = sc
+                best_v = v
+        if best_v is None:
+            break
+        seeds |= 1 << best_v
+        _, model = consider(seeds)
+        if model is not None:
+            return seeds, model
+    seeds, _, model = improve(seeds)
+    if model is not None:
+        return seeds, model
+
+    # Randomized greedy restarts with a restricted candidate list.  This finds
+    # solutions that require early non-greedy choices, then exact 1-swap local
+    # improvement tightens each restart before annealing.
+    single = [close(1 << v).bit_count() for v in range(n)]
+    outdeg = [0] * n
+    for ps in preds:
+        for p in ps:
+            outdeg[p] += 1
+    weights = [single[v] * 4 + outdeg[v] for v in range(n)]
+    restart = 0
+    while time.time() < deadline:
+        restart += 1
+        seeds = 0
+        for step in range(k):
+            vals = []
+            for v in range(n):
+                if (seeds >> v) & 1:
+                    continue
+                sc = close(seeds | (1 << v)).bit_count()
+                vals.append((sc, weights[v], v))
+            vals.sort(reverse=True)
+            if not vals:
+                break
+            rcl = vals[:min(len(vals), max(3, 14 - step // 2))]
+            # Quadratic bias mostly follows the best candidates but still
+            # samples enough diversity to cross threshold-synergy plateaus.
+            pick = int((rng.random() ** 2) * len(rcl))
+            seeds |= 1 << rcl[pick][2]
+            _, model = consider(seeds)
+            if model is not None:
+                return seeds, model
+        seeds, score, model = improve(seeds, 64)
+        if model is not None:
+            return seeds, model
+        temp0 = 8.0
+        if best_score > score and best:
+            seeds = best
+            score = best_score
+        for step in range(20000):
+            if time.time() >= deadline:
+                return None, None
+            inl = bit_list(seeds, n, 1)
+            outl = bit_list(seeds, n, 0)
+            a = rng.choice(inl)
+            b = rng.choice(outl)
+            ns = (seeds & ~(1 << a)) | (1 << b)
+            ns_score = close(ns).bit_count()
+            temp = max(0.05, temp0 * (1.0 - step / 20000.0))
+            if ns_score >= score or rng.random() < math.exp((ns_score - score) / temp):
+                seeds, score = ns, ns_score
+                _, model = consider(seeds)
+                if model is not None:
+                    return seeds, model
+    return None, None
+
+
+def complete_model(nv, clauses, n, seeds):
+    val = [0] * (nv + 1)
+
+    def assign(l):
+        v = abs(l)
+        s = 1 if l > 0 else -1
+        if val[v] == -s:
+            return False
+        if val[v] == 0:
+            val[v] = s
+        return True
+
+    for v in range(1, n + 1):
+        if not assign(v if ((seeds >> (v - 1)) & 1) else -v):
+            return None
+    changed = True
+    while changed:
+        changed = False
+        for c in clauses:
+            sat = False
+            un = 0
+            last = 0
+            for l in c:
+                vv = val[abs(l)]
+                if vv and ((l > 0 and vv > 0) or (l < 0 and vv < 0)):
+                    sat = True
+                    break
+                if vv == 0:
+                    un += 1
+                    last = l
+            if sat:
+                continue
+            if un == 0:
+                return None
+            if un == 1:
+                if not assign(last):
+                    return None
+                changed = True
+    for i in range(1, nv + 1):
+        if val[i] == 0:
+            val[i] = -1
+    for c in clauses:
+        if not any((l > 0 and val[abs(l)] > 0) or (l < 0 and val[abs(l)] < 0) for l in c):
+            return None
+    return val
+
+
+def main():
+    if len(sys.argv) != 3:
+        return 1
+    nv, clauses = parse(sys.argv[1])
+    n = detect_n(clauses)
+    if not n:
+        print("s UNKNOWN")
+        return 0
+    rec = recover(nv, clauses, n)
+    if rec is None:
+        print("s UNKNOWN")
+        return 0
+    preds, theta, k, target = rec
+    print(f"c detected N={n} K={k} target={target}")
+    deadline = time.time() + 540.0
+    bad = set()
+    seeds, model = search(preds, theta, k, target, deadline, bad, lambda s: complete_model(nv, clauses, n, s))
+    if model is None:
+        print("s UNKNOWN")
+        return 0
+    print("s SATISFIABLE")
+    line = []
+    for i in range(1, nv + 1):
+        line.append(str(i if model[i] > 0 else -i))
+        if len(line) == 20:
+            print("v " + " ".join(line) + " 0")
+            line = []
+    if line:
+        print("v " + " ".join(line) + " 0")
+    return 10
+
+
+if __name__ == "__main__":
+    sys.exit(main())

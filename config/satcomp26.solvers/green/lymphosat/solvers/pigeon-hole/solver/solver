@@ -1,0 +1,1599 @@
+#!/usr/bin/env python3
+"""
+Pigeonhole Principle (PHP) specialized solver.
+
+Detects standard PHP, functional PHP (fPHP), ternary PHP (tPHP), and
+relativized PHP (rphp) encodings in DIMACS CNF, including shuffled/polarity-
+flipped variants and variants with missing AMO constraints. For SAT instances,
+outputs a valid model. For UNSAT instances, generates a VeriPB proof.
+"""
+
+import sys
+import time
+from collections import defaultdict, Counter
+from itertools import combinations
+from math import comb
+
+START_TIME = time.time()
+
+def elapsed():
+    return time.time() - START_TIME
+
+def log(msg):
+    print(f"c {msg}", flush=True)
+
+def parse_cnf(filename):
+    clauses = []
+    num_vars = 0
+    with open(filename) as f:
+        buf = []
+        for line in f:
+            if line[0] == 'c':
+                continue
+            if line[0] == 'p':
+                parts = line.split()
+                num_vars = int(parts[2])
+                continue
+            for token in line.split():
+                val = int(token)
+                if val == 0:
+                    if buf:
+                        clauses.append(buf)
+                        buf = []
+                else:
+                    buf.append(val)
+    return clauses, num_vars
+
+###############################################################################
+# RPHP (Relativized PHP) detection and proof
+###############################################################################
+
+def detect_rphp(clauses, num_vars):
+    """Detect rphp structure (a_, e_, ae_ variants, including sc2018 shuffled)."""
+    nc = len(clauses)
+    
+    # Try normal polarity first, then flipped
+    result = _detect_rphp_core(clauses, num_vars)
+    if result:
+        return result
+    
+    # Try polarity recovery for sc2018 variants
+    return _detect_rphp_polarity_recovery(clauses, num_vars)
+
+def _detect_rphp_core(clauses, num_vars):
+    """Core rphp detection assuming canonical polarity."""
+    nc = len(clauses)
+    
+    # Step 1: Binary analysis - find ~x + s implications and ~x + ~x AMO
+    impl_list = []  # (x_var, s_var, cid_1based)
+    pigeon_amo = {}  # (min_v, max_v) -> cid
+    
+    for ci, c in enumerate(clauses):
+        if len(c) != 2:
+            continue
+        if c[0] < 0 and c[1] > 0:
+            impl_list.append((abs(c[0]), c[1], ci+1))
+        elif c[0] > 0 and c[1] < 0:
+            impl_list.append((abs(c[1]), c[0], ci+1))
+        elif c[0] < 0 and c[1] < 0:
+            v1, v2 = min(abs(c[0]), abs(c[1])), max(abs(c[0]), abs(c[1]))
+            pigeon_amo[(v1, v2)] = ci+1
+    
+    if len(impl_list) < 6:
+        return None
+    
+    tgt_to_srcs = defaultdict(list)
+    impl_id = {}
+    for x, s, cid in impl_list:
+        tgt_to_srcs[s].append(x)
+        impl_id[(x, s)] = cid
+    
+    sizes = Counter(len(v) for v in tgt_to_srcs.values())
+    k = sizes.most_common(1)[0][0]
+    if k < 3:
+        return None
+    
+    # Valid groups with full pigeon AMO
+    valid_groups = {}
+    for tgt, srcs in tgt_to_srcs.items():
+        if len(srcs) != k:
+            continue
+        ss = sorted(srcs)
+        ok = True
+        for i in range(k):
+            for j in range(i+1, k):
+                if (ss[i], ss[j]) not in pigeon_amo:
+                    ok = False
+                    break
+            if not ok:
+                break
+        if ok:
+            valid_groups[tgt] = ss
+    
+    if len(valid_groups) < k + 1:
+        return None
+    
+    all_sel_vars = set(valid_groups.keys())
+    x_vars = set()
+    for srcs in valid_groups.values():
+        x_vars.update(srcs)
+    
+    Ky = k - 1
+    
+    # Step 2: Find aux z-variables from ternary clauses
+    var_pos_ter = defaultdict(list)
+    var_neg_ter = defaultdict(list)
+    
+    for ci, c in enumerate(clauses):
+        if len(c) == 3:
+            for l in c:
+                v = abs(l)
+                if v not in x_vars and v not in all_sel_vars:
+                    if l > 0:
+                        var_pos_ter[v].append(ci)
+                    else:
+                        var_neg_ter[v].append(ci)
+    
+    aux_vars = set()
+    for v in var_pos_ter:
+        if len(var_pos_ter[v]) == 1 and len(var_neg_ter.get(v, [])) == 1:
+            aux_vars.add(v)
+    
+    # Step 3: Extract conditional AMO from ternary pairs (e_ encoding)
+    s_pair_colors = defaultdict(list)
+    y_vars_ternary = set()
+    
+    for z in aux_vars:
+        ci_a = var_pos_ter[z][0]
+        ci_b = var_neg_ter[z][0]
+        c_a = clauses[ci_a]
+        c_b = clauses[ci_b]
+        
+        sel_in_a = [abs(l) for l in c_a if abs(l) in all_sel_vars and l < 0]
+        if len(sel_in_a) != 2:
+            continue
+        s1, s2 = min(sel_in_a), max(sel_in_a)
+        
+        other_in_b = [abs(l) for l in c_b if abs(l) != z and l < 0]
+        if len(other_in_b) != 2:
+            continue
+        y1, y2 = sorted(other_in_b)
+        y_vars_ternary.add(y1)
+        y_vars_ternary.add(y2)
+        
+        s_pair_colors[(s1, s2)].append((y1, y2, ci_a+1, ci_b+1))
+    
+    # Step 4: Extract conditional AMO from 4-literal clauses (a_ encoding)
+    quad_s_pair_colors = defaultdict(list)
+    y_vars_quad = set()
+    
+    for ci, c in enumerate(clauses):
+        if len(c) != 4 or not all(l < 0 for l in c):
+            continue
+        vs = [abs(l) for l in c]
+        sel_in = [v for v in vs if v in all_sel_vars]
+        other = [v for v in vs if v not in all_sel_vars and v not in x_vars]
+        if len(sel_in) == 2 and len(other) == 2:
+            s1, s2 = min(sel_in), max(sel_in)
+            quad_s_pair_colors[(s1, s2)].append((sorted(other), ci+1))
+            y_vars_quad.update(other)
+    
+    y_vars = y_vars_ternary | y_vars_quad
+    
+    # Step 5: Find s-var clique via greedy max-clique
+    all_pairs = set(s_pair_colors.keys()) | set(quad_s_pair_colors.keys())
+    cooccur = defaultdict(set)
+    for s1, s2 in all_pairs:
+        cooccur[s1].add(s2)
+        cooccur[s2].add(s1)
+    
+    if not cooccur:
+        return None
+    
+    vertices = sorted(cooccur.keys(), key=lambda v: -len(cooccur[v]))
+    clique = []
+    for v in vertices:
+        if all(v in cooccur[u] for u in clique):
+            clique.append(v)
+    
+    s_var_set = set(clique)
+    n = len(s_var_set)
+    
+    if n < k + 1:
+        return None
+    
+    log(f"rphp detected: n={n}, k={k}, Ky={Ky}")
+    
+    s_vars_sorted = sorted(s_var_set)
+    s_to_elem = {s: e for e, s in enumerate(s_vars_sorted)}
+    
+    # Step 6: Build x_to_elem_pos mapping
+    x_to_elem_pos = {}
+    for s_v in s_vars_sorted:
+        e = s_to_elem[s_v]
+        for pos, x_v in enumerate(valid_groups[s_v]):
+            x_to_elem_pos[x_v] = (e, pos)
+    
+    # Step 7: Find s→ALO(y) and determine y-var ordering
+    s_alo_y = {}
+    elem_y_ordered = {}
+    
+    # Check for explicit s→ALO(y) clauses (length Ky+1)
+    for ci, c in enumerate(clauses):
+        if len(c) != Ky + 1:
+            continue
+        neg_sel = [l for l in c if abs(l) in s_var_set and l < 0]
+        pos_other = [l for l in c if l > 0 and abs(l) not in s_var_set and abs(l) not in x_vars]
+        if len(neg_sel) == 1 and len(pos_other) == Ky:
+            s_v = abs(neg_sel[0])
+            e = s_to_elem[s_v]
+            s_alo_y[e] = ci + 1
+            elem_y_ordered[e] = sorted(pos_other)
+    
+    # Try chain detection for remaining
+    if len(s_alo_y) < n:
+        for ci, c in enumerate(clauses):
+            if len(c) != 3:
+                continue
+            neg_sel = [l for l in c if abs(l) in s_var_set and l < 0]
+            if len(neg_sel) != 1:
+                continue
+            pos_lits = [l for l in c if l > 0]
+            if len(pos_lits) != 2:
+                continue
+            s_v = abs(neg_sel[0])
+            e = s_to_elem.get(s_v)
+            if e is None or e in s_alo_y:
+                continue
+            
+            y_collected = []
+            chain_cids = [ci + 1]
+            current = c
+            while True:
+                pos_in_cur = [l for l in current if l > 0]
+                found_aux = None
+                for pl in pos_in_cur:
+                    pv = abs(pl)
+                    if pv in y_vars or pv in y_vars_ternary or pv in y_vars_quad:
+                        y_collected.append(pv)
+                    else:
+                        for ci2, c2 in enumerate(clauses):
+                            if len(c2) == 3 and -pv in c2 and ci2 + 1 not in set(chain_cids):
+                                found_aux = (pv, ci2, c2)
+                                break
+                        if found_aux is None:
+                            y_collected.append(pv)
+                
+                if found_aux:
+                    chain_cids.append(found_aux[1] + 1)
+                    current = found_aux[2]
+                else:
+                    break
+            
+            if len(y_collected) == Ky:
+                s_alo_y[e] = None  # derive via RUP
+                elem_y_ordered[e] = sorted(y_collected)
+    
+    if len(elem_y_ordered) < n:
+        log(f"Only found y-vars for {len(elem_y_ordered)}/{n} elements")
+        return None
+
+    # Step 7b: Fix y-var color ordering using conditional AMO correspondence
+    # The sorted order may not give correct color assignment for shuffled instances.
+    # Use ternary pairs to propagate consistent coloring from element 0.
+    elem_y_sets = {}
+    for e, ys in elem_y_ordered.items():
+        elem_y_sets[e] = set(ys)
+
+    # Build y-var correspondence from ternary pairs: (y1, y2) means same color
+    y_corresp = defaultdict(set)  # y_var -> set of corresponding y_vars
+    for pair in all_pairs:
+        s1, s2 = pair
+        if s1 not in s_var_set or s2 not in s_var_set:
+            continue
+        e1, e2 = s_to_elem[s1], s_to_elem[s2]
+        for y1, y2, cidA, cidB in s_pair_colors.get(pair, []):
+            y_corresp[y1].add(y2)
+            y_corresp[y2].add(y1)
+
+    # Also from quad clauses
+    for pair in set(quad_s_pair_colors.keys()):
+        s1, s2 = pair
+        if s1 not in s_var_set or s2 not in s_var_set:
+            continue
+        e1, e2 = s_to_elem[s1], s_to_elem[s2]
+        for ys, cid in quad_s_pair_colors.get(pair, []):
+            y1, y2 = ys
+            y_corresp[y1].add(y2)
+            y_corresp[y2].add(y1)
+
+    # Assign colors: start with element 0, propagate via BFS
+    ref_elem = 0
+    ref_ys = elem_y_ordered[ref_elem]  # initially sorted, use as color reference
+    y_color = {}
+    for c_idx, yv in enumerate(ref_ys):
+        y_color[yv] = c_idx
+
+    from collections import deque
+    queue = deque()
+    for yv in ref_ys:
+        queue.append(yv)
+
+    colored_elems = {ref_elem}
+    while queue:
+        yv = queue.popleft()
+        c = y_color[yv]
+        for yv2 in y_corresp.get(yv, []):
+            if yv2 not in y_color:
+                y_color[yv2] = c
+                queue.append(yv2)
+
+    # Rebuild elem_y_ordered based on consistent coloring
+    for e in range(n):
+        ys = elem_y_sets[e]
+        ordered = [None] * Ky
+        for yv in ys:
+            if yv in y_color:
+                ordered[y_color[yv]] = yv
+        if None not in ordered:
+            elem_y_ordered[e] = ordered
+        # else keep the sorted order as fallback
+
+    # Step 8: Build y_to_elem_color mapping
+    y_to_elem_color = {}
+    for e, ys in elem_y_ordered.items():
+        for c_idx, yv in enumerate(ys):
+            y_to_elem_color[yv] = (e, c_idx)
+    
+    # Step 9: Build conditional AMO index
+    cond_amo_ids = {}
+    
+    for pair in all_pairs:
+        s1, s2 = pair
+        if s1 not in s_var_set or s2 not in s_var_set:
+            continue
+        e1, e2 = s_to_elem[s1], s_to_elem[s2]
+        ei, ej = min(e1, e2), max(e1, e2)
+        
+        for y1, y2, cidA, cidB in s_pair_colors.get(pair, []):
+            ec1 = y_to_elem_color.get(y1)
+            ec2 = y_to_elem_color.get(y2)
+            if ec1 and ec2 and ec1[1] == ec2[1]:
+                cond_amo_ids[(ei, ej, ec1[1])] = ('ternary', cidA, cidB)
+            elif ec1 and ec2:
+                ec1s = y_to_elem_color.get(y2)
+                ec2s = y_to_elem_color.get(y1)
+                if ec1s and ec2s and ec1s[1] == ec2s[1]:
+                    cond_amo_ids[(ei, ej, ec1s[1])] = ('ternary', cidA, cidB)
+        
+        for ys, cid in quad_s_pair_colors.get(pair, []):
+            y1, y2 = ys
+            ec1 = y_to_elem_color.get(y1)
+            ec2 = y_to_elem_color.get(y2)
+            if ec1 and ec2:
+                if ec1[1] == ec2[1]:
+                    cond_amo_ids[(ei, ej, ec1[1])] = ('quad', cid)
+    
+    expected = n * (n-1) // 2 * Ky
+    if len(cond_amo_ids) < expected:
+        log(f"Conditional AMO: {len(cond_amo_ids)}/{expected}")
+        return None
+    
+    # Step 10: Find ALO per hole (explicit long clause or chain-encoded)
+    alo_per_hole = {}
+    for ci, c in enumerate(clauses):
+        if len(c) < n:
+            continue
+        xs = []
+        all_x = True
+        for l in c:
+            v = abs(l)
+            if v in x_to_elem_pos:
+                xs.append(x_to_elem_pos[v])
+            else:
+                all_x = False
+                break
+        if not all_x or len(xs) != len(c):
+            continue
+        positions = set(ep[1] for ep in xs)
+        if len(positions) == 1:
+            pos = positions.pop()
+            elements = set(ep[0] for ep in xs)
+            if len(elements) == n:
+                alo_per_hole[pos] = ci + 1
+
+    # Step 10b: Find hole ALO chain clauses using connected components
+    # Hole ALO chains are groups of ternary clauses connected through
+    # shared aux variables, NOT connected to any s-var or y-var clause.
+    hole_alo_chains = []  # list of [cid_1based, ...]
+
+    # Build aux variable graph
+    all_known = set(x_to_elem_pos.keys()) | s_var_set | set(y_to_elem_color.keys())
+
+    aux_to_cids = defaultdict(list)  # aux_var -> [ci (0-based)]
+    clause_has_known = set()  # ci values of clauses connected to s or y vars
+    for ci, c in enumerate(clauses):
+        if len(c) != 3:
+            continue
+        if any(abs(l) in s_var_set for l in c):
+            clause_has_known.add(ci)
+        elif any(abs(l) in y_to_elem_color for l in c):
+            clause_has_known.add(ci)
+        for l in c:
+            v = abs(l)
+            if v not in all_known:
+                aux_to_cids[v].append(ci)
+
+    # Union-Find for clause grouping through shared aux vars
+    uf_parent = {}
+    def uf_find(x):
+        while uf_parent.get(x, x) != x:
+            uf_parent[x] = uf_parent.get(uf_parent[x], uf_parent[x])
+            x = uf_parent[x]
+        return x
+    def uf_union(a, b):
+        a, b = uf_find(a), uf_find(b)
+        if a != b:
+            uf_parent[a] = b
+
+    for aux_v, cids in aux_to_cids.items():
+        if len(cids) >= 2:
+            for i in range(1, len(cids)):
+                uf_union(cids[0], cids[i])
+
+    # Group clauses by component
+    components = defaultdict(set)
+    for aux_v, cids in aux_to_cids.items():
+        for ci in cids:
+            components[uf_find(ci)].add(ci)
+
+    # Find components NOT connected to s-var/y-var clauses → hole ALO chains
+    for root, clause_set in components.items():
+        if any(ci in clause_has_known for ci in clause_set):
+            continue
+        # Verify it has x-vars
+        has_x = False
+        for ci in clause_set:
+            c = clauses[ci]
+            if any(abs(l) in x_to_elem_pos for l in c):
+                has_x = True
+                break
+        if has_x:
+            hole_alo_chains.append([ci + 1 for ci in sorted(clause_set)])
+    
+    # Step 11: Build remaining indices
+    x_to_s_id = {}
+    for x, s, cid in impl_list:
+        if s in s_var_set:
+            x_to_s_id[x] = cid
+    
+    elem_pigeon_amo = {}
+    for s_v in s_vars_sorted:
+        e = s_to_elem[s_v]
+        xs = valid_groups[s_v]
+        for i in range(k):
+            for j in range(i+1, k):
+                key = (min(xs[i], xs[j]), max(xs[i], xs[j]))
+                if key in pigeon_amo:
+                    elem_pigeon_amo[(e, i, j)] = pigeon_amo[key]
+    
+    return {
+        'n': n, 'k': k, 'Ky': Ky,
+        's_vars_sorted': s_vars_sorted,
+        's_to_elem': s_to_elem,
+        'valid_groups': valid_groups,
+        'elem_y_ordered': elem_y_ordered,
+        'y_to_elem_color': y_to_elem_color,
+        'cond_amo_ids': cond_amo_ids,
+        'alo_per_hole': alo_per_hole,
+        'hole_alo_chains': hole_alo_chains,
+        's_alo_y': s_alo_y,
+        'x_to_s_id': x_to_s_id,
+        'elem_pigeon_amo': elem_pigeon_amo,
+        'x_to_elem_pos': x_to_elem_pos,
+    }
+
+def _detect_rphp_polarity_recovery(clauses, num_vars):
+    """Try to detect rphp with polarity recovery for sc2018 shuffled variants."""
+    nc = len(clauses)
+
+    # Compute total clause degree for each variable
+    var_deg = Counter()
+    for c in clauses:
+        for l in c:
+            var_deg[abs(l)] += 1
+
+    # Find variables that need polarity flipping
+    flip = set()
+
+    # 1. Pos-pos binary clauses: one var is a flipped x-var (low degree ~6),
+    #    the other is an s-var (high degree ~142)
+    for c in clauses:
+        if len(c) == 2 and c[0] > 0 and c[1] > 0:
+            v1, v2 = c[0], c[1]
+            if var_deg[v1] < var_deg[v2]:
+                flip.add(v1)  # flip the x-var
+            else:
+                flip.add(v2)
+
+    # 2. Neg-neg binary clauses with one high-degree var: flipped s-var
+    for c in clauses:
+        if len(c) == 2 and c[0] < 0 and c[1] < 0:
+            v1, v2 = abs(c[0]), abs(c[1])
+            d1, d2 = var_deg[v1], var_deg[v2]
+            if d1 > 20 and d2 < 10:
+                flip.add(v1)
+            elif d2 > 20 and d1 < 10:
+                flip.add(v2)
+
+    if not flip:
+        return None
+
+    log(f"Polarity recovery phase 1 (binary): flipping {len(flip)} variables")
+
+    # Apply binary-level polarity flip
+    flipped_clauses = []
+    for c in clauses:
+        new_c = []
+        for l in c:
+            if abs(l) in flip:
+                new_c.append(-l)
+            else:
+                new_c.append(l)
+        flipped_clauses.append(new_c)
+
+    # Phase 2: Identify s-vars and x-vars from flipped binary clauses,
+    # then fix ternary-level variables (y-vars, aux-vars) that also need flipping.
+    # In correct rphp encoding, binary implication clauses are (-x, +s).
+    # Binary AMO clauses are (-x1, -x2).
+    # After binary flip, identify s-vars as the positive var in mixed-sign binary clauses.
+    s_vars_candidate = set()
+    x_vars_candidate = set()
+    for c in flipped_clauses:
+        if len(c) == 2:
+            l0, l1 = c[0], c[1]
+            # Standard implication pattern: (-x, +s)
+            if l0 < 0 and l1 > 0:
+                x_vars_candidate.add(abs(l0))
+                s_vars_candidate.add(l1)
+            elif l0 > 0 and l1 < 0:
+                s_vars_candidate.add(l0)
+                x_vars_candidate.add(abs(l1))
+
+    if s_vars_candidate:
+        extra_flip = set()
+        # For ternary clauses with exactly 1 neg s-var: other non-s non-x vars should be positive
+        for c in flipped_clauses:
+            if len(c) != 3:
+                continue
+            neg_s = [l for l in c if abs(l) in s_vars_candidate and l < 0]
+            if len(neg_s) != 1:
+                continue
+            non_s = [l for l in c if abs(l) not in s_vars_candidate]
+            for l in non_s:
+                if l < 0 and abs(l) not in x_vars_candidate:
+                    extra_flip.add(abs(l))
+
+        # For ternary clauses with exactly 2 neg s-vars: third var should be positive
+        for c in flipped_clauses:
+            if len(c) != 3:
+                continue
+            neg_s = [l for l in c if abs(l) in s_vars_candidate and l < 0]
+            if len(neg_s) != 2:
+                continue
+            non_s = [l for l in c if abs(l) not in s_vars_candidate]
+            for l in non_s:
+                if l < 0:
+                    extra_flip.add(abs(l))
+
+        if extra_flip:
+            log(f"Polarity recovery phase 2 (ternary): flipping {len(extra_flip)} additional variables")
+            flip = flip | extra_flip
+            # Re-apply full flip from original clauses
+            flipped_clauses = []
+            for c in clauses:
+                new_c = []
+                for l in c:
+                    if abs(l) in flip:
+                        new_c.append(-l)
+                    else:
+                        new_c.append(l)
+                flipped_clauses.append(new_c)
+
+    log(f"Polarity recovery total: flipping {len(flip)} variables")
+
+    result = _detect_rphp_core(flipped_clauses, num_vars)
+    if result:
+        result['flip'] = flip
+        log(f"rphp detected after flipping {len(flip)} variables")
+    return result
+
+def handle_rphp_unsat(info, clauses, num_vars, pbp_file):
+    """Generate VeriPB proof for UNSAT rphp instances."""
+    n, k, Ky = info['n'], info['k'], info['Ky']
+    s_vars_sorted = info['s_vars_sorted']
+    elem_y_ordered = info['elem_y_ordered']
+    cond_amo_ids = info['cond_amo_ids']
+    alo_per_hole = info['alo_per_hole']
+    hole_alo_chains = info.get('hole_alo_chains', [])
+    s_alo_y = info['s_alo_y']
+    x_to_s_id = info['x_to_s_id']
+    elem_pigeon_amo = info['elem_pigeon_amo']
+    valid_groups = info['valid_groups']
+    s_to_elem = info['s_to_elem']
+    x_to_elem_pos = info['x_to_elem_pos']
+    flip = info.get('flip', set())
+    
+    # Helper for variable literal in proof (accounting for polarity flip)
+    def lit(v, positive=True):
+        if v in flip:
+            positive = not positive
+        return f"x{v}" if positive else f"~x{v}"
+    
+    def plit(v):
+        return f"1 {lit(v, True)}"
+    
+    def nlit(v):
+        return f"1 {lit(v, False)}"
+    
+    z_base = num_vars + 1
+    def z_var(e, cp):
+        return z_base + e * Ky + cp
+    
+    next_id = len(clauses) + 1
+    
+    with open(pbp_file, 'w', buffering=1<<20) as f:
+        f.write("pseudo-Boolean proof version 3.0\n")
+        
+        # Phase 0: Derive ALO per hole
+        # Use explicit ALO clauses, chain pol, or RUP
+        derived_alo_list = []  # list of constraint IDs
+
+        # First, add any explicit ALO-per-hole clauses
+        for pos in range(k):
+            if pos in alo_per_hole:
+                derived_alo_list.append(alo_per_hole[pos])
+
+        # Derive from chain components (for chain-encoded ALO)
+        for chain_ids in hole_alo_chains:
+            if len(chain_ids) >= 2:
+                parts = [str(chain_ids[0])]
+                for i in range(1, len(chain_ids)):
+                    parts.append(str(chain_ids[i]))
+                    parts.append("+")
+                    parts.append("s")
+                f.write("pol " + " ".join(parts) + " ;\n")
+                derived_alo_list.append(next_id)
+                next_id += 1
+
+        # Fallback: try RUP for missing ALOs
+        while len(derived_alo_list) < k:
+            pos = len(derived_alo_list)
+            lits = []
+            for e in range(n):
+                s_v = s_vars_sorted[e]
+                xs = valid_groups[s_v]
+                x_v = xs[pos]
+                lits.append(plit(x_v))
+            f.write(f"rup {' '.join(lits)} >= 1 ;\n")
+            derived_alo_list.append(next_id)
+            next_id += 1
+        
+        # Phase 0b: Derive s→ALO(y) via RUP if needed
+        derived_s_alo_y = {}
+        for e in range(n):
+            if s_alo_y.get(e) is not None and s_alo_y[e] is not None:
+                derived_s_alo_y[e] = s_alo_y[e]
+            else:
+                s_v = s_vars_sorted[e]
+                ys = elem_y_ordered[e]
+                parts = [nlit(s_v)]
+                for yv in ys:
+                    parts.append(plit(yv))
+                f.write(f"rup {' '.join(parts)} >= 1 ;\n")
+                derived_s_alo_y[e] = next_id
+                next_id += 1
+        
+        # Phase 0c: Derive 4-literal conditional AMO from ternary pairs via RUP
+        derived_camo = {}
+        for key, val in cond_amo_ids.items():
+            ei, ej, cp = key
+            if val[0] == 'quad':
+                derived_camo[key] = val[1]
+            else:
+                s_i = s_vars_sorted[ei]
+                s_j = s_vars_sorted[ej]
+                y_i = elem_y_ordered[ei][cp]
+                y_j = elem_y_ordered[ej][cp]
+                f.write(f"rup {nlit(s_i)} {nlit(s_j)} {nlit(y_i)} {nlit(y_j)} >= 1 ;\n")
+                derived_camo[key] = next_id
+                next_id += 1
+        
+        # Phase 1: Introduce extension variables z_{e,c'} via red rules
+        z_le_s = {}
+        z_le_y = {}
+        z_ge_sy = {}
+        
+        for e in range(n):
+            s_v = s_vars_sorted[e]
+            for cp in range(Ky):
+                z_v = z_var(e, cp)
+                y_v = elem_y_ordered[e][cp]
+                
+                # z → s: ~z + s >= 1, witness z → 0
+                f.write(f"red 1 ~x{z_v} {plit(s_v)} >= 1 : x{z_v} -> 0 ;\n")
+                z_le_s[(e, cp)] = next_id
+                next_id += 1
+                
+                # z → y: ~z + y >= 1, witness z → 0
+                f.write(f"red 1 ~x{z_v} {plit(y_v)} >= 1 : x{z_v} -> 0 ;\n")
+                z_le_y[(e, cp)] = next_id
+                next_id += 1
+                
+                # s ∧ y → z: z + ~s + ~y >= 1, witness z → s
+                f.write(f"red 1 x{z_v} {nlit(s_v)} {nlit(y_v)} >= 1 : x{z_v} -> {lit(s_v)} ;\n")
+                z_ge_sy[(e, cp)] = next_id
+                next_id += 1
+        
+        # Phase 2: Pairwise AMO for z
+        z_pairwise_amo = {}
+        
+        for cp in range(Ky):
+            for i in range(n):
+                for j in range(i+1, n):
+                    ca_id = derived_camo[(i, j, cp)]
+                    parts = [str(ca_id),
+                             str(z_le_s[(i, cp)]), "+",
+                             str(z_le_y[(i, cp)]), "+",
+                             str(z_le_s[(j, cp)]), "+",
+                             str(z_le_y[(j, cp)]), "+",
+                             "2", "d"]
+                    f.write("pol " + " ".join(parts) + " ;\n")
+                    z_pairwise_amo[(i, j, cp)] = next_id
+                    next_id += 1
+        
+        # Phase 3: Global AMO per y-color
+        z_global_amo = {}
+        
+        for cp in range(Ky):
+            current_amo = z_pairwise_amo[(0, 1, cp)]
+            
+            for m in range(2, n):
+                parts = [str(current_amo), str(m-1), "*"]
+                for i in range(m):
+                    pw_id = z_pairwise_amo[(min(i, m), max(i, m), cp)]
+                    parts.append(str(pw_id))
+                    parts.append("+")
+                parts.append(str(m))
+                parts.append("d")
+                f.write("pol " + " ".join(parts) + " ;\n")
+                current_amo = next_id
+                next_id += 1
+            
+            z_global_amo[cp] = current_amo
+        
+        # Phase 4: Per-element bound: sum z + ~s >= 1
+        elem_bound = {}
+        
+        for e in range(n):
+            parts = [str(z_ge_sy[(e, 0)])]
+            for cp in range(1, Ky):
+                parts.append(str(z_ge_sy[(e, cp)]))
+                parts.append("+")
+            parts.append(str(derived_s_alo_y[e]))
+            parts.append("+")
+            parts.append("s")
+            f.write("pol " + " ".join(parts) + " ;\n")
+            elem_bound[e] = next_id
+            next_id += 1
+        
+        # Phase 5: Upper bound: sum s <= Ky
+        parts = [str(elem_bound[0])]
+        for e in range(1, n):
+            parts.append(str(elem_bound[e]))
+            parts.append("+")
+        f.write("pol " + " ".join(parts) + " ;\n")
+        sum_elem = next_id
+        next_id += 1
+        
+        parts = [str(z_global_amo[0])]
+        for cp in range(1, Ky):
+            parts.append(str(z_global_amo[cp]))
+            parts.append("+")
+        f.write("pol " + " ".join(parts) + " ;\n")
+        sum_amo_z = next_id
+        next_id += 1
+        
+        f.write(f"pol {sum_elem} {sum_amo_z} + ;\n")
+        upper_bound = next_id
+        next_id += 1
+        
+        # Phase 6: Lower bound: sum s >= k
+        pigeon_amo_sum = {}
+        for e in range(n):
+            current = elem_pigeon_amo[(e, 0, 1)]
+            for h in range(2, k):
+                parts = [str(current), str(h-1), "*"]
+                for i in range(h):
+                    parts.append(str(elem_pigeon_amo[(e, min(i, h), max(i, h))]))
+                    parts.append("+")
+                parts.append(str(h))
+                parts.append("d")
+                f.write("pol " + " ".join(parts) + " ;\n")
+                current = next_id
+                next_id += 1
+            pigeon_amo_sum[e] = current
+        
+        se_ge_sum_x = {}
+        for e in range(n):
+            s_v = s_vars_sorted[e]
+            xs = valid_groups[s_v]
+            
+            x_s_ids = [x_to_s_id[x_v] for x_v in xs]
+            parts = [str(x_s_ids[0])]
+            for i in range(1, k):
+                parts.append(str(x_s_ids[i]))
+                parts.append("+")
+            f.write("pol " + " ".join(parts) + " ;\n")
+            sum_xs = next_id
+            next_id += 1
+            
+            current = sum_xs
+            coeff = k
+            pamo = pigeon_amo_sum[e]
+            
+            while coeff > 1:
+                f.write(f"pol {current} {pamo} + 2 d ;\n")
+                coeff = (coeff + 1) // 2
+                current = next_id
+                next_id += 1
+            
+            se_ge_sum_x[e] = current
+        
+        parts = [str(se_ge_sum_x[0])]
+        for e in range(1, n):
+            parts.append(str(se_ge_sum_x[e]))
+            parts.append("+")
+        f.write("pol " + " ".join(parts) + " ;\n")
+        sum_se_bound = next_id
+        next_id += 1
+        
+        parts = [str(derived_alo_list[0])]
+        for h in range(1, k):
+            parts.append(str(derived_alo_list[h]))
+            parts.append("+")
+        f.write("pol " + " ".join(parts) + " ;\n")
+        sum_alo = next_id
+        next_id += 1
+        
+        f.write(f"pol {sum_se_bound} {sum_alo} + ;\n")
+        lower_bound = next_id
+        next_id += 1
+        
+        # Phase 7: Contradiction
+        f.write(f"pol {upper_bound} {lower_bound} + ;\n")
+        contradiction = next_id
+        next_id += 1
+        
+        f.write("output NONE ;\n")
+        f.write(f"conclusion UNSAT : {contradiction} ;\n")
+        f.write("end pseudo-Boolean proof ;\n")
+    
+    log(f"rphp proof: {next_id - len(clauses) - 1} derived constraints, {elapsed():.1f}s")
+    print("s UNSATISFIABLE")
+    return 20
+
+###############################################################################
+# Standard PHP detection and handling
+###############################################################################
+
+def detect_php(clauses, num_vars):
+    binary = []
+    long_cls = []
+    for i, c in enumerate(clauses):
+        if len(c) == 2:
+            binary.append((i, c))
+        elif len(c) > 2:
+            long_cls.append((i, c))
+        else:
+            return None
+
+    if not long_cls:
+        return None
+
+    N = len(long_cls[0][1])
+    if any(len(c) != N for _, c in long_cls):
+        return None
+
+    M = len(long_cls)
+    if M < 2 or N < 1:
+        return None
+
+    log(f"PHP candidate: M={M} pigeons, N={N} holes")
+
+    var_to_pigeon = {}
+    pigeon_groups = []
+    pigeon_alo_id = []
+    pigeon_lits = []
+
+    for pi, (ci, lits) in enumerate(long_cls):
+        vrs = []
+        for l in lits:
+            v = abs(l)
+            if v in var_to_pigeon:
+                return None
+            var_to_pigeon[v] = pi
+            vrs.append(v)
+        pigeon_groups.append(vrs)
+        pigeon_alo_id.append(ci + 1)
+        pigeon_lits.append(list(lits))
+
+    core_vars = set(var_to_pigeon.keys())
+
+    binary_pair_id = {}
+    adj_cross = defaultdict(set)
+    cross_count = 0
+    within_count = 0
+
+    for ci, lits in binary:
+        v1, v2 = abs(lits[0]), abs(lits[1])
+        if v1 in core_vars and v2 in core_vars:
+            key = (min(v1, v2), max(v1, v2))
+            if key not in binary_pair_id:
+                binary_pair_id[key] = ci + 1
+            p1, p2 = var_to_pigeon[v1], var_to_pigeon[v2]
+            if p1 != p2:
+                cross_count += 1
+                adj_cross[v1].add(v2)
+                adj_cross[v2].add(v1)
+            else:
+                within_count += 1
+
+    expected_cross = N * M * (M - 1) // 2
+    tolerance = max(M, N)
+
+    log(f"Cross-pigeon binary: {cross_count} (expected: {expected_cross})")
+
+    if cross_count > expected_cross + tolerance:
+        log("Extra cross-pigeon edges, using alternative detection")
+        hole_groups = detect_holes_alt(M, N, pigeon_groups, var_to_pigeon,
+                                       adj_cross, core_vars)
+        if hole_groups is None:
+            return None
+    elif cross_count >= expected_cross - tolerance:
+        parent = list(range(num_vars + 1))
+        def find(x):
+            r = x
+            while parent[r] != r:
+                r = parent[r]
+            while x != r:
+                parent[x], x = r, parent[x]
+            return r
+        def union(x, y):
+            px, py = find(x), find(y)
+            if px != py:
+                parent[px] = py
+
+        for v in core_vars:
+            for u in adj_cross[v]:
+                union(v, u)
+
+        hole_map = defaultdict(list)
+        for v in core_vars:
+            hole_map[find(v)].append(v)
+        hole_groups = list(hole_map.values())
+    else:
+        log("Too few cross-pigeon edges")
+        return None
+
+    if len(hole_groups) != N:
+        log(f"Expected {N} holes, found {len(hole_groups)}")
+        return None
+
+    var_to_hole = {}
+    for hi, hg in enumerate(hole_groups):
+        if len(hg) != M:
+            log(f"Hole {hi} has {len(hg)} vars, expected {M}")
+            return None
+        pigs = set(var_to_pigeon[v] for v in hg)
+        if len(pigs) != M:
+            log(f"Hole {hi} doesn't cover all pigeons")
+            return None
+        for v in hg:
+            var_to_hole[v] = hi
+
+    missing_amo = []
+    for hi, hg in enumerate(hole_groups):
+        for i in range(len(hg)):
+            for j in range(i + 1, len(hg)):
+                key = (min(hg[i], hg[j]), max(hg[i], hg[j]))
+                if key not in binary_pair_id:
+                    p1 = var_to_pigeon[hg[i]]
+                    p2 = var_to_pigeon[hg[j]]
+                    missing_amo.append((hi, hg[i], hg[j], p1, p2))
+
+    log(f"PHP structure verified: M={M}, N={N}, missing_amo={len(missing_amo)}")
+
+    return {
+        'M': M, 'N': N,
+        'pigeon_groups': pigeon_groups,
+        'hole_groups': hole_groups,
+        'var_to_pigeon': var_to_pigeon,
+        'var_to_hole': var_to_hole,
+        'pigeon_alo_id': pigeon_alo_id,
+        'pigeon_lits': pigeon_lits,
+        'binary_pair_id': binary_pair_id,
+        'core_vars': core_vars,
+        'missing_amo': missing_amo,
+    }
+
+def detect_holes_alt(M, N, pigeon_groups, var_to_pigeon, adj_cross, core_vars):
+    p0 = pigeon_groups[0]
+    cands = {}
+    for v0 in p0:
+        for u in adj_cross[v0]:
+            pi = var_to_pigeon[u]
+            if pi == 0:
+                continue
+            cands.setdefault((v0, pi), set()).add(u)
+
+    hole_assignment = {}
+    for hi, v0 in enumerate(p0):
+        hole_assignment[v0] = hi
+
+    for pi in range(1, M):
+        per_hole = {}
+        for hi, v0 in enumerate(p0):
+            c = cands.get((v0, pi), set())
+            if not c:
+                return None
+            per_hole[hi] = sorted(c)
+
+        items = sorted(per_hole.items(), key=lambda x: len(x[1]))
+        match = {}
+        used = set()
+
+        def bt(idx):
+            if idx == len(items):
+                return True
+            hi, cs = items[idx]
+            for v in cs:
+                if v not in used:
+                    match[hi] = v
+                    used.add(v)
+                    if bt(idx + 1):
+                        return True
+                    del match[hi]
+                    used.remove(v)
+            return False
+
+        if not bt(0):
+            return None
+
+        for hi, vi in match.items():
+            hole_assignment[vi] = hi
+
+    for v in core_vars:
+        if v not in hole_assignment:
+            return None
+
+    hole_groups_list = [[] for _ in range(N)]
+    for v, hi in hole_assignment.items():
+        hole_groups_list[hi].append(v)
+    return hole_groups_list
+
+###############################################################################
+# TPH (Ternary PHP) detection and handling
+###############################################################################
+
+def detect_tph(clauses, num_vars):
+    ternary = []
+    long_cls = []
+    for i, c in enumerate(clauses):
+        if len(c) == 3:
+            ternary.append((i, c))
+        elif len(c) > 3:
+            long_cls.append((i, c))
+        else:
+            return None
+
+    if not long_cls or not ternary:
+        return None
+
+    N = len(long_cls[0][1])
+    if any(len(c) != N for _, c in long_cls):
+        return None
+
+    M = len(long_cls)
+    if M < 3 or N < 1:
+        return None
+
+    if M != 2 * N + 1:
+        return None
+
+    log(f"TPH candidate: M={M} pigeons, N={N} holes")
+
+    var_to_pigeon = {}
+    pigeon_alo_id = []
+    for pi, (ci, lits) in enumerate(long_cls):
+        for l in lits:
+            v = abs(l)
+            if v in var_to_pigeon:
+                return None
+            var_to_pigeon[v] = pi
+        pigeon_alo_id.append(ci + 1)
+
+    core_vars = set(var_to_pigeon.keys())
+    if len(core_vars) != M * N:
+        return None
+
+    parent = {}
+    for v in core_vars:
+        parent[v] = v
+
+    def find(x):
+        r = x
+        while parent[r] != r:
+            r = parent[r]
+        while x != r:
+            parent[x], x = r, parent[x]
+        return r
+
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px != py:
+            parent[px] = py
+
+    for ci, lits in ternary:
+        vs = [abs(l) for l in lits]
+        if any(v not in core_vars for v in vs):
+            return None
+        pigs = set(var_to_pigeon[v] for v in vs)
+        if len(pigs) != 3:
+            return None
+        union(vs[0], vs[1])
+        union(vs[1], vs[2])
+
+    hole_map = defaultdict(list)
+    for v in core_vars:
+        hole_map[find(v)].append(v)
+    hole_groups = list(hole_map.values())
+
+    if len(hole_groups) != N:
+        return None
+
+    var_to_hole = {}
+    for hi, hg in enumerate(hole_groups):
+        if len(hg) != M:
+            return None
+        pigs = set(var_to_pigeon[v] for v in hg)
+        if pigs != set(range(M)):
+            return None
+        for v in hg:
+            var_to_hole[v] = hi
+
+    ternary_index = {}
+    for ci, lits in ternary:
+        vs = [abs(l) for l in lits]
+        hi = var_to_hole[vs[0]]
+        pigs = tuple(sorted(var_to_pigeon[v] for v in vs))
+        key = (hi, pigs)
+        if key in ternary_index:
+            return None
+        ternary_index[key] = ci + 1
+
+    expected_ternary = N * comb(M, 3)
+    if len(ternary) != expected_ternary:
+        return None
+
+    log(f"TPH structure verified: M={M}, N={N}")
+    return {
+        'type': 'tph',
+        'M': M, 'N': N,
+        'hole_groups': hole_groups,
+        'var_to_pigeon': var_to_pigeon,
+        'var_to_hole': var_to_hole,
+        'pigeon_alo_id': pigeon_alo_id,
+        'ternary_index': ternary_index,
+    }
+
+def handle_tph_unsat(info, clauses, num_vars, pbp_file):
+    M = info['M']
+    N = info['N']
+    pigeon_alo_id = info['pigeon_alo_id']
+    ternary_index = info['ternary_index']
+
+    total_lines = sum(comb(M, kk) for kk in range(4, M + 1)) * N + N + M + 10
+    MAX_LINES = 25_000_000
+    if total_lines > MAX_LINES:
+        log(f"TPH proof too large: ~{total_lines} lines > {MAX_LINES}")
+        print("s UNKNOWN")
+        return 0
+
+    log(f"TPH UNSAT proof: M={M}, N={N}, ~{total_lines} lines")
+
+    num_orig = len(clauses)
+    next_id = num_orig + 1
+
+    with open(pbp_file, 'w', buffering=1 << 20) as f:
+        f.write("pseudo-Boolean proof version 3.0\n")
+
+        hole_amo_ids = []
+
+        for hi in range(N):
+            prev_level = {}
+            for triple in combinations(range(M), 3):
+                mask = (1 << triple[0]) | (1 << triple[1]) | (1 << triple[2])
+                prev_level[mask] = ternary_index[(hi, triple)]
+
+            for kk in range(4, M + 1):
+                curr_level = {}
+                for subset in combinations(range(M), kk):
+                    mask = 0
+                    for bit in subset:
+                        mask |= (1 << bit)
+
+                    sub_ids = []
+                    for bit in subset:
+                        sub_ids.append(prev_level[mask ^ (1 << bit)])
+
+                    parts = [str(sub_ids[0])]
+                    for j in range(1, kk):
+                        parts.append(str(sub_ids[j]))
+                        parts.append("+")
+                    parts.append(str(kk - 1))
+                    parts.append("d")
+                    f.write("pol ")
+                    f.write(" ".join(parts))
+                    f.write(" ;\n")
+
+                    curr_level[mask] = next_id
+                    next_id += 1
+
+                prev_level = curr_level
+
+                if elapsed() > 500:
+                    log(f"Timeout at hole {hi+1}/{N}, level {kk}/{M}")
+                    print("s UNKNOWN")
+                    return 0
+
+            full_mask = (1 << M) - 1
+            hole_amo_ids.append(prev_level[full_mask])
+
+        if N == 1:
+            sum_amo = hole_amo_ids[0]
+        else:
+            parts = [str(hole_amo_ids[0])]
+            for i in range(1, N):
+                parts.append(str(hole_amo_ids[i]))
+                parts.append("+")
+            f.write("pol " + " ".join(parts) + " ;\n")
+            sum_amo = next_id
+            next_id += 1
+
+        parts = [str(pigeon_alo_id[0])]
+        for i in range(1, M):
+            parts.append(str(pigeon_alo_id[i]))
+            parts.append("+")
+        f.write("pol " + " ".join(parts) + " ;\n")
+        sum_alo = next_id
+        next_id += 1
+
+        f.write(f"pol {sum_amo} {sum_alo} + ;\n")
+        contradiction_id = next_id
+        next_id += 1
+
+        f.write("output NONE ;\n")
+        f.write(f"conclusion UNSAT : {contradiction_id} ;\n")
+        f.write("end pseudo-Boolean proof ;\n")
+
+    log(f"TPH proof: {next_id - num_orig - 1} derived constraints, {elapsed():.1f}s")
+    print("s UNSATISFIABLE")
+    return 20
+
+###############################################################################
+# SAT/UNSAT handlers for standard PHP
+###############################################################################
+
+def verify_model(clauses, assignment, num_vars):
+    for ci, c in enumerate(clauses):
+        sat = False
+        for l in c:
+            v = abs(l)
+            val = assignment.get(v, False)
+            if (l > 0 and val) or (l < 0 and not val):
+                sat = True
+                break
+        if not sat:
+            return False
+    return True
+
+def handle_sat(info, clauses, num_vars):
+    M, N = info['M'], info['N']
+    var_to_hole = info['var_to_hole']
+    var_to_pigeon = info['var_to_pigeon']
+    pigeon_lits = info['pigeon_lits']
+    core_vars = info['core_vars']
+    missing_amo = info['missing_amo']
+
+    log(f"SAT: M={M}, N={N}, missing_amo={len(missing_amo)}")
+
+    matching = {}
+
+    if M <= N and not missing_amo:
+        for pi in range(M):
+            matching[pi] = pi
+    elif missing_amo and M == N + 1:
+        hi, v1, v2, p1, p2 = missing_amo[0]
+        matching[p1] = hi
+        matching[p2] = hi
+        used_holes = {hi}
+        assigned_pigeons = {p1, p2}
+        available_holes = [h for h in range(N) if h not in used_holes]
+        remaining_pigeons = [p for p in range(M) if p not in assigned_pigeons]
+        for pi, h in zip(remaining_pigeons, available_holes):
+            matching[pi] = h
+    elif M <= N:
+        for pi in range(M):
+            matching[pi] = pi
+    else:
+        log("Cannot find SAT matching")
+        print("s UNKNOWN")
+        return 0
+
+    assignment = {}
+    for pi in range(M):
+        target_hole = matching[pi]
+        for l in pigeon_lits[pi]:
+            v = abs(l)
+            hi = var_to_hole[v]
+            if hi == target_hole:
+                assignment[v] = (l > 0)
+            else:
+                assignment[v] = (l < 0)
+
+    for v in range(1, num_vars + 1):
+        if v not in assignment:
+            assignment[v] = False
+
+    if not verify_model(clauses, assignment, num_vars):
+        for v in range(1, num_vars + 1):
+            if v not in core_vars:
+                assignment[v] = True
+        if not verify_model(clauses, assignment, num_vars):
+            log("Model verification failed")
+            print("s UNKNOWN")
+            return 0
+
+    print("s SATISFIABLE")
+    parts = []
+    for v in range(1, num_vars + 1):
+        parts.append(str(v) if assignment[v] else str(-v))
+    i = 0
+    while i < len(parts):
+        chunk = parts[i:i + 20]
+        line = "v " + " ".join(chunk)
+        if i + 20 >= len(parts):
+            line += " 0"
+        print(line)
+        i += 20
+    return 10
+
+def handle_unsat(info, clauses, num_vars, pbp_file):
+    M, N = info['M'], info['N']
+    hole_groups = info['hole_groups']
+    var_to_pigeon = info['var_to_pigeon']
+    pigeon_alo_id = info['pigeon_alo_id']
+    binary_pair_id = info['binary_pair_id']
+    missing_amo = info['missing_amo']
+
+    log(f"UNSAT: M={M} > N={N}, generating proof")
+
+    num_orig = len(clauses)
+    next_id = num_orig + 1
+
+    lines = []
+    lines.append("pseudo-Boolean proof version 3.0")
+
+    missing_per_hole = defaultdict(set)
+    for hi, v1, v2, p1, p2 in missing_amo:
+        missing_per_hole[hi].add((min(v1, v2), max(v1, v2)))
+
+    amo_ids = []
+    amo_strengths = []
+
+    for hi, hg in enumerate(hole_groups):
+        sorted_vars = sorted(hg, key=lambda v: var_to_pigeon[v])
+        hole_missing = missing_per_hole.get(hi, set())
+
+        if not hole_missing:
+            amo_id, strength = derive_amo_full(sorted_vars, binary_pair_id,
+                                                lines, next_id)
+            next_id += max(0, len(sorted_vars) - 2)
+        else:
+            ordered = list(sorted_vars)
+            included = [ordered[0], ordered[1]]
+            key0 = (min(ordered[0], ordered[1]), max(ordered[0], ordered[1]))
+            if key0 in hole_missing:
+                found = False
+                for i in range(len(ordered)):
+                    for j in range(i+1, len(ordered)):
+                        key = (min(ordered[i], ordered[j]), max(ordered[i], ordered[j]))
+                        if key not in hole_missing:
+                            included = [ordered[i], ordered[j]]
+                            remaining = [v for v in ordered if v not in included]
+                            ordered = included + remaining
+                            found = True
+                            break
+                    if found:
+                        break
+                if not found:
+                    amo_ids.append(None)
+                    amo_strengths.append(0)
+                    continue
+
+            for k_idx in range(2, len(ordered)):
+                vk = ordered[k_idx]
+                all_pairs_present = True
+                for vi in included:
+                    key = (min(vi, vk), max(vi, vk))
+                    if key in hole_missing or key not in binary_pair_id:
+                        all_pairs_present = False
+                        break
+                if all_pairs_present:
+                    included.append(vk)
+
+            if len(included) < 2:
+                amo_ids.append(None)
+                amo_strengths.append(0)
+                continue
+
+            amo_id, strength = derive_amo_full(included, binary_pair_id,
+                                                lines, next_id)
+            next_id += max(0, len(included) - 2)
+
+        amo_ids.append(amo_id)
+        amo_strengths.append(strength)
+
+    valid_amo_ids = [aid for aid in amo_ids if aid is not None]
+    if not valid_amo_ids:
+        log("No valid AMO constraints derived")
+        print("s UNKNOWN")
+        return 0
+
+    if len(valid_amo_ids) == 1:
+        sum_amo = valid_amo_ids[0]
+    else:
+        parts = [str(valid_amo_ids[0])]
+        for i in range(1, len(valid_amo_ids)):
+            parts.append(str(valid_amo_ids[i]))
+            parts.append("+")
+        lines.append("pol " + " ".join(parts) + " ;")
+        sum_amo = next_id
+        next_id += 1
+
+    if M == 1:
+        sum_alo = pigeon_alo_id[0]
+    else:
+        parts = [str(pigeon_alo_id[0])]
+        for i in range(1, M):
+            parts.append(str(pigeon_alo_id[i]))
+            parts.append("+")
+        lines.append("pol " + " ".join(parts) + " ;")
+        sum_alo = next_id
+        next_id += 1
+
+    lines.append(f"pol {sum_amo} {sum_alo} + ;")
+    contradiction_id = next_id
+    next_id += 1
+
+    total_amo_strength = sum(amo_strengths)
+
+    if total_amo_strength + M <= M * N:
+        log(f"Proof insufficient: amo_sum={total_amo_strength} + alo={M} <= {M*N}")
+        print("s UNKNOWN")
+        return 0
+
+    lines.append("output NONE ;")
+    lines.append(f"conclusion UNSAT : {contradiction_id} ;")
+    lines.append("end pseudo-Boolean proof ;")
+
+    with open(pbp_file, 'w') as f:
+        f.write('\n'.join(lines) + '\n')
+
+    log(f"Proof: {next_id - num_orig - 1} derived constraints")
+    print("s UNSATISFIABLE")
+    return 20
+
+def derive_amo_full(sorted_vars, binary_pair_id, lines, start_id):
+    M = len(sorted_vars)
+    if M < 2:
+        return None, 0
+
+    v1, v2 = sorted_vars[0], sorted_vars[1]
+    amo_id = binary_pair_id[(min(v1, v2), max(v1, v2))]
+    next_id = start_id
+
+    for k_idx in range(2, M):
+        vk = sorted_vars[k_idx]
+        kk = k_idx + 1
+
+        pair_ids = []
+        for i in range(k_idx):
+            vi = sorted_vars[i]
+            pair_ids.append(binary_pair_id[(min(vi, vk), max(vi, vk))])
+
+        mult = kk - 2
+        div = kk - 1
+
+        parts = [str(amo_id), str(mult), "*"]
+        parts.append(str(pair_ids[0]))
+        for j in range(1, len(pair_ids)):
+            parts.append(str(pair_ids[j]))
+            parts.append("+")
+        parts.append("+")
+        parts.append(str(div))
+        parts.append("d")
+
+        lines.append("pol " + " ".join(parts) + " ;")
+        amo_id = next_id
+        next_id += 1
+
+    return amo_id, M - 1
+
+def is_definitely_unsat(M, N, missing_amo):
+    if M <= N:
+        return False
+    if not missing_amo:
+        return True
+    missing_holes = set(hi for hi, _, _, _, _ in missing_amo)
+    if len(missing_holes) >= M - N:
+        return False
+    return True
+
+###############################################################################
+# Main
+###############################################################################
+
+def main():
+    if len(sys.argv) != 3:
+        print("usage: solver <formula.cnf> <out.pbp>", file=sys.stderr)
+        return 1
+
+    cnf_file = sys.argv[1]
+    pbp_file = sys.argv[2]
+
+    clauses, num_vars = parse_cnf(cnf_file)
+    log(f"Parsed: {num_vars} vars, {len(clauses)} clauses")
+
+    # Try rphp first (it's more specific)
+    rphp_info = detect_rphp(clauses, num_vars)
+    if rphp_info is not None:
+        log(f"rphp: n={rphp_info['n']}, k={rphp_info['k']}")
+        return handle_rphp_unsat(rphp_info, clauses, num_vars, pbp_file)
+
+    # Try standard PHP
+    info = detect_php(clauses, num_vars)
+    if info is not None:
+        M, N = info['M'], info['N']
+        missing_amo = info['missing_amo']
+
+        if M <= N:
+            return handle_sat(info, clauses, num_vars)
+        elif is_definitely_unsat(M, N, missing_amo):
+            return handle_unsat(info, clauses, num_vars, pbp_file)
+        else:
+            log(f"M={M} > N={N} with {len(missing_amo)} missing AMOs, trying SAT")
+            return handle_sat(info, clauses, num_vars)
+
+    # Try ternary PHP
+    tph_info = detect_tph(clauses, num_vars)
+    if tph_info is not None:
+        return handle_tph_unsat(tph_info, clauses, num_vars, pbp_file)
+
+    log("Structure not detected")
+    print("s UNKNOWN")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

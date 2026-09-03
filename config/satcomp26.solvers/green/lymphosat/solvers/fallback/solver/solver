@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ "$#" -ne 2 ]; then
+    echo "usage: $0 <cnf> <proof_out>" >&2
+    exit 2
+fi
+
+cnf="$1"
+proof_out="$2"
+solver_dir="$(cd "$(dirname "$0")" && pwd)"
+candidate="$solver_dir/src/build/kissat"
+
+if [ -x "$candidate" ] && [ ! -d "$candidate" ]; then
+    exec "$candidate" "$cnf" "$proof_out"
+fi
+
+echo "could not find built Kissat executable at $candidate" >&2
+echo "run ./build.sh before invoking ./solver" >&2
+exit 2

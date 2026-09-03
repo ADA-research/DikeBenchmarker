@@ -1,0 +1,425 @@
+#!/usr/bin/env python3
+import collections
+import math
+import sys
+
+
+class Unsupported(Exception):
+    pass
+
+
+def parse_dimacs(path):
+    nvars = nclauses = None
+    clauses = []
+    with open(path, "rt", encoding="ascii", errors="strict") as f:
+        pending = []
+        for line in f:
+            if not line:
+                continue
+            if line[0] == "c":
+                continue
+            parts = line.split()
+            if not parts:
+                continue
+            if parts[0] == "p":
+                if len(parts) < 4 or parts[1] != "cnf":
+                    raise Unsupported("not dimacs cnf")
+                nvars = int(parts[2])
+                nclauses = int(parts[3])
+                continue
+            for tok in parts:
+                lit = int(tok)
+                if lit == 0:
+                    if pending:
+                        clauses.append(pending)
+                        pending = []
+                else:
+                    pending.append(lit)
+        if pending:
+            raise Unsupported("unterminated clause")
+    if nvars is None or nclauses is None or nclauses != len(clauses):
+        raise Unsupported("bad header")
+    return nvars, clauses
+
+
+def high_var_from_odd(v):
+    return (v + 1) // 2
+
+
+def recover_high_clauses(clauses):
+    groups = collections.defaultdict(dict)
+    for cid, cl in enumerate(clauses, 1):
+        if len(cl) not in (4, 6):
+            raise Unsupported("unexpected clause size")
+        key = []
+        orient = []
+        for i in range(0, len(cl), 2):
+            a, b = cl[i], cl[i + 1]
+            aa, bb = abs(a), abs(b)
+            if aa + 1 != bb or aa % 2 != 1:
+                raise Unsupported("clauses are not adjacent XOR rails")
+            h = high_var_from_odd(aa)
+            if (a > 0) == (b > 0):
+                key.append(h)
+            else:
+                key.append(-h)
+            orient.append(1 if a > 0 else 0)
+        key = tuple(key)
+        orient = tuple(orient)
+        if orient in groups[key]:
+            raise Unsupported("duplicate XOR expansion row")
+        groups[key][orient] = cid
+    for key, rows in groups.items():
+        if len(rows) != (1 << len(key)):
+            raise Unsupported("incomplete XOR expansion group")
+    return groups
+
+
+def infer_n(high_vars):
+    disc = 1 + 4 * high_vars
+    root = math.isqrt(disc)
+    if root * root != disc or (1 + root) % 2:
+        raise Unsupported("not n*(n-1) high variables")
+    n = (1 + root) // 2
+    if n < 2 or n * (n - 1) != high_vars:
+        raise Unsupported("bad order size")
+    return n
+
+
+def hid(i, j, n):
+    if i == j:
+        raise Unsupported("diagonal order variable")
+    return i * (n - 1) + (j if j < i else j - 1) + 1
+
+
+def h_to_ij(h, n):
+    h -= 1
+    i = h // (n - 1)
+    r = h % (n - 1)
+    return i, (r if r < i else r + 1)
+
+
+def lit_expr(lit):
+    h = abs(lit)
+    if lit > 0:
+        return f"1 $y{h}"
+    return f"1 ~$y{h}"
+
+
+def clause_expr(lits):
+    if not lits:
+        return ""
+    return " ".join(lit_expr(l) for l in lits) + " "
+
+
+def orig_lit_expr(lit):
+    if lit > 0:
+        return f"1 x{lit}"
+    return f"1 ~x{-lit}"
+
+
+def rup_line(lits, hints):
+    body = clause_expr(sorted_clause(lits))
+    if hints:
+        return f"rup {body}>= 1 : {' '.join(str(x) for x in hints)} ;\n"
+    return f"rup {body}>= 1 ;\n"
+
+
+def sorted_clause(lits):
+    return sorted(set(lits), key=lambda x: (abs(x), x < 0))
+
+
+def canonical(lits):
+    s = set(lits)
+    for lit in list(s):
+        if -lit in s:
+            raise Unsupported("tautological derived clause")
+    return frozenset(s)
+
+
+class ProofWriter:
+    def __init__(self, nvars, clauses, groups, n, out_path):
+        self.nvars = nvars
+        self.clauses = clauses
+        self.groups = groups
+        self.n = n
+        self.high_vars = nvars // 2
+        self.out = open(out_path, "wt", encoding="ascii")
+        self.cur_id = len(clauses)
+        self.def_ids = [[0, 0, 0, 0] for _ in range(self.high_vars + 1)]
+        self.high_ids = {}
+        self.high_ids_by_set = {}
+        self.group_key_by_set = {}
+        for key in groups:
+            ckey = canonical(key)
+            if ckey in self.group_key_by_set:
+                raise Unsupported("ambiguous high-level clause key")
+            self.group_key_by_set[ckey] = key
+        self.derived_ids = {}
+        self.contradiction_id = None
+
+    def close(self):
+        self.out.close()
+
+    def emit_header(self):
+        self.out.write("pseudo-Boolean proof version 3.0\n")
+        self.out.write(f"f {len(self.clauses)} ;\n")
+
+    def emit_footer(self):
+        self.out.write("output NONE ;\n")
+        self.out.write(f"conclusion UNSAT : {self.contradiction_id} ;\n")
+        self.out.write("end pseudo-Boolean proof ;\n")
+
+    def add_definitions(self):
+        for h in range(1, self.high_vars + 1):
+            a = 2 * h - 1
+            b = 2 * h
+            y = f"$y{h}"
+            lines = [
+                f"red 1 ~{y} 1 x{a} 1 x{b} >= 1 : {y} -> 0 ;\n",
+                f"red 1 ~{y} 1 ~x{a} 1 ~x{b} >= 1 : {y} -> 0 ;\n",
+                f"red 1 {y} 1 x{a} 1 ~x{b} >= 1 : {y} -> 1 ;\n",
+                f"red 1 {y} 1 ~x{a} 1 x{b} >= 1 : {y} -> 1 ;\n",
+            ]
+            for t, line in enumerate(lines):
+                self.out.write(line)
+                self.cur_id += 1
+                self.def_ids[h][t] = self.cur_id
+
+    def ensure_high_clause(self, key):
+        key = tuple(key)
+        if key in self.high_ids:
+            return self.high_ids[key]
+        if key not in self.groups:
+            raise Unsupported(f"missing high-level clause {key}")
+        rows = self.groups[key]
+        k = len(key)
+        neg_id = self.cur_id + 1
+        local_id = neg_id
+        self.out.write(f"pbc {clause_expr(key)}>= 1 : subproof\n")
+
+        unit_ids = []
+        for lit in key:
+            if lit > 0:
+                unit = f"1 ~$y{lit} >= 1"
+            else:
+                unit = f"1 $y{-lit} >= 1"
+            self.out.write(f"ia {unit} : {neg_id} ;\n")
+            local_id += 1
+            unit_ids.append(local_id)
+
+        rel_ids = []
+        for lit, uid in zip(key, unit_ids):
+            h = abs(lit)
+            if lit > 0:
+                # y is false, so the two rails are equal.
+                first = self.def_ids[h][2]
+                second = self.def_ids[h][3]
+            else:
+                # y is true, so the two rails are different.
+                first = self.def_ids[h][0]
+                second = self.def_ids[h][1]
+            self.out.write(f"pol {first} {uid} + ;\n")
+            local_id += 1
+            r1 = local_id
+            self.out.write(f"pol {second} {uid} + ;\n")
+            local_id += 1
+            r2 = local_id
+            rel_ids.append((r1, r2))
+
+        reduced = {}
+        for bits in sorted(rows):
+            cid = rows[bits]
+            expr = f"pol {cid}"
+            for bit, (r1, r2) in zip(bits, rel_ids):
+                expr += f" {r1 if bit else r2} +"
+            expr += " 2 d ;\n"
+            self.out.write(expr)
+            local_id += 1
+            reduced[bits] = local_id
+
+        current = reduced
+        width = k
+        while width > 0:
+            nxt = {}
+            prefixes = sorted({bits[:-1] for bits in current})
+            for pref in prefixes:
+                id_pos = current[pref + (1,)]
+                id_neg = current[pref + (0,)]
+                self.out.write(f"pol {id_pos} {id_neg} + 2 d ;\n")
+                local_id += 1
+                nxt[pref] = local_id
+            current = nxt
+            width -= 1
+        contradiction = current[()]
+        self.out.write(f"qed pbc : {contradiction} ;\n")
+        self.cur_id = local_id + 1
+        self.high_ids[key] = self.cur_id
+        self.high_ids_by_set[canonical(key)] = self.cur_id
+        return self.cur_id
+
+    def ensure_high_clause_lits(self, lits):
+        ckey = canonical(lits)
+        if ckey in self.high_ids_by_set:
+            return self.high_ids_by_set[ckey]
+        key = self.group_key_by_set.get(ckey)
+        if key is None:
+            raise Unsupported(f"missing high-level clause {tuple(sorted_clause(lits))}")
+        return self.ensure_high_clause(key)
+
+    def add_rup(self, lits, hints):
+        lits = sorted_clause(lits)
+        self.out.write(rup_line(lits, hints))
+        self.cur_id += 1
+        cid = self.cur_id
+        self.derived_ids[canonical(lits)] = cid
+        if not lits:
+            self.contradiction_id = cid
+        return cid
+
+
+def classify(groups, n):
+    preds = [None] * n
+    source_keys = [None] * n
+
+    for key in groups:
+        if len(key) == 3 and all(l > 0 for l in key):
+            ijs = [h_to_ij(l, n) for l in key]
+            dst = ijs[0][1]
+            if all(j == dst for _, j in ijs):
+                if preds[dst] is not None:
+                    raise Unsupported("multiple source clauses")
+                preds[dst] = set(i for i, _ in ijs)
+                source_keys[dst] = key
+
+    if any(p is None or len(p) == 0 for p in preds):
+        raise Unsupported("missing source clauses")
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if (-hid(i, j, n), -hid(j, i, n)) not in groups:
+                raise Unsupported("missing antisymmetry")
+
+    # Check a representative dense transitivity skeleton. The proof only uses
+    # some clauses, but accepting partial encodings would be brittle.
+    for i in range(n):
+        for j in range(n):
+            if i == j:
+                continue
+            for k in range(n):
+                if k == i or k == j:
+                    continue
+                if (-hid(i, j, n), -hid(j, k, n), hid(i, k, n)) not in groups:
+                    raise Unsupported("missing transitivity")
+    return preds, source_keys
+
+
+def choose_elim(active, pred_sets):
+    best = None
+    for v in active:
+        targets = [i for i in active if i != v and v in pred_sets[i]]
+        cost = sum(len((pred_sets[i] - {v}) | (pred_sets[v] - {i})) for i in targets)
+        key = (cost, len(pred_sets[v]), len(targets), v)
+        if best is None or key < best[0]:
+            best = (key, v)
+    return best[1]
+
+
+def emit_elimination(proof, preds, source_keys):
+    n = proof.n
+    active = set(range(n))
+    pred_sets = [set(p) for p in preds]
+    clause_ids = [0] * n
+    clause_lits = [frozenset() for _ in range(n)]
+
+    for v in range(n):
+        cid = proof.ensure_high_clause(source_keys[v])
+        lits = canonical(hid(p, v, n) for p in pred_sets[v])
+        clause_ids[v] = cid
+        clause_lits[v] = lits
+        proof.derived_ids[lits] = cid
+
+    while len(active) > 1 and proof.contradiction_id is None:
+        r = choose_elim(active, pred_sets)
+        targets = [i for i in sorted(active) if i != r and r in pred_sets[i]]
+        for i in targets:
+            work = set(clause_lits[r])
+            work_id = clause_ids[r]
+            for p in sorted(pred_sets[r]):
+                pr = hid(p, r, n)
+                ri = hid(r, i, n)
+                if pr not in work:
+                    continue
+                if p == i:
+                    parent = proof.ensure_high_clause_lits([-hid(i, r, n), -ri])
+                    new_work = (work - {pr}) | {-ri}
+                    work_id = proof.add_rup(new_work, [work_id, parent])
+                else:
+                    parent = proof.ensure_high_clause_lits([-pr, -ri, hid(p, i, n)])
+                    new_work = (work - {pr}) | {-ri, hid(p, i, n)}
+                    work_id = proof.add_rup(new_work, [work_id, parent])
+                work = set(new_work)
+
+            ri = hid(r, i, n)
+            if -ri not in work:
+                raise Unsupported("failed to derive replacement guard")
+            old = set(clause_lits[i])
+            new_lits = (old - {ri}) | (work - {-ri})
+            new_lits = canonical(new_lits)
+            new_id = proof.add_rup(new_lits, [clause_ids[i], work_id])
+            pred_sets[i] = set(h_to_ij(abs(l), n)[0] for l in new_lits)
+            clause_lits[i] = new_lits
+            clause_ids[i] = new_id
+            if proof.contradiction_id is not None:
+                return
+        active.remove(r)
+
+    if proof.contradiction_id is None:
+        last = next(iter(active))
+        if len(clause_lits[last]) == 0:
+            proof.contradiction_id = clause_ids[last]
+        else:
+            raise Unsupported("elimination ended without contradiction")
+
+
+def solve(formula_path, proof_path):
+    nvars, clauses = parse_dimacs(formula_path)
+    if nvars % 2:
+        raise Unsupported("odd variable count")
+    high_vars = nvars // 2
+    n = infer_n(high_vars)
+    groups = recover_high_clauses(clauses)
+    preds, source_keys = classify(groups, n)
+
+    proof = ProofWriter(nvars, clauses, groups, n, proof_path)
+    try:
+        proof.emit_header()
+        proof.add_definitions()
+        emit_elimination(proof, preds, source_keys)
+        if proof.contradiction_id is None:
+            raise Unsupported("no contradiction")
+        proof.emit_footer()
+    finally:
+        proof.close()
+
+
+def main(argv):
+    if len(argv) != 3:
+        print("usage: solver <formula.cnf> <out.pbp>", file=sys.stderr)
+        return 1
+    try:
+        solve(argv[1], argv[2])
+    except Unsupported as exc:
+        print(f"c UNKNOWN: {exc}")
+        print("s UNKNOWN")
+        return 0
+    except Exception as exc:
+        print(f"c UNKNOWN: internal error: {exc}", file=sys.stderr)
+        print("s UNKNOWN")
+        return 0
+    print("s UNSATISFIABLE")
+    return 20
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
