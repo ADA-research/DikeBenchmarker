@@ -115,7 +115,7 @@
 <span class="w">  </span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myaccount</span>
 <span class="w">  </span><span class="nt">tasks_per_node</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
 <span class="w">  </span><span class="nt">jobname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">benchmark</span>
-<span class="w">  </span><span class="nt">workerinit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;module</span><span class="nv"> </span><span class="s">load</span><span class="nv"> </span><span class="s">gcc&quot;</span>
+<span class="w">  </span><span class="nt">workerinit</span><span class="p">:</span><span class="w"> </span><span class="s">"module</span><span class="nv"> </span><span class="s">load</span><span class="nv"> </span><span class="s">gcc"</span>
 <span class="w">  </span><span class="nt">queuelimit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
 </pre></div>
 </div>
@@ -187,8 +187,8 @@
 </ul>
 <p><strong>Example</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>id;bin;fmt;checker
-kissat-sc2025;./satcomp25.solvers/biere/kissat-sc2025/kissat;$BIN0 &quot;$INST&quot; &quot;$CERT&quot;;gratbin
-cadical-sc2025;./satcomp25.solvers/biere/cadical-sc2025/cadical;$BIN0 &quot;$INST&quot; &quot;$CERT&quot;;gratbin
+kissat-sc2025;./satcomp25.solvers/biere/kissat-sc2025/kissat;$BIN0 "$INST" "$CERT";gratbin
+cadical-sc2025;./satcomp25.solvers/biere/cadical-sc2025/cadical;$BIN0 "$INST" "$CERT";gratbin
 </pre></div>
 </div>
 </dd>

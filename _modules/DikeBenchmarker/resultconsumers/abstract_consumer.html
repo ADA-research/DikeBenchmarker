@@ -70,35 +70,35 @@
            <div itemprop="articleBody">
              
   <h1>Source code for DikeBenchmarker.resultconsumers.abstract_consumer</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Abstract consumer for benchmarking results.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.benchmarkatoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Result</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AbstractConsumer&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AbstractConsumer"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="AbstractConsumer">
 <a class="viewcode-back" href="../../../DikeBenchmarker.resultconsumers.html#DikeBenchmarker.resultconsumers.abstract_consumer.AbstractConsumer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AbstractConsumer</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Consumes the result of the benchmarking process.</span>
 <span class="sd">    It is guaranteed that results are processed in order.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="AbstractConsumer.consume_result">
 <a class="viewcode-back" href="../../../DikeBenchmarker.resultconsumers.html#DikeBenchmarker.resultconsumers.abstract_consumer.AbstractConsumer.consume_result">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">consume_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a Result.</span>
+<span class="w">        </span><span class="sd">"""Process a Result.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            result (Result): the last result obtained.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 </div>
 
 </pre></div>

@@ -70,70 +70,70 @@
            <div itemprop="articleBody">
              
   <h1>Source code for DikeBenchmarker.solveradaptors.executionwrapper</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Provides access to execution wrappers like runexec, runlim, or benchexec.</span>
+<span></span><span class="sd">"""Provides access to execution wrappers like runexec, runlim, or benchexec.</span>
 
 <span class="sd">Resolves the paths to the wrapper binaries and constructs command-line arguments using the specified resource limits.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.resources</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.benchmarkatoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResourceResult</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.solveradaptors.abstractexecutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractExecutable</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ExecutionWrapper&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ExecutionWrapper"</span><span class="p">]</span>
 
-<span class="c1"># Absolute path to runsolver, resolved relative to the dike package root regardless of CWD.</span>
-<span class="n">_DIKE_ROOT</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))))</span>
-<span class="n">_RUNSOLVER_BIN</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_DIKE_ROOT</span><span class="p">,</span> <span class="s2">&quot;external&quot;</span><span class="p">,</span> <span class="s2">&quot;runsolver&quot;</span><span class="p">)</span>
+<span class="n">_RUNSOLVER_BIN</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">"DikeBenchmarker.external"</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"runsolver"</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="ExecutionWrapper">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExecutionWrapper</span><span class="p">(</span><span class="n">AbstractExecutable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class to manage execution wrappers.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A class to manage execution wrappers."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mem</span><span class="o">=</span><span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">cputime</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span> <span class="n">walltime</span><span class="o">=</span><span class="mi">7200</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the ExecutionWrapper with resource limits and registry, or from a serialized dictionary if provided.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the ExecutionWrapper with resource limits and registry, or from a serialized dictionary if provided."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">serialized</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;runsolver&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"runsolver"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-                <span class="s2">&quot;runsolver&quot;</span><span class="p">,</span>
+                <span class="s2">"runsolver"</span><span class="p">,</span>
                 <span class="p">[</span><span class="n">_RUNSOLVER_BIN</span><span class="p">],</span>
-                <span class="s2">&quot;$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --rss-swap-limit $MEMORY&quot;</span>
-                <span class="s2">&quot; --watcher-data $WATCHER_OUTPUT --var $WRAPPER_OUTPUT&quot;</span>
-                <span class="s2">&quot; --solver-data $WRAPPED_OUTPUT sh -c &#39;$WRAPPED_COMMAND&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">"$BIN0 --wall-clock-limit $WALLTIME --cpu-limit $CPUTIME --rss-swap-limit $MEMORY"</span>
+                <span class="s2">" --watcher-data $WATCHER_OUTPUT --var $WRAPPER_OUTPUT"</span>
+                <span class="s2">" --solver-data $WRAPPED_OUTPUT sh -c '$WRAPPED_COMMAND'"</span><span class="p">,</span>
                 <span class="kc">None</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memorylimit&quot;</span><span class="p">,</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="n">mem</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cputimelimit&quot;</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="n">cputime</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;walltimelimit&quot;</span><span class="p">,</span> <span class="mi">7200</span><span class="p">)</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="n">walltime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memorylimit"</span><span class="p">,</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="n">mem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"cputimelimit"</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="n">cputime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"walltimelimit"</span><span class="p">,</span> <span class="mi">7200</span><span class="p">)</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="n">walltime</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># ensure walltime is always larger than cputime</span>
 
 <div class="viewcode-block" id="ExecutionWrapper.to_dict">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the execution wrapper to a dictionary representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert the execution wrapper to a dictionary representation."""</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;registry&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">,</span>
-            <span class="s2">&quot;memorylimit&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span><span class="p">,</span>
-            <span class="s2">&quot;cputimelimit&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span><span class="p">,</span>
-            <span class="s2">&quot;walltimelimit&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span><span class="p">,</span>
+            <span class="s2">"registry"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">,</span>
+            <span class="s2">"memorylimit"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span><span class="p">,</span>
+            <span class="s2">"cputimelimit"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span><span class="p">,</span>
+            <span class="s2">"walltimelimit"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="ExecutionWrapper.from_dict">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ExecutionWrapper&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an execution wrapper from a dictionary representation.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ExecutionWrapper"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create an execution wrapper from a dictionary representation."""</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">serialized</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ExecutionWrapper.set_resource_limits">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.set_resource_limits">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_resource_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cputimelimit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">walltimelimit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">memorylimit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set resource limits if specified.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set resource limits if specified."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span> <span class="o">=</span> <span class="n">memorylimit</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span> <span class="o">=</span> <span class="n">cputimelimit</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span> <span class="o">=</span> <span class="n">walltimelimit</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span></div>
@@ -142,63 +142,79 @@
 <div class="viewcode-block" id="ExecutionWrapper.format_command">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.format_command">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">format_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">binaries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">wrapped_cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wrapper_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wrapped_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">watcher_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the command line to run the execution wrapper with parameters.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the command line to run the execution wrapper with parameters."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wrapped_cmd</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">return</span> <span class="s2">""</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_base</span><span class="p">(</span><span class="n">xid</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_extra</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">wrapped_cmd</span><span class="p">,</span> <span class="n">wrapper_output</span><span class="p">,</span> <span class="n">wrapped_output</span><span class="p">,</span> <span class="n">watcher_output</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wrapped_cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wrapper_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wrapped_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">watcher_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the commandline specific to runsolver with the specified resource limits.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Construct the commandline specific to runsolver with the specified resource limits."""</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="n">base</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$WRAPPED_COMMAND&quot;</span><span class="p">,</span> <span class="n">wrapped_cmd</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$WATCHER_OUTPUT&quot;</span><span class="p">,</span> <span class="n">watcher_output</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$WRAPPER_OUTPUT&quot;</span><span class="p">,</span> <span class="n">wrapper_output</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$WRAPPED_OUTPUT&quot;</span><span class="p">,</span> <span class="n">wrapped_output</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$WALLTIME&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$CPUTIME&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span><span class="p">))</span>
-            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$MEMORY&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span><span class="p">))</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$WRAPPED_COMMAND"</span><span class="p">,</span> <span class="n">wrapped_cmd</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$WATCHER_OUTPUT"</span><span class="p">,</span> <span class="n">watcher_output</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$WRAPPER_OUTPUT"</span><span class="p">,</span> <span class="n">wrapper_output</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$WRAPPED_OUTPUT"</span><span class="p">,</span> <span class="n">wrapped_output</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$WALLTIME"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">walltimelimit</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$CPUTIME"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cputimelimit</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$MEMORY"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memorylimit</span><span class="p">))</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="ExecutionWrapper.parse_result">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.parse_result">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the runsolver log output to extract runtime statistics.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">watcher_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResourceResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Parse wrapper record + watcher log into resource-based metrics."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">wrapper_file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ResourceResult</span><span class="p">(</span><span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"no wrapper output"</span><span class="p">)</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        - tool_output: Path to the runsolver log output file.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">        - dictionary with keys &#39;walltime&#39;, &#39;cputime&#39;, &#39;memory&#39;, &#39;timeout&#39;, &#39;memout&#39;, and &#39;exitstatus&#39;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;walltime&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;cputime&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;memory&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;timeout&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="s2">&quot;memout&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="s2">&quot;exitstatus&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="p">}</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">cputime</span> <span class="o">=</span> <span class="n">walltime</span> <span class="o">=</span> <span class="n">memory</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">SUCCESS</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">wrapper_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;WCTIME=&quot;</span><span class="p">):</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;walltime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;CPUTIME=&quot;</span><span class="p">):</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;cputime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;MAXRSS=&quot;</span><span class="p">):</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;TIMEOUT=&quot;</span><span class="p">):</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;timeout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;MEMOUT=&quot;</span><span class="p">):</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;memout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;EXITSTATUS=&quot;</span><span class="p">):</span>
-                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;exitstatus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"WCTIME="</span><span class="p">):</span>
+                    <span class="n">walltime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"CPUTIME="</span><span class="p">):</span>
+                    <span class="n">cputime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"MAXVM="</span><span class="p">):</span>
+                    <span class="n">memory</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">1024</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"TIMEOUT="</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"true"</span><span class="p">:</span>
+                    <span class="n">state</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">TIMEOUT</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"MEMOUT="</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"true"</span><span class="p">:</span>
+                    <span class="n">state</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MEMOUT</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">watcher_file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ResourceResult</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">cputime</span><span class="o">=</span><span class="n">cputime</span><span class="p">,</span> <span class="n">walltime</span><span class="o">=</span><span class="n">walltime</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"no watcher output"</span><span class="p">)</span>
+
+        <span class="n">detail</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">watcher_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># trust the watcher over the TIMEOUT/MEMOUT flags above (runsolver quirks)</span>
+                <span class="k">if</span> <span class="s2">"Maximum memory exceeded"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">state</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">MEMOUT</span>
+                    <span class="n">detail</span> <span class="o">=</span> <span class="s2">"runsolver memory limit exceeded"</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="s2">"Child ended because it received signal 24 (SIGXCPU)"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">state</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">TIMEOUT</span>
+                    <span class="n">detail</span> <span class="o">=</span> <span class="s2">"cpu time limit exceeded (SIGXCPU)"</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="s2">"Child ended because it received signal 9 (SIGKILL)"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">state</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ERROR</span>
+                    <span class="n">detail</span> <span class="o">=</span> <span class="s2">"killed (SIGKILL via exit 9)"</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"Child status: "</span><span class="p">):</span>
+                    <span class="n">code</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s2">"137"</span><span class="p">:</span>
+                        <span class="c1"># external kill (SLURM OOM-killer)</span>
+                        <span class="n">state</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ERROR</span>
+                        <span class="n">detail</span> <span class="o">=</span> <span class="s2">"killed (SIGKILL via exit 137)"</span>
+                    <span class="k">elif</span> <span class="n">code</span> <span class="o">!=</span> <span class="s2">"0"</span><span class="p">:</span>
+                        <span class="n">detail</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"nonzero exit (code </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">)"</span>
+                    <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">ResourceResult</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">cputime</span><span class="o">=</span><span class="n">cputime</span><span class="p">,</span> <span class="n">walltime</span><span class="o">=</span><span class="n">walltime</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">detail</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

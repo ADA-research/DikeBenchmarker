@@ -70,188 +70,197 @@
            <div itemprop="articleBody">
              
   <h1>Source code for DikeBenchmarker.solveradaptors.checkeradaptor</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;This module provides an adaptor for executing checkers of sat or unsat certificates.&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""This module provides an adaptor for executing checkers of sat or unsat certificates."""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.resources</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.benchmarkatoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckerResult</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.solveradaptors.abstractexecutable</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractExecutable</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CheckerAdaptor&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"CheckerAdaptor"</span><span class="p">]</span>
+
+<span class="n">_CHECKERS_DIR</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">"DikeBenchmarker.external.checkers"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_checker_bin</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the absolute path to a bundled checker binary."""</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">_CHECKERS_DIR</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="CheckerAdaptor">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CheckerAdaptor</span><span class="p">(</span><span class="n">AbstractExecutable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class for executing checkers of sat or unsat certificates.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A class for executing checkers of sat or unsat certificates."""</span>
 
     <span class="c1"># Verified checkers whose maximum heap size is fixed at compile time ship as</span>
     <span class="c1"># separate 32 GB, 64 GB, and 256 GB binaries. A checker id may carry a</span>
-    <span class="c1"># trailing &quot;32&quot;, &quot;64&quot;, or &quot;256&quot; to select one; without it the 32 GB build</span>
+    <span class="c1"># trailing "32", "64", or "256" to select one; without it the 32 GB build</span>
     <span class="c1"># is used.</span>
-    <span class="n">HEAP_VARIANTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;256&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">,</span> <span class="s2">&quot;32&quot;</span><span class="p">)</span>
-    <span class="n">DEFAULT_VARIANT</span> <span class="o">=</span> <span class="s2">&quot;32&quot;</span>
+    <span class="n">HEAP_VARIANTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"256"</span><span class="p">,</span> <span class="s2">"64"</span><span class="p">,</span> <span class="s2">"32"</span><span class="p">)</span>
+    <span class="n">DEFAULT_VARIANT</span> <span class="o">=</span> <span class="s2">"32"</span>
 
     <span class="c1"># Binaries that exist as per-variant builds. The selected size is appended to</span>
-    <span class="c1"># the base name (e.g. &quot;cake_lpr&quot; -&gt; &quot;cake_lpr64&quot;).</span>
-    <span class="n">SCALABLE_BINARIES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;cake_lpr&quot;</span><span class="p">,</span> <span class="s2">&quot;cake_pb_cnf&quot;</span><span class="p">)</span>
+    <span class="c1"># the base name (e.g. "cake_lpr" -&gt; "cake_lpr64").</span>
+    <span class="n">SCALABLE_BINARIES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"cake_lpr"</span><span class="p">,</span> <span class="s2">"cake_pb_cnf"</span><span class="p">)</span>
 
     <span class="c1"># gratchk takes its heap limit as an MLton runtime argument instead of a</span>
     <span class="c1"># dedicated binary, so the matching value is patched into the command.</span>
     <span class="c1"># 256: sized to fit within the 239400 MiB checker_memory of all256.yml.</span>
-    <span class="n">GRAT_MAXHEAP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;32&quot;</span><span class="p">:</span> <span class="s2">&quot;31G&quot;</span><span class="p">,</span> <span class="s2">&quot;64&quot;</span><span class="p">:</span> <span class="s2">&quot;62G&quot;</span><span class="p">,</span> <span class="s2">&quot;256&quot;</span><span class="p">:</span> <span class="s2">&quot;230G&quot;</span><span class="p">}</span>
+    <span class="n">GRAT_MAXHEAP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"32"</span><span class="p">:</span> <span class="s2">"31G"</span><span class="p">,</span> <span class="s2">"64"</span><span class="p">:</span> <span class="s2">"62G"</span><span class="p">,</span> <span class="s2">"256"</span><span class="p">:</span> <span class="s2">"230G"</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the CheckerAdaptor with a registry, or from a serialized dictionary if provided."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">serialized</span><span class="p">)</span>
         <span class="c1"># drat-trim/dpr-trim have their own hard-coded internal time limit</span>
         <span class="c1"># (`-t`, default 40000s -- see their `--help`), independent of and</span>
         <span class="c1"># potentially BELOW whatever cpu-limit the checker-wrapper (e.g.</span>
         <span class="c1"># runsolver) enforces. Without an explicit `-t`, a slow-to-trim proof</span>
-        <span class="c1"># can self-terminate with &#39;s TIMEOUT&#39; before the wrapper&#39;s own limit</span>
-        <span class="c1"># fires (TIMEOUT=false/MEMOUT=false then look &quot;correct&quot; but are</span>
+        <span class="c1"># can self-terminate with 's TIMEOUT' before the wrapper's own limit</span>
+        <span class="c1"># fires (TIMEOUT=false/MEMOUT=false then look "correct" but are</span>
         <span class="c1"># misleading). Pass a value comfortably above any configured</span>
         <span class="c1"># checker-wrapper cpu-limit so that limit stays the sole authority.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;drat&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/drat-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"drat"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"drat-trim"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"cake_lpr"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;dratbin&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/drat-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"dratbin"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"drat-trim"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"cake_lpr"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;dpr&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/dpr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"dpr"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"dpr-trim"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"cake_lpr"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 $INST $CERT -t 90000 -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;dprbin&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/dpr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_lpr&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"dprbin"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"dpr-trim"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"cake_lpr"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 $INST $CERT -t 90000 -i -C -D -L $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;grat&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/gratgen&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/gratchk&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"grat"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"gratgen"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"gratchk"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
 <span class="sd">            $BIN1 @MLton max-heap $MAXHEAP -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.gratl $CERT.gratp</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;gratbin&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/gratgen&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/gratchk&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"gratbin"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"gratgen"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"gratchk"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 $INST $CERT -o $CERT.gratp -l $CERT.gratl -b 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
 <span class="sd">            $BIN1 @MLton max-heap $MAXHEAP -- unsat $INST $CERT.gratl $CERT.gratp 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.gratl $CERT.gratp</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;veripb&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/veripb&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/cake_pb_cnf&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"veripb"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"veripb"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"cake_pb_cnf"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 --cnf -u --elaborate $CERT.trimmed $INST $CERT 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rm -f $CERT</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;sr&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/dsr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/lsr-check&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"sr"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"dsr-trim"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"lsr-check"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 $INST $CERT $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="c1"># Forward/streaming variant of &quot;sr&quot;: dsr-trim defaults to backwards</span>
+            <span class="c1"># Forward/streaming variant of "sr": dsr-trim defaults to backwards</span>
             <span class="c1"># checking with eager parsing, which loads the whole DSR proof into</span>
             <span class="c1"># memory and can exhaust RAM (xrealloc failure) even on small</span>
-            <span class="c1"># formulas with large binary SR proofs. &quot;-f&quot; switches dsr-trim to</span>
+            <span class="c1"># formulas with large binary SR proofs. "-f" switches dsr-trim to</span>
             <span class="c1"># forwards checking with a streaming parser (one witness at a time),</span>
             <span class="c1"># keeping memory bounded at the cost of a larger, untrimmed LSR.</span>
-            <span class="s2">&quot;srfwd&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/dsr-trim&quot;</span><span class="p">,</span> <span class="s2">&quot;./external/checkers/lsr-check&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+            <span class="s2">"srfwd"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"dsr-trim"</span><span class="p">),</span> <span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"lsr-check"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            $BIN0 -f $INST $CERT $CERT.trimmed 1&gt; $TRIMMER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            $BIN1 $INST $CERT.trimmed 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
 <span class="sd">            rc=$?</span>
 <span class="sd">            rm -f $CERT.trimmed</span>
 <span class="sd">            exit $rc</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+            <span class="s2">"none"</span><span class="p">,</span>
             <span class="p">[],</span>
-            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">""</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-            <span class="s2">&quot;satchecker&quot;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s2">&quot;./external/checkers/gratchk&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            grep &quot;^v&quot; $CERT | sed -re &#39;s/^v//g&#39; | awk &#39;{sub(/ 0$/, &quot;&quot;); if (NR&gt;1) print prev; prev=$0} END {if (NR&gt;0) print prev &quot; 0&quot;}&#39; &gt; $TRIMMER_OUTPUT</span>
+            <span class="s2">"satchecker"</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_checker_bin</span><span class="p">(</span><span class="s2">"gratchk"</span><span class="p">)],</span>
+<span class="w">            </span><span class="sd">"""</span>
+<span class="sd">            grep "^v" $CERT | sed -re 's/^v//g' | awk '{sub(/ 0$/, ""); if (NR&gt;1) print prev; prev=$0} END {if (NR&gt;0) print prev " 0"}' &gt; $TRIMMER_OUTPUT</span>
 <span class="sd">            $BIN0 sat $INST $TRIMMER_OUTPUT 1&gt; $CHECKER_OUTPUT 2&gt;&amp;1</span>
-<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="sd">            """</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_split_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split a checker id into its base id and heap-size variant.</span>
+<span class="w">        </span><span class="sd">"""Split a checker id into its base id and heap-size variant.</span>
 
-<span class="sd">        A trailing &quot;32&quot; or &quot;64&quot; selects the heap-size variant of the checker;</span>
+<span class="sd">        A trailing "32" or "64" selects the heap-size variant of the checker;</span>
 <span class="sd">        when absent the variant defaults to DEFAULT_VARIANT. The number is</span>
 <span class="sd">        stripped only when the remainder is a registered checker, so ids such as</span>
-<span class="sd">        &quot;drat&quot; or &quot;none&quot; are returned unchanged.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        "drat" or "none" are returned unchanged.</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">variant</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">HEAP_VARIANTS</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">xid</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">variant</span><span class="p">):</span>
                 <span class="n">base</span> <span class="o">=</span> <span class="n">xid</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">variant</span><span class="p">)]</span>
@@ -260,13 +269,13 @@
         <span class="k">return</span> <span class="n">xid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_VARIANT</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_variant_to_binaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binaries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">variant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append the heap-size suffix to checker binaries that have per-variant builds.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Append the heap-size suffix to checker binaries that have per-variant builds."""</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">b</span> <span class="o">+</span> <span class="n">variant</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SCALABLE_BINARIES</span> <span class="k">else</span> <span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">binaries</span><span class="p">]</span>
 
 <div class="viewcode-block" id="CheckerAdaptor.get_binaries">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.get_binaries">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_binaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the binary paths for a checker id, resolving its heap-size variant.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the binary paths for a checker id, resolving its heap-size variant."""</span>
         <span class="n">base_id</span><span class="p">,</span> <span class="n">variant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_variant</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_variant_to_binaries</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_binaries</span><span class="p">(</span><span class="n">base_id</span><span class="p">),</span> <span class="n">variant</span><span class="p">)</span></div>
 
@@ -274,29 +283,59 @@
 <div class="viewcode-block" id="CheckerAdaptor.format_command">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.format_command">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">format_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="n">binaries</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">certificate</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the command line for a given checker ID, replacing placeholders.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the command line for a given checker ID, replacing placeholders."""</span>
         <span class="n">base_id</span><span class="p">,</span> <span class="n">variant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_variant</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_base</span><span class="p">(</span><span class="n">base_id</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$MAXHEAP&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GRAT_MAXHEAP</span><span class="p">[</span><span class="n">variant</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$MAXHEAP"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GRAT_MAXHEAP</span><span class="p">[</span><span class="n">variant</span><span class="p">])</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_extra</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">certificate</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the command line for a given checker ID, replacing placeholders.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the command line for a given checker ID, replacing placeholders."""</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="n">base</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$INST&quot;</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$CERT&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$TRIMMER_OUTPUT&quot;</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$CHECKER_OUTPUT&quot;</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">)</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$INST"</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$CERT"</span><span class="p">,</span> <span class="n">certificate</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$TRIMMER_OUTPUT"</span><span class="p">,</span> <span class="n">trimmer_output</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"$CHECKER_OUTPUT"</span><span class="p">,</span> <span class="n">checker_output</span><span class="p">)</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="CheckerAdaptor.parse_result">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.parse_result">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the result from the checker file.&quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trimmer_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">checker_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckerResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Classify the trimmer + checker pipeline."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">trimmer_file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="s2">"no trimmer output"</span><span class="p">)</span>
+
+        <span class="n">trimmer_verdict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">trimmer_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;VERIFIED&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">line</span>
-        <span class="k">return</span> <span class="s2">&quot;UNKNOWN&quot;</span></div>
+                <span class="n">stripped</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">stripped</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"s "</span><span class="p">):</span>
+                    <span class="n">trimmer_verdict</span> <span class="o">=</span> <span class="n">stripped</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="s2">"Ran out of memory"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">trimmer_verdict</span> <span class="o">=</span> <span class="s2">"MEMOUT"</span>
+
+        <span class="c1"># non-VERIFIED trimmer outcomes never yield a checker verdict</span>
+        <span class="n">trimmer_failure_detail</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="kc">None</span><span class="p">:</span> <span class="s2">"trimmer no verdict"</span><span class="p">,</span>
+            <span class="s2">"MEMOUT"</span><span class="p">:</span> <span class="s2">"trimmer internal memout"</span><span class="p">,</span>
+            <span class="s2">"TIMEOUT"</span><span class="p">:</span> <span class="s2">"trimmer internal timeout"</span><span class="p">,</span>
+            <span class="s2">"ERROR"</span><span class="p">:</span> <span class="s2">"trimmer error"</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">trimmer_verdict</span> <span class="ow">in</span> <span class="n">trimmer_failure_detail</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">trimmer_failure_detail</span><span class="p">[</span><span class="n">trimmer_verdict</span><span class="p">])</span>
+                
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">checker_file</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"trimmer </span><span class="si">{</span><span class="n">trimmer_verdict</span><span class="si">}</span><span class="s2">, no checker output"</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">checker_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">stripped</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">stripped</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"s "</span><span class="p">):</span>
+                    <span class="n">verdict</span> <span class="o">=</span> <span class="n">stripped</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">verdict</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"VERIFIED"</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">VERIFIED</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">UNVERIFIED</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"trimmer </span><span class="si">{</span><span class="n">trimmer_verdict</span><span class="si">}</span><span class="s2">, checker </span><span class="si">{</span><span class="n">verdict</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">CheckerResult</span><span class="p">(</span><span class="n">CheckerResult</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"trimmer </span><span class="si">{</span><span class="n">trimmer_verdict</span><span class="si">}</span><span class="s2">, no checker verdict"</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

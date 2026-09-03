@@ -70,10 +70,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for DikeBenchmarker.benchmarkatoms</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Basic benchmarking job and result representation&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""Basic benchmarking job and result representation"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">is_dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
@@ -87,7 +88,7 @@
 <div class="viewcode-block" id="JobState">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.JobState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">JobState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Possible states of a Job.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Possible states of a Job."""</span>
 
     <span class="n">CREATED</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">SUBMITTED</span> <span class="o">=</span> <span class="mi">2</span>
@@ -101,15 +102,14 @@
 <div class="viewcode-block" id="JobStateError">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.JobStateError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">JobStateError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an invalid state transition is attempted on a Job.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when an invalid state transition is attempted on a Job."""</span></div>
 
 
 
 <div class="viewcode-block" id="Job">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Job</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Benchmarking Job that behaves like a future.</span>
+<span class="w">    </span><span class="sd">"""Benchmarking Job that behaves like a future.</span>
 
 <span class="sd">    Identity: benchmark_id, solver_id, created_at (ctor time).</span>
 
@@ -121,13 +121,13 @@
 <span class="sd">        --[finish working on]--&gt; FINISHED | FAILED</span>
 
 <span class="sd">      CREATED/SUBMITTED -&gt; CANCELLED</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_id_counter</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">job_producer</span><span class="p">:</span> <span class="s2">&quot;AbstractBenchmarker&quot;</span><span class="p">,</span>
+        <span class="n">job_producer</span><span class="p">:</span> <span class="s2">"AbstractBenchmarker"</span><span class="p">,</span>
         <span class="n">benchmark_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">solver_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">checker_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -136,12 +136,11 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">_id_counter</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">job_producer</span><span class="p">:</span> <span class="s2">&quot;AbstractBenchmarker&quot;</span> <span class="o">=</span> <span class="n">job_producer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_producer</span><span class="p">:</span> <span class="s2">"AbstractBenchmarker"</span> <span class="o">=</span> <span class="n">job_producer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">benchmark_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">solver_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checker_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">checker_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logroot</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">logroot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">retries</span>
 
         <span class="c1"># timestamps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
@@ -151,50 +150,45 @@
 
         <span class="c1"># state data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">:</span> <span class="n">JobState</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">CREATED</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">"Result"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Job.clone_retry">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.clone_retry">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clone_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decrement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Job&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a clone of this job with identical benchmark_id, solver_id, checker_id, and logroot.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clone_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decrement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Job"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a clone of this job with identical benchmark_id, solver_id, checker_id, and logroot.</span>
+<span class="sd">        </span>
 <span class="sd">        The cloned job will have a new created_at timestamp and will be in the CREATED state.</span>
-<span class="sd">        The retries count will be decremented by the specified amount.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">Job</span><span class="p">(</span>
             <span class="n">job_producer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job_producer</span><span class="p">,</span>
             <span class="n">benchmark_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span><span class="p">,</span>
             <span class="n">solver_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="p">,</span>
             <span class="n">checker_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checker_id</span><span class="p">,</span>
             <span class="n">logroot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logroot</span><span class="p">,</span>
-            <span class="n">retries</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retries</span> <span class="o">-</span> <span class="n">decrement</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Job.get_log_prefix">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.get_log_prefix">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_log_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the logfile prefix for this job.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">logroot</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="w">        </span><span class="sd">"""Get the logfile prefix for this job."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">logroot</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 <div class="viewcode-block" id="Job.mark_submitted">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.mark_submitted">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_submitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Mark the job as submitted.</span>
+<span class="w">        </span><span class="sd">"""Mark the job as submitted.</span>
+<span class="sd">        </span>
 <span class="sd">        Called by the infrastructure adaptor upon receiving the job.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">JobState</span><span class="o">.</span><span class="n">SUBMITTED</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;job </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> wants to be marked as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> but it already is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"job </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> wants to be marked as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> but it already is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">submitted_at</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">submitted_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">CREATED</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot mark job as SUBMITTED from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot mark job as SUBMITTED from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">SUBMITTED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">submitted_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span></div>
 
@@ -202,15 +196,15 @@
 <div class="viewcode-block" id="Job.mark_running">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.mark_running">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Mark the job as running.</span>
+<span class="w">        </span><span class="sd">"""Mark the job as running.</span>
+<span class="sd">        </span>
 <span class="sd">        Called by the infrastructure adaptor once the job started to run.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">JobState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;job </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> wants to be marked as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> but it already is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"job </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> wants to be marked as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> but it already is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">SUBMITTED</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot mark job as RUNNING from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot mark job as RUNNING from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">RUNNING</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">started_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span></div>
 
@@ -218,26 +212,25 @@
 <div class="viewcode-block" id="Job.set_finished">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.set_finished">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Mark the job as finished.</span>
+<span class="w">        </span><span class="sd">"""Mark the job as finished.</span>
+<span class="sd">        </span>
 <span class="sd">        Called by the infrastructure adaptor when the job has completed successfully.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot mark job as FINISHED from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot mark job as FINISHED from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">FINISHED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finished_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Job.set_failed">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.set_failed">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Mark the job as failed.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark the job as failed.</span>
+<span class="sd">        </span>
 <span class="sd">        Called by the infrastructure adaptor when the job has completed unsuccessfully.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot mark job as FAILED from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span>
+            <span class="k">raise</span> <span class="n">JobStateError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot mark job as FAILED from state </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">FAILED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finished_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span></div>
 
@@ -245,10 +238,10 @@
 <div class="viewcode-block" id="Job.cancel_local">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Job.cancel_local">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cancel_local</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Mark the job as cancelled.</span>
+<span class="w">        </span><span class="sd">"""Mark the job as cancelled.</span>
+<span class="sd">        </span>
 <span class="sd">        Called by the benchmarker to prevent the job from being submitted to the external system.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">JobState</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">JobState</span><span class="o">.</span><span class="n">SUBMITTED</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">CANCELLED</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">finished_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
@@ -257,38 +250,206 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Job(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Job(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solver_id</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="AbstractResult">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.AbstractResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AbstractResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Mixin providing baseline functionality for result atoms."""</span>
+
+    <span class="n">state</span><span class="p">:</span> <span class="n">Enum</span>
+    <span class="n">detail</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Ensure that subclasses define the required base state members."""</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">State</span><span class="p">}</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"NONE"</span><span class="p">,</span> <span class="s2">"ERROR"</span><span class="p">}</span> <span class="o">-</span> <span class="n">names</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.State missing required member(s): </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the result atom has no data (state is NONE)."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"NONE"</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the result atom encountered an error (state is ERROR)."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"ERROR"</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the result atom has a valid, non-error result."""</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_error</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if the result atom has a detail message."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return the detail message of the result atom."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span></div>
+
+    
+    
+<div class="viewcode-block" id="ExecutionResult">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ExecutionResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExecutionResult</span><span class="p">(</span><span class="n">AbstractResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Execution outcome of one wrapped job."""</span>
+    
+<div class="viewcode-block" id="ExecutionResult.State">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ExecutionResult.State">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Possible execution verdicts a wrapper can report."""</span>
+
+        <span class="n">NONE</span> <span class="o">=</span> <span class="s2">"none"</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"error"</span>
+        <span class="n">SUCCESS</span> <span class="o">=</span> <span class="s2">"success"</span></div>
+
+
+    <span class="n">state</span><span class="p">:</span> <span class="s2">"ExecutionResult.State"</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">NONE</span></div>
+
+
+
+<div class="viewcode-block" id="ResourceResult">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ResourceResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResourceResult</span><span class="p">(</span><span class="n">AbstractResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Resource usage and limit outcome of one wrapped execution."""</span>
+
+<div class="viewcode-block" id="ResourceResult.State">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ResourceResult.State">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Possible resource-limit verdicts a wrapper can report."""</span>
+    
+        <span class="n">NONE</span> <span class="o">=</span> <span class="s2">"none"</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"error"</span>
+        <span class="n">SUCCESS</span> <span class="o">=</span> <span class="s2">"success"</span>
+        <span class="n">TIMEOUT</span> <span class="o">=</span> <span class="s2">"timeout"</span>
+        <span class="n">MEMOUT</span> <span class="o">=</span> <span class="s2">"memout"</span></div>
+
+
+    <span class="n">state</span><span class="p">:</span> <span class="s2">"ResourceResult.State"</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">NONE</span>
+    <span class="n">cputime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># seconds</span>
+    <span class="n">walltime</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># seconds</span>
+    <span class="n">memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># MiB</span></div>
+
+
+
+<div class="viewcode-block" id="SolverResult">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.SolverResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SolverResult</span><span class="p">(</span><span class="n">AbstractResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Satisfiability verdict reported by a solver."""</span>
+
+<div class="viewcode-block" id="SolverResult.State">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.SolverResult.State">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Possible satisfiability verdicts a solver can report."""</span>
+
+        <span class="n">NONE</span> <span class="o">=</span> <span class="s2">"none"</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"error"</span>
+        <span class="n">SAT</span> <span class="o">=</span> <span class="s2">"sat"</span>
+        <span class="n">UNSAT</span> <span class="o">=</span> <span class="s2">"unsat"</span>
+        <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">"unknown"</span></div>
+
+
+    <span class="n">state</span><span class="p">:</span> <span class="s2">"SolverResult.State"</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">NONE</span></div>
+
+
+
+<div class="viewcode-block" id="CheckerResult">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.CheckerResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CheckerResult</span><span class="p">(</span><span class="n">AbstractResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Verdict reported by a proof/model checker."""</span>
+
+<div class="viewcode-block" id="CheckerResult.State">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.CheckerResult.State">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Possible verdicts a checker can report."""</span>
+
+        <span class="n">NONE</span> <span class="o">=</span> <span class="s2">"none"</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"error"</span>
+        <span class="n">VERIFIED</span> <span class="o">=</span> <span class="s2">"verified"</span>
+        <span class="n">UNVERIFIED</span> <span class="o">=</span> <span class="s2">"unverified"</span>
+        <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">"unknown"</span></div>
+
+
+    <span class="n">state</span><span class="p">:</span> <span class="s2">"CheckerResult.State"</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">NONE</span></div>
 
 
 
 <div class="viewcode-block" id="Result">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Result">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Result</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents the result of a benchmark job.</span>
-<span class="sd">    Contains a reference to the job and its resource usage.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Aggregate benchmarking result composed of independent per-dimension atoms."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="s2">&quot;Job&quot;</span><span class="p">,</span> <span class="n">runtime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">failed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="s2">"Job"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize the Result with a job and optional result atoms."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">job</span> <span class="o">=</span> <span class="n">job</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span> <span class="o">=</span> <span class="n">runtime</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">failed</span> <span class="o">=</span> <span class="n">failed</span>
-
-<div class="viewcode-block" id="Result.has_failed">
-<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Result.has_failed">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">has_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">failed</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">execution</span> <span class="o">=</span> <span class="n">ExecutionResult</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">SolverResult</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checker</span> <span class="o">=</span> <span class="n">CheckerResult</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver_resources</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checker_resources</span> <span class="o">=</span> <span class="n">ResourceResult</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Result.get_job">
 <a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Result.get_job">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_job</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Job&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_job</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Job"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the job object associated with this result."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AbstractResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return every attached result atom."""</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True only if every atom is still empty (nothing has produced data yet)."""</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">is_empty</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if any atom reports an error."""</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">has_error</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return True if any atom produced a valid, non-error result."""</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">has_result</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Join every atom's detail message, namespaced by atom name."""</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">atom</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">has_detail</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="k">if</span> <span class="n">parts</span> <span class="k">else</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Result.to_eval_record">
+<a class="viewcode-back" href="../../DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.Result.to_eval_record">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_eval_record</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Flatten every attached atom's fields into a namespaced dict."""</span>
+        <span class="n">rec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"inst_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">benchmark_id</span><span class="p">,</span> <span class="s2">"solver_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">solver_id</span><span class="p">,</span> <span class="s2">"checker_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">checker_id</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">rec</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Enum</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">rec</span></div>
+
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;BenchmarkResult(inst_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">benchmark_id</span><span class="si">}</span><span class="s2">, solver_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">solver_id</span><span class="si">}</span><span class="s2">, perf=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+<span class="w">        </span><span class="sd">"""Return a string representation of the Result."""</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">"job"</span> <span class="ow">and</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Result(inst_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">benchmark_id</span><span class="si">!r}</span><span class="s2">, solver_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">solver_id</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">atoms</span><span class="si">}</span><span class="s2">)"</span></div>
 
 </pre></div>
 

@@ -144,8 +144,8 @@ It provides methods for registering executables, reading them from a registry fi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.parse_result">
-<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/abstractexecutable.html#AbstractExecutable.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.parse_result" title="Link to this definition"></a></dt>
-<dd><p>Extract the result from the solver file.</p>
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.AbstractResult" title="DikeBenchmarker.benchmarkatoms.AbstractResult"><span class="pre">AbstractResult</span></a></span></span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/abstractexecutable.html#AbstractExecutable.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.parse_result" title="Link to this definition"></a></dt>
+<dd><p>Parse result files; returns instance of an AbstractResult implementation.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -230,8 +230,8 @@ resolved relative to the registry file’s directory.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.parse_result">
-<span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/checkeradaptor.html#CheckerAdaptor.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.parse_result" title="Link to this definition"></a></dt>
-<dd><p>Extract the result from the checker file.</p>
+<span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trimmer_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checker_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.CheckerResult" title="DikeBenchmarker.benchmarkatoms.CheckerResult"><span class="pre">CheckerResult</span></a></span></span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/checkeradaptor.html#CheckerAdaptor.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.checkeradaptor.CheckerAdaptor.parse_result" title="Link to this definition"></a></dt>
+<dd><p>Classify the trimmer + checker pipeline.</p>
 </dd></dl>
 
 </dd></dl>
@@ -260,12 +260,8 @@ resolved relative to the registry file’s directory.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.parse_result">
-<span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/executionwrapper.html#ExecutionWrapper.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.parse_result" title="Link to this definition"></a></dt>
-<dd><p>Parse the runsolver log output to extract runtime statistics.</p>
-<p>Parameters:
-- tool_output: Path to the runsolver log output file.</p>
-<p>Returns:
-- dictionary with keys ‘walltime’, ‘cputime’, ‘memory’, ‘timeout’, ‘memout’, and ‘exitstatus’.</p>
+<span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">watcher_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.ResourceResult" title="DikeBenchmarker.benchmarkatoms.ResourceResult"><span class="pre">ResourceResult</span></a></span></span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/executionwrapper.html#ExecutionWrapper.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.executionwrapper.ExecutionWrapper.parse_result" title="Link to this definition"></a></dt>
+<dd><p>Parse wrapper record + watcher log into resource-based metrics.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -299,8 +295,8 @@ resolved relative to the registry file’s directory.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.solveradaptors.solveradaptor.SolverAdaptor.parse_result">
-<span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/solveradaptor.html#SolverAdaptor.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.solveradaptor.SolverAdaptor.parse_result" title="Link to this definition"></a></dt>
-<dd><p>Extract the result from the solver file.</p>
+<span class="sig-name descname"><span class="pre">parse_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="DikeBenchmarker.html#DikeBenchmarker.benchmarkatoms.SolverResult" title="DikeBenchmarker.benchmarkatoms.SolverResult"><span class="pre">SolverResult</span></a></span></span><a class="reference internal" href="_modules/DikeBenchmarker/solveradaptors/solveradaptor.html#SolverAdaptor.parse_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.solveradaptors.solveradaptor.SolverAdaptor.parse_result" title="Link to this definition"></a></dt>
+<dd><p>Classify the solver verdict.</p>
 </dd></dl>
 
 </dd></dl>

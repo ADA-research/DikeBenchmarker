@@ -70,128 +70,130 @@
            <div itemprop="articleBody">
              
   <h1>Source code for DikeBenchmarker.solveradaptors.abstractexecutable</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Abstract Executable.</span>
+<span></span><span class="sd">"""Abstract Executable.</span>
 
 <span class="sd">Defines the AbstractExecutable class, which serves as a base for managing executables such as solvers, execution wrappers, or proof checkers.</span>
 <span class="sd">It provides methods for registering executables, reading them from a registry file, formatting command lines, and parsing results.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.benchmarkatoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractResult</span>
+
 
 <div class="viewcode-block" id="AbstractExecutable">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AbstractExecutable</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface for Executables such as Solvers or Execution Wrappers.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Interface for Executables such as Solvers or Execution Wrappers."""</span>
 
     <span class="n">registry</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the AbstractExecutable with a registry, or from a serialized dictionary if provided.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;registry&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="p">{}</span>
+<span class="w">        </span><span class="sd">"""Initialize the AbstractExecutable with a registry, or from a serialized dictionary if provided."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">serialized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"registry"</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="n">serialized</span> <span class="k">else</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="AbstractExecutable.register">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.register">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sbin</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">sfmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">checker</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register an executable with its path and command format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Register an executable with its path and command format."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">sbin</span><span class="p">,</span> <span class="n">sfmt</span><span class="p">,</span> <span class="n">checker</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.read_registry">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.read_registry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">registry_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a CSV registry file to populate executable configurations.</span>
+<span class="w">        </span><span class="sd">"""Read a CSV registry file to populate executable configurations.</span>
 
 <span class="sd">        The CSV file format is: id;bin;fmt;checker</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">            - id: Executable identifier (e.g., solver name, wrapper name)</span>
 <span class="sd">            - bin: Path(s) to binary executable(s), comma-separated. Relative paths are</span>
-<span class="sd">              resolved relative to the registry file&#39;s directory.</span>
+<span class="sd">              resolved relative to the registry file's directory.</span>
 <span class="sd">            - fmt: Command format string with placeholders:</span>
 <span class="sd">              - $BIN0, $BIN1, ... for binary paths (in order)</span>
 <span class="sd">              - Custom placeholders (e.g., $INST, $CERT) replaced by _format_extra()</span>
 <span class="sd">            - checker: Optional checker command ID for validating executable output</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">reg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">registry_path</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">registry_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;fmt&quot;</span><span class="p">,</span> <span class="s2">&quot;checker&quot;</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">registry_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"bin"</span><span class="p">,</span> <span class="s2">"fmt"</span><span class="p">,</span> <span class="s2">"checker"</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">";"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
                 <span class="c1"># Keep relative paths as-is, only make absolute paths relative to registry dir</span>
-                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;bin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bin_path</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">bin_path</span><span class="p">)</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reg_dir</span><span class="p">,</span> <span class="n">bin_path</span><span class="p">)</span> <span class="k">for</span> <span class="n">bin_path</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;bin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;bin&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">),</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;fmt&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;checker&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;checker&quot;</span> <span class="ow">in</span> <span class="n">row</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span></div>
+                <span class="n">row</span><span class="p">[</span><span class="s2">"bin"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bin_path</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">bin_path</span><span class="p">)</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reg_dir</span><span class="p">,</span> <span class="n">bin_path</span><span class="p">)</span> <span class="k">for</span> <span class="n">bin_path</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s2">"bin"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">"bin"</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">),</span> <span class="n">row</span><span class="p">[</span><span class="s2">"fmt"</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">"checker"</span><span class="p">]</span> <span class="k">if</span> <span class="s2">"checker"</span> <span class="ow">in</span> <span class="n">row</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.get_ids">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.get_ids">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of available solver IDs.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return a list of available solver IDs."""</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.get_binaries">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.get_binaries">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_binaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the binary paths for a given executables ID.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the binary paths for a given executables ID."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="n">xid</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.get_format_string">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.get_format_string">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_format_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the format string for a given executable ID.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the format string for a given executable ID."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="n">xid</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.get_checker">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.get_checker">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_checker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the checker command for a given executable ID.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the checker command for a given executable ID."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="n">xid</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.format_command">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.format_command">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">format_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">binaries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the command line to run the executable with parameters.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the command line to run the executable with parameters."""</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_base</span><span class="p">(</span><span class="n">xid</span><span class="p">,</span> <span class="n">binaries</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_extra</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">binaries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the base command line for the executable.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the base command line for the executable."""</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_format_string</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bin_path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">binaries</span><span class="p">):</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;$BIN</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bin_path</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s2">"$BIN</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">bin_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the extra command line parts for the executable.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the extra command line parts for the executable."""</span>
         <span class="k">return</span> <span class="n">base</span>
 
 <div class="viewcode-block" id="AbstractExecutable.parse_result">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.parse_result">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the result from the solver file.&quot;&quot;&quot;</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Parse result files; returns instance of an AbstractResult implementation."""</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.to_dict">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the executable to a dictionary representation.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;registry&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">}</span></div>
+<span class="w">        </span><span class="sd">"""Convert the executable to a dictionary representation."""</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"registry"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="AbstractExecutable.from_dict">
 <a class="viewcode-back" href="../../../DikeBenchmarker.solveradaptors.html#DikeBenchmarker.solveradaptors.abstractexecutable.AbstractExecutable.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AbstractExecutable&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an executable from a dictionary representation.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"AbstractExecutable"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create an executable from a dictionary representation."""</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 </div>
 

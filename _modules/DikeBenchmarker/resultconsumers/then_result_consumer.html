@@ -70,20 +70,20 @@
            <div itemprop="articleBody">
              
   <h1>Source code for DikeBenchmarker.resultconsumers.then_result_consumer</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">ThenResultConsumer for benchmarking results.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.benchmarkatoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Result</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">DikeBenchmarker.resultconsumers.abstract_consumer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractConsumer</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ThenResultConsumer&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ThenResultConsumer"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="ThenResultConsumer">
 <a class="viewcode-back" href="../../../DikeBenchmarker.resultconsumers.html#DikeBenchmarker.resultconsumers.then_result_consumer.ThenResultConsumer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ThenResultConsumer</span><span class="p">(</span><span class="n">AbstractConsumer</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies a series of result consumer in order&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Applies a series of result consumer in order"""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">consumers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AbstractConsumer</span><span class="p">]):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>

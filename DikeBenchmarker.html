@@ -59,10 +59,15 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-DikeBenchmarker.benchmarkatoms">DikeBenchmarker.benchmarkatoms module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.AbstractResult"><code class="docutils literal notranslate"><span class="pre">AbstractResult</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.CheckerResult"><code class="docutils literal notranslate"><span class="pre">CheckerResult</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult"><code class="docutils literal notranslate"><span class="pre">ExecutionResult</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.Job"><code class="docutils literal notranslate"><span class="pre">Job</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.JobState"><code class="docutils literal notranslate"><span class="pre">JobState</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.JobStateError"><code class="docutils literal notranslate"><span class="pre">JobStateError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.ResourceResult"><code class="docutils literal notranslate"><span class="pre">ResourceResult</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.Result"><code class="docutils literal notranslate"><span class="pre">Result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.SolverResult"><code class="docutils literal notranslate"><span class="pre">SolverResult</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-DikeBenchmarker">Module contents</a></li>
@@ -252,6 +257,131 @@
 <span id="dikebenchmarker-benchmarkatoms-module"></span><h2>DikeBenchmarker.benchmarkatoms module<a class="headerlink" href="#module-DikeBenchmarker.benchmarkatoms" title="Link to this heading"></a></h2>
 <p>Basic benchmarking job and result representation</p>
 <dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">AbstractResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Enum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#AbstractResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin providing baseline functionality for result atoms.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult.detail">
+<span class="sig-name descname"><span class="pre">detail</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult.detail" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult.get_detail">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_detail</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult.get_detail" title="Link to this definition"></a></dt>
+<dd><p>Return the detail message of the result atom.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult.has_detail">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_detail</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult.has_detail" title="Link to this definition"></a></dt>
+<dd><p>Return True if the result atom has a detail message.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult.has_error">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult.has_error" title="Link to this definition"></a></dt>
+<dd><p>Return True if the result atom encountered an error (state is ERROR).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult.has_result">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_result</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult.has_result" title="Link to this definition"></a></dt>
+<dd><p>Return True if the result atom has a valid, non-error result.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult.is_empty">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_empty</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Return True if the result atom has no data (state is NONE).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.AbstractResult.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.AbstractResult.state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">CheckerResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State" title="DikeBenchmarker.benchmarkatoms.CheckerResult.State"><span class="pre">State</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">State.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#CheckerResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.AbstractResult" title="DikeBenchmarker.benchmarkatoms.AbstractResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractResult</span></code></a></p>
+<p>Verdict reported by a proof/model checker.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult.State">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">State</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#CheckerResult.State"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Possible verdicts a checker can report.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult.State.ERROR">
+<span class="sig-name descname"><span class="pre">ERROR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'error'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State.ERROR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult.State.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State.NONE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult.State.UNKNOWN">
+<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unknown'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State.UNKNOWN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult.State.UNVERIFIED">
+<span class="sig-name descname"><span class="pre">UNVERIFIED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unverified'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State.UNVERIFIED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult.State.VERIFIED">
+<span class="sig-name descname"><span class="pre">VERIFIED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'verified'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State.VERIFIED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.CheckerResult.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.State" title="DikeBenchmarker.benchmarkatoms.CheckerResult.State"><span class="pre">State</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.CheckerResult.state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ExecutionResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">ExecutionResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult.State" title="DikeBenchmarker.benchmarkatoms.ExecutionResult.State"><span class="pre">State</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">State.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#ExecutionResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.AbstractResult" title="DikeBenchmarker.benchmarkatoms.AbstractResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractResult</span></code></a></p>
+<p>Execution outcome of one wrapped job.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ExecutionResult.State">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">State</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#ExecutionResult.State"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult.State" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Possible execution verdicts a wrapper can report.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ExecutionResult.State.ERROR">
+<span class="sig-name descname"><span class="pre">ERROR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'error'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult.State.ERROR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ExecutionResult.State.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult.State.NONE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ExecutionResult.State.SUCCESS">
+<span class="sig-name descname"><span class="pre">SUCCESS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'success'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult.State.SUCCESS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ExecutionResult.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult.State" title="DikeBenchmarker.benchmarkatoms.ExecutionResult.State"><span class="pre">State</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ExecutionResult.state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">Job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_producer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AbstractBenchmarker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">benchmark_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checker_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logroot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -267,20 +397,39 @@
 </dl>
 <p>CREATED/SUBMITTED -&gt; CANCELLED</p>
 </div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.benchmark_id">
+<span class="sig-name descname"><span class="pre">benchmark_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.benchmark_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.cancel_local">
 <span class="sig-name descname"><span class="pre">cancel_local</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job.cancel_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.cancel_local" title="Link to this definition"></a></dt>
-<dd><p>Mark the job as cancelled.
-Called by the benchmarker to prevent the job from being submitted to the external system.</p>
+<dd><p>Mark the job as cancelled.</p>
+<p>Called by the benchmarker to prevent the job from being submitted to the external system.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.checker_id">
+<span class="sig-name descname"><span class="pre">checker_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.checker_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.clone_retry">
 <span class="sig-name descname"><span class="pre">clone_retry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decrement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.Job" title="DikeBenchmarker.benchmarkatoms.Job"><span class="pre">Job</span></a></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job.clone_retry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.clone_retry" title="Link to this definition"></a></dt>
-<dd><p>Create a clone of this job with identical benchmark_id, solver_id, checker_id, and logroot.
-The cloned job will have a new created_at timestamp and will be in the CREATED state.
-The retries count will be decremented by the specified amount.</p>
+<dd><p>Create a clone of this job with identical benchmark_id, solver_id, checker_id, and logroot.</p>
+<p>The cloned job will have a new created_at timestamp and will be in the CREATED state.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.created_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.finished_at">
+<span class="sig-name descname"><span class="pre">finished_at</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.finished_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.get_log_prefix">
@@ -288,33 +437,68 @@ The retries count will be decremented by the specified amount.</p>
 <dd><p>Get the logfile prefix for this job.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.job_producer">
+<span class="sig-name descname"><span class="pre">job_producer</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AbstractBenchmarker</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.job_producer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.logroot">
+<span class="sig-name descname"><span class="pre">logroot</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.logroot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.mark_running">
 <span class="sig-name descname"><span class="pre">mark_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job.mark_running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.mark_running" title="Link to this definition"></a></dt>
-<dd><p>Mark the job as running.
-Called by the infrastructure adaptor once the job started to run.</p>
+<dd><p>Mark the job as running.</p>
+<p>Called by the infrastructure adaptor once the job started to run.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.mark_submitted">
 <span class="sig-name descname"><span class="pre">mark_submitted</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job.mark_submitted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.mark_submitted" title="Link to this definition"></a></dt>
-<dd><p>Mark the job as submitted.
-Called by the infrastructure adaptor upon receiving the job.</p>
+<dd><p>Mark the job as submitted.</p>
+<p>Called by the infrastructure adaptor upon receiving the job.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.result">
+<span class="sig-name descname"><span class="pre">result</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="s"><span class="pre">'Result'</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.result" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.set_failed">
-<span class="sig-name descname"><span class="pre">set_failed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job.set_failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.set_failed" title="Link to this definition"></a></dt>
-<dd><p>Mark the job as failed.
-Called by the infrastructure adaptor when the job has completed unsuccessfully.</p>
+<span class="sig-name descname"><span class="pre">set_failed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job.set_failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.set_failed" title="Link to this definition"></a></dt>
+<dd><p>Mark the job as failed.</p>
+<p>Called by the infrastructure adaptor when the job has completed unsuccessfully.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.set_finished">
 <span class="sig-name descname"><span class="pre">set_finished</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Job.set_finished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.set_finished" title="Link to this definition"></a></dt>
-<dd><p>Mark the job as finished.
-Called by the infrastructure adaptor when the job has completed successfully.</p>
+<dd><p>Mark the job as finished.</p>
+<p>Called by the infrastructure adaptor when the job has completed successfully.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.solver_id">
+<span class="sig-name descname"><span class="pre">solver_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.solver_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.started_at">
+<span class="sig-name descname"><span class="pre">started_at</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.started_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.JobState" title="DikeBenchmarker.benchmarkatoms.JobState"><span class="pre">JobState</span></a></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Job.submitted_at">
+<span class="sig-name descname"><span class="pre">submitted_at</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Job.submitted_at" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -363,19 +547,147 @@ Called by the infrastructure adaptor when the job has completed successfully.</p
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">ResourceResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State" title="DikeBenchmarker.benchmarkatoms.ResourceResult.State"><span class="pre">State</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">State.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cputime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walltime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#ResourceResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.AbstractResult" title="DikeBenchmarker.benchmarkatoms.AbstractResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractResult</span></code></a></p>
+<p>Resource usage and limit outcome of one wrapped execution.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.State">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">State</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#ResourceResult.State"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Possible resource-limit verdicts a wrapper can report.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.State.ERROR">
+<span class="sig-name descname"><span class="pre">ERROR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'error'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State.ERROR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.State.MEMOUT">
+<span class="sig-name descname"><span class="pre">MEMOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'memout'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State.MEMOUT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.State.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State.NONE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.State.SUCCESS">
+<span class="sig-name descname"><span class="pre">SUCCESS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'success'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State.SUCCESS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.State.TIMEOUT">
+<span class="sig-name descname"><span class="pre">TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'timeout'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State.TIMEOUT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.cputime">
+<span class="sig-name descname"><span class="pre">cputime</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.cputime" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.memory">
+<span class="sig-name descname"><span class="pre">memory</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.memory" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.State" title="DikeBenchmarker.benchmarkatoms.ResourceResult.State"><span class="pre">State</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.ResourceResult.walltime">
+<span class="sig-name descname"><span class="pre">walltime</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.ResourceResult.walltime" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.Job" title="DikeBenchmarker.benchmarkatoms.Job"><span class="pre">Job</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">runtime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.Job" title="DikeBenchmarker.benchmarkatoms.Job"><span class="pre">Job</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents the result of a benchmark job.
-Contains a reference to the job and its resource usage.</p>
+<p>Aggregate benchmarking result composed of independent per-dimension atoms.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result.detail">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">detail</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result.detail" title="Link to this definition"></a></dt>
+<dd><p>Join every atom’s detail message, namespaced by atom name.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result.get_job">
 <span class="sig-name descname"><span class="pre">get_job</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.Job" title="DikeBenchmarker.benchmarkatoms.Job"><span class="pre">Job</span></a></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Result.get_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result.get_job" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the job object associated with this result.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result.has_error">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result.has_error" title="Link to this definition"></a></dt>
+<dd><p>Return True if any atom reports an error.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result.has_result">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_result</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result.has_result" title="Link to this definition"></a></dt>
+<dd><p>Return True if any atom produced a valid, non-error result.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result.is_empty">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_empty</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Return True only if every atom is still empty (nothing has produced data yet).</p>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result.has_failed">
-<span class="sig-name descname"><span class="pre">has_failed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Result.has_failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result.has_failed" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.Result.to_eval_record">
+<span class="sig-name descname"><span class="pre">to_eval_record</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#Result.to_eval_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.Result.to_eval_record" title="Link to this definition"></a></dt>
+<dd><p>Flatten every attached atom’s fields into a namespaced dict.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">DikeBenchmarker.benchmarkatoms.</span></span><span class="sig-name descname"><span class="pre">SolverResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State" title="DikeBenchmarker.benchmarkatoms.SolverResult.State"><span class="pre">State</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">State.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#SolverResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.AbstractResult" title="DikeBenchmarker.benchmarkatoms.AbstractResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractResult</span></code></a></p>
+<p>Satisfiability verdict reported by a solver.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult.State">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">State</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DikeBenchmarker/benchmarkatoms.html#SolverResult.State"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Possible satisfiability verdicts a solver can report.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult.State.ERROR">
+<span class="sig-name descname"><span class="pre">ERROR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'error'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State.ERROR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult.State.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State.NONE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult.State.SAT">
+<span class="sig-name descname"><span class="pre">SAT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sat'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State.SAT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult.State.UNKNOWN">
+<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unknown'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State.UNKNOWN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult.State.UNSAT">
+<span class="sig-name descname"><span class="pre">UNSAT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unsat'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State.UNSAT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DikeBenchmarker.benchmarkatoms.SolverResult.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#DikeBenchmarker.benchmarkatoms.SolverResult.State" title="DikeBenchmarker.benchmarkatoms.SolverResult.State"><span class="pre">State</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'none'</span></span><a class="headerlink" href="#DikeBenchmarker.benchmarkatoms.SolverResult.state" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
